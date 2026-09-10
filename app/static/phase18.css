@@ -1,0 +1,125 @@
+/* ============================================================
+   PHASE 18 — CINEMATIC MOTION SYSTEM
+   ============================================================ */
+
+:root {
+    --motion-instant: 80ms; --motion-fast: 160ms; --motion-normal: 280ms;
+    --motion-slow: 420ms; --motion-cinematic: 600ms; --motion-epic: 900ms;
+    --ease-out-expo: cubic-bezier(0.16,1,0.3,1); --ease-out-back: cubic-bezier(0.34,1.56,0.64,1);
+    --ease-in-out: cubic-bezier(0.65,0,0.35,1); --ease-spring: cubic-bezier(0.22,0.61,0.36,1);
+    --ease-bounce: cubic-bezier(0.34,1.56,0.64,1);
+    --stagger-1: 0ms; --stagger-2: 80ms; --stagger-3: 160ms; --stagger-4: 240ms; --stagger-5: 320ms;
+    --scale-press: 0.96; --scale-hover: 1.02; --scale-pop: 1.04;
+    --slide-sm: 8px; --slide-md: 16px; --slide-lg: 28px; --slide-xl: 48px;
+}
+
+@keyframes p18FadeIn    { from { opacity:0; } to { opacity:1; } }
+@keyframes p18FadeOut   { from { opacity:1; } to { opacity:0; } }
+@keyframes p18SlideUp   { from { opacity:0; transform:translateY(var(--slide-md)); } to { opacity:1; transform:translateY(0); } }
+@keyframes p18SlideDown { from { opacity:0; transform:translateY(calc(-1*var(--slide-md))); } to { opacity:1; transform:translateY(0); } }
+@keyframes p18SlideLeft { from { opacity:0; transform:translateX(var(--slide-md)); } to { opacity:1; transform:translateX(0); } }
+@keyframes p18SlideRight { from { opacity:0; transform:translateX(calc(-1*var(--slide-md))); } to { opacity:1; transform:translateX(0); } }
+@keyframes p18ScaleIn   { from { opacity:0; transform:scale(0.94); } to { opacity:1; transform:scale(1); } }
+@keyframes p18ScaleOut  { from { opacity:1; transform:scale(1); } to { opacity:0; transform:scale(0.94); } }
+@keyframes p18PopIn     { 0% { opacity:0; transform:scale(0.88); } 70% { opacity:1; transform:scale(var(--scale-pop)); } 100% { opacity:1; transform:scale(1); } }
+@keyframes p18CinematicEntrance { 0% { opacity:0; transform:translateY(var(--slide-lg)) scale(0.96); } 60% { opacity:1; } 100% { opacity:1; transform:translateY(0) scale(1); } }
+@keyframes p18Pulse     { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.75; transform:scale(0.98); } }
+@keyframes p18GlowPulse { 0%,100% { box-shadow:0 0 0 rgba(0,183,199,0); } 50% { box-shadow:0 0 24px rgba(0,183,199,0.4); } }
+@keyframes p18Shimmer   { 0% { background-position:-200% center; } 100% { background-position:200% center; } }
+@keyframes p18Float     { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+@keyframes p18StaggerReveal { from { opacity:0; transform:translateY(var(--slide-sm)); } to { opacity:1; transform:translateY(0); } }
+@keyframes p18Press     { 0% { transform:scale(1); } 40% { transform:scale(var(--scale-press)); } 100% { transform:scale(1); } }
+
+.motion-fade-in    { animation: p18FadeIn var(--motion-normal) var(--ease-out-expo) both; }
+.motion-slide-up   { animation: p18SlideUp var(--motion-normal) var(--ease-out-expo) both; }
+.motion-slide-down { animation: p18SlideDown var(--motion-normal) var(--ease-out-expo) both; }
+.motion-scale-in   { animation: p18ScaleIn var(--motion-normal) var(--ease-out-expo) both; }
+.motion-pop-in     { animation: p18PopIn var(--motion-slow) var(--ease-bounce) both; }
+.motion-cinematic  { animation: p18CinematicEntrance var(--motion-cinematic) var(--ease-out-expo) both; }
+.motion-stagger-1  { animation-delay: var(--stagger-1); }
+.motion-stagger-2  { animation-delay: var(--stagger-2); }
+.motion-stagger-3  { animation-delay: var(--stagger-3); }
+.motion-stagger-4  { animation-delay: var(--stagger-4); }
+.motion-stagger-5  { animation-delay: var(--stagger-5); }
+.motion-float      { animation: p18Float 4s var(--ease-in-out) infinite; }
+.motion-pulse      { animation: p18Pulse 2s var(--ease-in-out) infinite; }
+.motion-glow       { animation: p18GlowPulse 3s var(--ease-in-out) infinite; }
+
+.p17-tier-card { animation: p18CinematicEntrance var(--motion-cinematic) var(--ease-out-expo) both !important; transition: transform var(--motion-normal) var(--ease-out-expo), box-shadow var(--motion-normal) var(--ease-out-expo), border-color var(--motion-fast) var(--ease-spring) !important; }
+.p17-tier-card:nth-child(1) { animation-delay: 0ms !important; }
+.p17-tier-card:nth-child(2) { animation-delay: 120ms !important; }
+.p17-tier-card:nth-child(3) { animation-delay: 240ms !important; }
+.p17-tier-card:hover { transform: translateY(-8px) scale(1.01) !important; }
+.p17-tier-card.gold-card:hover   { box-shadow: 0 24px 60px rgba(0,0,0,0.5),0 0 30px rgba(245,197,66,0.2) !important; }
+.p17-tier-card.silver-card:hover { box-shadow: 0 24px 60px rgba(0,0,0,0.5),0 0 30px rgba(192,198,216,0.2) !important; }
+.p17-tier-card.bronze-card:hover { box-shadow: 0 24px 60px rgba(0,0,0,0.5),0 0 30px rgba(213,138,85,0.2) !important; }
+.p17-photo  { animation: p18FadeIn var(--motion-slow) var(--ease-out-expo) both !important; animation-delay: 200ms !important; }
+.p17-trophy { animation: p18PopIn var(--motion-slow) var(--ease-bounce) both !important; animation-delay: 350ms !important; }
+.p17-check-row:nth-child(1) { animation: p18StaggerReveal var(--motion-normal) var(--ease-out-expo) both; animation-delay: 400ms; }
+.p17-check-row:nth-child(2) { animation: p18StaggerReveal var(--motion-normal) var(--ease-out-expo) both; animation-delay: 460ms; }
+.p17-check-row:nth-child(3) { animation: p18StaggerReveal var(--motion-normal) var(--ease-out-expo) both; animation-delay: 520ms; }
+.p17-check-row:nth-child(4) { animation: p18StaggerReveal var(--motion-normal) var(--ease-out-expo) both; animation-delay: 580ms; }
+.p17-check-row:nth-child(5) { animation: p18StaggerReveal var(--motion-normal) var(--ease-out-expo) both; animation-delay: 640ms; }
+.p17-check-row:nth-child(6) { animation: p18StaggerReveal var(--motion-normal) var(--ease-out-expo) both; animation-delay: 700ms; }
+
+.modal-overlay { animation: p18FadeIn var(--motion-normal) var(--ease-out-expo) both !important; }
+.modal, .p17-modal { animation: p18ScaleIn var(--motion-normal) var(--ease-out-expo) both !important; transform-origin: center center !important; }
+.modal-overlay.closing { animation: p18FadeOut var(--motion-fast) var(--ease-in-out) both !important; }
+.modal.closing, .p17-modal.closing { animation: p18ScaleOut var(--motion-fast) var(--ease-in-out) both !important; }
+
+.sidebar-card { transition: transform var(--motion-fast) var(--ease-out-expo), box-shadow var(--motion-fast) var(--ease-out-expo), border-color var(--motion-fast) var(--ease-spring), background var(--motion-fast) var(--ease-spring) !important; animation: p18SlideRight var(--motion-normal) var(--ease-out-expo) both !important; }
+.sidebar-card:hover { transform: translateX(4px) !important; box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important; }
+.sidebar-card.active { animation: p18GlowPulse 3s var(--ease-in-out) infinite !important; }
+
+.ai-line-cinematic { animation: p18SlideUp var(--motion-normal) var(--ease-out-expo) both !important; }
+.ai-line-faded     { animation: p18FadeIn var(--motion-slow) var(--ease-out-expo) both !important; }
+.boolean-box       { animation: p18ScaleIn var(--motion-normal) var(--ease-out-expo) both !important; }
+.ai-stream-label   { animation: p18FadeIn var(--motion-slow) var(--ease-out-expo) both !important; }
+
+.primary-button, .modal-enter-btn, .p17-search-btn, .sidebar-add-btn, .welcome-plus, .upgrade-btn { transition: transform var(--motion-fast) var(--ease-spring), box-shadow var(--motion-fast) var(--ease-spring), background var(--motion-fast) var(--ease-spring) !important; }
+.primary-button:active, .modal-enter-btn:active, .p17-search-btn:active, .sidebar-add-btn:active, .welcome-plus:active { transform: scale(var(--scale-press)) !important; }
+.primary-button:hover, .modal-enter-btn:hover, .p17-search-btn:hover { transform: translateY(-2px) scale(1.01) !important; }
+
+.form-card { animation: p18SlideUp var(--motion-cinematic) var(--ease-out-expo) both !important; }
+.form-input:focus, .form-textarea:focus, .modal-input:focus, .modal-textarea:focus, .p17-filter-input:focus { transition: border-color var(--motion-fast) var(--ease-spring), box-shadow var(--motion-fast) var(--ease-spring), transform var(--motion-fast) var(--ease-spring) !important; transform: scale(1.005) !important; }
+
+.pro-kpi-panel       { animation: p18SlideUp var(--motion-cinematic) var(--ease-out-expo) both; animation-delay: 0ms; }
+.pro-score-panel     { animation: p18SlideUp var(--motion-cinematic) var(--ease-out-expo) both; animation-delay: 80ms; }
+.pro-candidates-panel { animation: p18SlideUp var(--motion-cinematic) var(--ease-out-expo) both; animation-delay: 160ms; }
+.market-density-panel { animation: p18SlideUp var(--motion-cinematic) var(--ease-out-expo) both; animation-delay: 200ms; }
+.salary-curve-panel  { animation: p18SlideUp var(--motion-cinematic) var(--ease-out-expo) both; animation-delay: 240ms; }
+.seniority-panel     { animation: p18SlideUp var(--motion-cinematic) var(--ease-out-expo) both; animation-delay: 280ms; }
+.persona-panel       { animation: p18SlideUp var(--motion-cinematic) var(--ease-out-expo) both; animation-delay: 320ms; }
+.trajectory-panel    { animation: p18SlideUp var(--motion-cinematic) var(--ease-out-expo) both; animation-delay: 360ms; }
+.competitiveness-panel { animation: p18SlideUp var(--motion-cinematic) var(--ease-out-expo) both; animation-delay: 400ms; }
+.trend-panel         { animation: p18SlideUp var(--motion-cinematic) var(--ease-out-expo) both; animation-delay: 440ms; }
+.kpi-tile:nth-child(1) { animation: p18ScaleIn var(--motion-normal) var(--ease-out-expo) both; animation-delay: 200ms; }
+.kpi-tile:nth-child(2) { animation: p18ScaleIn var(--motion-normal) var(--ease-out-expo) both; animation-delay: 280ms; }
+.kpi-tile:nth-child(3) { animation: p18ScaleIn var(--motion-normal) var(--ease-out-expo) both; animation-delay: 360ms; }
+
+.welcome-bar  { animation: p18SlideDown var(--motion-cinematic) var(--ease-out-expo) both !important; }
+.welcome-title { animation: p18FadeIn var(--motion-slow) var(--ease-out-expo) both !important; animation-delay: 150ms !important; }
+.linkedin-status-bar { animation: p18SlideUp var(--motion-normal) var(--ease-out-expo) both !important; animation-delay: 200ms !important; }
+
+.center-empty    { animation: p18FadeIn var(--motion-cinematic) var(--ease-out-expo) both !important; }
+.center-eyebrow  { animation: p18SlideUp var(--motion-normal) var(--ease-out-expo) both !important; animation-delay: 100ms !important; }
+.center-title    { animation: p18SlideUp var(--motion-slow) var(--ease-out-expo) both !important; animation-delay: 200ms !important; }
+.center-subtitle { animation: p18SlideUp var(--motion-slow) var(--ease-out-expo) both !important; animation-delay: 300ms !important; }
+.empty-start-btn { animation: p18PopIn var(--motion-slow) var(--ease-bounce) both !important; animation-delay: 400ms !important; }
+
+.p18-candidate-popup-overlay { position: fixed !important; inset: 0 !important; background: rgba(0,0,0,0.75) !important; backdrop-filter: blur(8px) !important; z-index: 1000 !important; display: flex !important; align-items: center !important; justify-content: center !important; animation: p18FadeIn var(--motion-normal) var(--ease-out-expo) both !important; }
+.p18-candidate-popup { background: linear-gradient(145deg,#0d1f3a,#0a1628) !important; border: 1px solid rgba(255,255,255,0.15) !important; border-radius: 24px !important; padding: 32px 28px 28px !important; max-width: 420px !important; width: 92% !important; max-height: 90vh !important; overflow-y: auto !important; position: relative !important; animation: p18PopIn var(--motion-slow) var(--ease-bounce) both !important; scrollbar-width: thin !important; }
+.p18-popup-close { position: absolute !important; top: 16px !important; right: 16px !important; background: rgba(255,255,255,0.08) !important; border: 1px solid rgba(255,255,255,0.15) !important; border-radius: 50% !important; width: 32px !important; height: 32px !important; display: flex !important; align-items: center !important; justify-content: center !important; color: rgba(255,255,255,0.7) !important; font-size: 16px !important; cursor: pointer !important; transition: all var(--motion-fast) var(--ease-spring) !important; z-index: 10 !important; }
+.p18-popup-close:hover { background: rgba(255,255,255,0.15) !important; color: #fff !important; transform: scale(1.1) !important; }
+.p18-nav-arrow { position: absolute !important; top: 50% !important; transform: translateY(-50%) !important; background: rgba(255,255,255,0.08) !important; border: 1px solid rgba(255,255,255,0.15) !important; border-radius: 50% !important; width: 40px !important; height: 40px !important; display: flex !important; align-items: center !important; justify-content: center !important; color: rgba(255,255,255,0.7) !important; font-size: 18px !important; cursor: pointer !important; transition: all var(--motion-fast) var(--ease-spring) !important; z-index: 10 !important; }
+.p18-nav-arrow:hover { background: rgba(0,183,199,0.2) !important; border-color: rgba(0,183,199,0.5) !important; color: #fff !important; transform: translateY(-50%) scale(1.1) !important; }
+.p18-nav-prev { left: -56px !important; }
+.p18-nav-next { right: -56px !important; }
+.p18-counter { text-align: center !important; font-size: 12px !important; color: rgba(255,255,255,0.4) !important; margin-bottom: 16px !important; letter-spacing: 0.06em !important; }
+
+.right-panel::-webkit-scrollbar, .tier-cards-scroll::-webkit-scrollbar, .p18-candidate-popup::-webkit-scrollbar { width: 3px !important; }
+.right-panel::-webkit-scrollbar-track, .tier-cards-scroll::-webkit-scrollbar-track, .p18-candidate-popup::-webkit-scrollbar-track { background: transparent !important; }
+.right-panel::-webkit-scrollbar-thumb, .tier-cards-scroll::-webkit-scrollbar-thumb, .p18-candidate-popup::-webkit-scrollbar-thumb { background: rgba(0,183,199,0.3) !important; border-radius: 999px !important; }
+.right-panel::-webkit-scrollbar-thumb:hover, .tier-cards-scroll::-webkit-scrollbar-thumb:hover { background: rgba(0,183,199,0.6) !important; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }

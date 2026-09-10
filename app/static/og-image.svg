@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" text-rendering="geometricPrecision" shape-rendering="crispEdges">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="80%">
+      <stop offset="0%" stop-color="#0a1628"/>
+      <stop offset="100%" stop-color="#050914"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2563eb" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#2563eb" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Vignette -->
+    <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.55)"/>
+    </radialGradient>
+    <!-- Logo glow -->
+    <filter id="logoGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- Card shadow -->
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="rgba(0,0,0,0.4)"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <ellipse cx="600" cy="315" rx="520" ry="320" fill="url(#glow)"/>
+
+  <!-- Stars -->
+  <circle cx="120" cy="80" r="1.5" fill="white" opacity="0.5"/>
+  <circle cx="220" cy="50" r="1" fill="white" opacity="0.35"/>
+  <circle cx="350" cy="120" r="1.5" fill="white" opacity="0.4"/>
+  <circle cx="500" cy="40" r="1" fill="white" opacity="0.3"/>
+  <circle cx="900" cy="60" r="1.5" fill="white" opacity="0.6"/>
+  <circle cx="1020" cy="100" r="1" fill="white" opacity="0.4"/>
+  <circle cx="1100" cy="180" r="1.5" fill="white" opacity="0.45"/>
+  <circle cx="80" cy="400" r="1.5" fill="white" opacity="0.5"/>
+  <circle cx="160" cy="520" r="1" fill="white" opacity="0.35"/>
+  <circle cx="1100" cy="450" r="1.5" fill="white" opacity="0.4"/>
+  <circle cx="400" cy="580" r="1" fill="white" opacity="0.3"/>
+  <circle cx="700" cy="560" r="1.5" fill="white" opacity="0.35"/>
+  <circle cx="1050" cy="580" r="1" fill="white" opacity="0.4"/>
+
+  <!-- Left accent bar — razor sharp -->
+  <rect x="0" y="0" width="4" height="630" fill="#2563eb" opacity="0.9" shape-rendering="crispEdges"/>
+
+  <!-- Logo glow blob -->
+  <ellipse cx="108" cy="248" rx="40" ry="40" fill="#2563eb" opacity="0.15" filter="url(#logoGlow)"/>
+
+  <!-- Logo mark -->
+  <rect x="80" y="220" width="56" height="56" rx="14" fill="#2563eb" filter="url(#logoGlow)"/>
+  <text x="108" y="248" font-family="Inter, -apple-system, sans-serif" font-weight="800" font-size="22" fill="white" text-anchor="middle" dominant-baseline="middle">AT</text>
+
+  <!-- Main headline -->
+  <text x="80" y="320" font-family="Inter, -apple-system, sans-serif" font-weight="800" font-size="56" fill="white" letter-spacing="-2">AI Talent Match·Pro</text>
+
+  <!-- Subheadline -->
+  <text x="80" y="375" font-family="Inter, -apple-system, sans-serif" font-weight="400" font-size="22" fill="rgba(255,255,255,0.55)">Hire faster. Stay in control.</text>
+
+  <!-- Tags -->
+  <rect x="80" y="412" width="156" height="34" rx="17" fill="rgba(37,99,235,0.18)" stroke="#2563eb" stroke-width="1" stroke-opacity="0.35" shape-rendering="crispEdges"/>
+  <text x="158" y="429" font-family="Inter, -apple-system, sans-serif" font-weight="600" font-size="13" fill="#4d9fff" text-anchor="middle" dominant-baseline="middle">Sub-100ms</text>
+
+  <rect x="250" y="412" width="176" height="34" rx="17" fill="rgba(37,99,235,0.18)" stroke="#2563eb" stroke-width="1" stroke-opacity="0.35" shape-rendering="crispEdges"/>
+  <text x="338" y="429" font-family="Inter, -apple-system, sans-serif" font-weight="600" font-size="13" fill="#4d9fff" text-anchor="middle" dominant-baseline="middle">GPT-4o on Azure</text>
+
+  <rect x="440" y="412" width="156" height="34" rx="17" fill="rgba(37,99,235,0.18)" stroke="#2563eb" stroke-width="1" stroke-opacity="0.35" shape-rendering="crispEdges"/>
+  <text x="518" y="429" font-family="Inter, -apple-system, sans-serif" font-weight="600" font-size="13" fill="#4d9fff" text-anchor="middle" dominant-baseline="middle">Enterprise AI</text>
+
+  <!-- Score cards — with shadow + more breathing room -->
+  <!-- Gold card -->
+  <rect x="775" y="120" width="350" height="118" rx="16" fill="rgba(10,20,50,0.85)" stroke="rgba(245,197,66,0.3)" stroke-width="1" filter="url(#cardShadow)"/>
+  <text x="820" y="165" font-family="Inter, -apple-system, sans-serif" font-weight="800" font-size="34" fill="#f5c542" dominant-baseline="middle">🥇 100%</text>
+  <text x="820" y="198" font-family="Inter, -apple-system, sans-serif" font-weight="600" font-size="14" fill="rgba(255,255,255,0.6)" dominant-baseline="middle">The Perfect Soul</text>
+  <rect x="820" y="213" width="72" height="18" rx="9" fill="rgba(245,197,66,0.12)" stroke="rgba(245,197,66,0.3)" stroke-width="1"/>
+  <text x="856" y="222" font-family="Inter, -apple-system, sans-serif" font-weight="700" font-size="11" fill="#f5c542" text-anchor="middle" dominant-baseline="middle">PRO ONLY</text>
+
+  <!-- Silver card -->
+  <rect x="775" y="255" width="350" height="118" rx="16" fill="rgba(10,20,50,0.85)" stroke="rgba(192,198,216,0.25)" stroke-width="1" filter="url(#cardShadow)"/>
+  <text x="820" y="300" font-family="Inter, -apple-system, sans-serif" font-weight="800" font-size="34" fill="#c0c6d8" dominant-baseline="middle">🥈 90%</text>
+  <text x="820" y="333" font-family="Inter, -apple-system, sans-serif" font-weight="600" font-size="14" fill="rgba(255,255,255,0.6)" dominant-baseline="middle">The Mirror</text>
+  <rect x="820" y="348" width="116" height="18" rx="9" fill="rgba(192,198,216,0.08)" stroke="rgba(192,198,216,0.2)" stroke-width="1"/>
+  <text x="878" y="357" font-family="Inter, -apple-system, sans-serif" font-weight="700" font-size="11" fill="#c0c6d8" text-anchor="middle" dominant-baseline="middle">Free Search</text>
+
+  <!-- Bronze card -->
+  <rect x="775" y="390" width="350" height="118" rx="16" fill="rgba(10,20,50,0.85)" stroke="rgba(213,138,85,0.25)" stroke-width="1" filter="url(#cardShadow)"/>
+  <text x="820" y="435" font-family="Inter, -apple-system, sans-serif" font-weight="800" font-size="34" fill="#d58a55" dominant-baseline="middle">🥉 80%</text>
+  <text x="820" y="468" font-family="Inter, -apple-system, sans-serif" font-weight="600" font-size="14" fill="rgba(255,255,255,0.6)" dominant-baseline="middle">The Adjacent</text>
+  <rect x="820" y="483" width="116" height="18" rx="9" fill="rgba(213,138,85,0.08)" stroke="rgba(213,138,85,0.2)" stroke-width="1"/>
+  <text x="878" y="492" font-family="Inter, -apple-system, sans-serif" font-weight="700" font-size="11" fill="#d58a55" text-anchor="middle" dominant-baseline="middle">Free Search</text>
+
+  <!-- Vignette overlay -->
+  <rect width="1200" height="630" fill="url(#vignette)"/>
+
+  <!-- Domain -->
+  <text x="80" y="595" font-family="Inter, -apple-system, sans-serif" font-size="15" fill="rgba(255,255,255,0.2)" dominant-baseline="middle">aitmp.io</text>
+</svg>

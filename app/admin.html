@@ -1,0 +1,2156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Talent Match Pro — Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+        :root {
+            --bg:          #040812;
+            --bg-2:        #070d1a;
+            --panel:       #0a1628;
+            --panel-soft:  #0d1e35;
+            --panel-hover: #112240;
+            --border:      rgba(59,130,246,0.12);
+            --border-soft: rgba(255,255,255,0.06);
+            --blue:        #1d6ef5;
+            --blue-bright: #4d9fff;
+            --blue-glow:   rgba(29,110,245,0.35);
+            --gold:        #f5a623;
+            --gold-glow:   rgba(245,166,35,0.3);
+            --silver:      #8ba4c0;
+            --green:       #00d68f;
+            --green-glow:  rgba(0,214,143,0.3);
+            --red:         #ff4d6d;
+            --text:        #e8f0fe;
+            --text-soft:   rgba(200,220,255,0.55);
+            --text-muted:  rgba(150,180,220,0.35);
+            --radius:      12px;
+            --sidebar-w:   230px;
+            --font-display: 'Syne', sans-serif;
+            --font-body:    'DM Sans', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            font-family: var(--font-body);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* ── CINEMATIC BACKGROUND ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 15% 40%, rgba(29,110,245,0.12) 0%, transparent 55%),
+                radial-gradient(ellipse 60% 50% at 85% 15%, rgba(29,110,245,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 40% 40% at 50% 90%, rgba(29,110,245,0.06) 0%, transparent 45%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Particle field */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(1px 1px at 20% 30%, rgba(100,160,255,0.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 40% 60%, rgba(100,160,255,0.3) 0%, transparent 100%),
+                radial-gradient(1px 1px at 60% 20%, rgba(100,160,255,0.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 80% 70%, rgba(100,160,255,0.2) 0%, transparent 100%),
+                radial-gradient(1px 1px at 10% 80%, rgba(100,160,255,0.3) 0%, transparent 100%),
+                radial-gradient(1px 1px at 90% 40%, rgba(100,160,255,0.25) 0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 35% 45%, rgba(150,200,255,0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 70% 85%, rgba(100,160,255,0.3) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            height: 60px;
+            background: rgba(4,8,18,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            box-shadow: 0 1px 0 rgba(29,110,245,0.1), 0 4px 24px rgba(0,0,0,0.4);
+        }
+
+        .topbar-left  { display: flex; align-items: center; gap: 14px; }
+        .at-logo {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, #1242b8, #1d6ef5);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 800; color: white;
+            font-family: var(--font-display);
+            border: 1px solid rgba(77,159,255,0.3);
+            box-shadow: 0 0 16px rgba(29,110,245,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        .app-name {
+            font-size: 15px; font-weight: 700;
+            font-family: var(--font-display);
+            letter-spacing: -0.02em;
+            background: linear-gradient(90deg, #e8f0fe, #7eb8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .company-switcher {
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(29,110,245,0.08);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 6px 12px;
+            font-size: 12px; color: var(--text-soft);
+            cursor: pointer;
+            margin-left: 8px;
+            transition: all 0.2s;
+        }
+        .company-switcher:hover { border-color: var(--blue); color: var(--text); }
+
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .search-bar {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(29,110,245,0.06);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 7px 14px;
+            font-size: 12px; color: var(--text-muted);
+            width: 220px;
+            transition: all 0.2s;
+        }
+        .search-bar:hover { border-color: rgba(29,110,245,0.3); }
+
+        .upgrade-btn {
+            background: linear-gradient(135deg, #1242b8, #1d6ef5);
+            color: white; border: none;
+            border-radius: var(--radius);
+            padding: 8px 18px;
+            font-size: 13px; font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-body);
+            display: flex; align-items: center; gap: 6px;
+            box-shadow: 0 0 20px rgba(29,110,245,0.35), 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            border: 1px solid rgba(77,159,255,0.3);
+        }
+        .upgrade-btn:hover {
+            box-shadow: 0 0 30px rgba(29,110,245,0.5), 0 4px 16px rgba(0,0,0,0.4);
+            transform: translateY(-1px);
+        }
+        .avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg,#1d6ef5,#7c3aed);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 700; cursor: pointer;
+            border: 2px solid rgba(77,159,255,0.3);
+            box-shadow: 0 0 12px rgba(29,110,245,0.3);
+        }
+
+        /* ── LAYOUT ── */
+        .layout { display: flex; margin-top: 60px; min-height: calc(100vh - 60px); position: relative; z-index: 1; }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: rgba(7,13,26,0.9);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            position: fixed;
+            top: 60px; left: 0; bottom: 0;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-user {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 8px;
+            padding: 16px 20px 24px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 8px;
+        }
+        .user-avatar {
+            width: 68px; height: 68px; border-radius: 50%;
+            background: linear-gradient(135deg,#1d6ef5,#7c3aed);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px; font-weight: 700;
+            border: 2px solid rgba(77,159,255,0.25);
+            box-shadow: 0 0 24px rgba(29,110,245,0.3), 0 0 48px rgba(29,110,245,0.1);
+        }
+        .user-name  { font-size: 14px; font-weight: 600; font-family: var(--font-display); text-align: center; }
+        .user-role  { font-size: 11px; color: var(--text-muted); }
+
+        .nav-section {
+            font-size: 9px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.12em;
+            color: var(--text-muted);
+            padding: 14px 20px 4px;
+            font-family: var(--font-display);
+        }
+
+        .nav-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 20px;
+            font-size: 13px; font-weight: 500;
+            color: var(--text-soft);
+            cursor: pointer;
+            transition: all 0.15s;
+            text-decoration: none;
+            border-left: 2px solid transparent;
+            position: relative;
+        }
+        .nav-item:hover { color: var(--text); background: rgba(29,110,245,0.06); }
+        .nav-item.active {
+            color: var(--blue-bright);
+            background: rgba(29,110,245,0.1);
+            border-left-color: var(--blue-bright);
+        }
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            right: 0; top: 0; bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, rgba(77,159,255,0.3), transparent);
+        }
+        .nav-icon { font-size: 15px; width: 18px; }
+
+        .create-role-btn {
+            margin: 14px 16px;
+            background: linear-gradient(135deg, #1242b8, #1d6ef5);
+            color: white; border: none;
+            border-radius: var(--radius);
+            padding: 10px 16px;
+            font-size: 13px; font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-body);
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            border: 1px solid rgba(77,159,255,0.2);
+            box-shadow: 0 0 20px rgba(29,110,245,0.25);
+            transition: all 0.2s;
+        }
+        .create-role-btn:hover {
+            box-shadow: 0 0 30px rgba(29,110,245,0.4);
+            transform: translateY(-1px);
+        }
+
+        .api-status {
+            margin: 0 16px 16px;
+            padding: 10px 12px;
+            background: rgba(0,214,143,0.06);
+            border: 1px solid rgba(0,214,143,0.15);
+            border-radius: var(--radius);
+            font-size: 11px;
+        }
+        .api-status-title { color: var(--green); font-weight: 600; margin-bottom: 2px; font-family: var(--font-display); }
+        .api-status-sub   { color: var(--text-muted); }
+
+        /* ── MAIN ── */
+        .main { margin-left: var(--sidebar-w); flex: 1; padding: 32px 36px; }
+
+        /* ── COMMON ── */
+        .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; }
+        .back-link { font-size: 12px; color: var(--text-muted); cursor: pointer; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+        .back-link:hover { color: var(--blue-bright); }
+        .page-title {
+            font-size: 28px; font-weight: 800;
+            font-family: var(--font-display);
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #e8f0fe 0%, #7eb8ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .page-meta { display: flex; align-items: center; gap: 16px; margin-top: 6px; }
+        .meta-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-soft); }
+        .page-actions { display: flex; gap: 10px; }
+
+        .btn {
+            padding: 9px 18px;
+            border-radius: var(--radius);
+            font-size: 13px; font-weight: 600;
+            cursor: pointer; border: none;
+            font-family: var(--font-body);
+            display: flex; align-items: center; gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1242b8, #1d6ef5);
+            color: white;
+            border: 1px solid rgba(77,159,255,0.3);
+            box-shadow: 0 0 16px rgba(29,110,245,0.3);
+        }
+        .btn-primary:hover { box-shadow: 0 0 24px rgba(29,110,245,0.5); transform: translateY(-1px); }
+        .btn-outline {
+            background: rgba(29,110,245,0.06);
+            border: 1px solid var(--border);
+            color: var(--text-soft);
+        }
+        .btn-outline:hover { border-color: var(--blue); color: var(--text); }
+        .btn-danger {
+            background: rgba(255,77,109,0.08);
+            border: 1px solid rgba(255,77,109,0.2);
+            color: var(--red);
+        }
+        .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+        /* ── KPI CARDS ── */
+        .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+        .kpi-card {
+            background: var(--panel-soft);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(77,159,255,0.4), transparent);
+        }
+        .kpi-card:hover {
+            border-color: rgba(29,110,245,0.3);
+            box-shadow: 0 0 24px rgba(29,110,245,0.1);
+            transform: translateY(-2px);
+        }
+        .kpi-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; font-family: var(--font-display); }
+        .kpi-value { font-size: 32px; font-weight: 800; font-family: var(--font-display); background: linear-gradient(135deg,#e8f0fe,#7eb8ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .kpi-sub   { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+        /* ── PANELS ── */
+        .panel {
+            background: var(--panel-soft);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(77,159,255,0.3), transparent);
+        }
+        .panel-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .panel-title { font-size: 14px; font-weight: 700; font-family: var(--font-display); }
+        .panel-body  { padding: 20px; }
+        .panel-body-table { padding: 0; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            text-align: left; font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.08em;
+            color: var(--text-muted); padding: 10px 20px;
+            border-bottom: 1px solid var(--border);
+            font-family: var(--font-display);
+        }
+        td { padding: 13px 20px; font-size: 13px; border-bottom: 1px solid rgba(59,130,246,0.06); }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(29,110,245,0.04); }
+
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 9px; border-radius: 999px;
+            font-size: 11px; font-weight: 600;
+        }
+        .status-admin     { background: rgba(29,110,245,0.15); color: var(--blue-bright); border: 1px solid rgba(29,110,245,0.3); }
+        .status-recruiter { background: rgba(0,214,143,0.1);   color: var(--green);       border: 1px solid rgba(0,214,143,0.2); }
+        .status-viewer    { background: rgba(255,255,255,0.05); color: var(--text-muted);  border: 1px solid var(--border-soft); }
+        .status-active    { background: rgba(0,214,143,0.1);   color: var(--green);       border: 1px solid rgba(0,214,143,0.2); }
+        .status-inactive  { background: rgba(255,77,109,0.1);  color: var(--red);         border: 1px solid rgba(255,77,109,0.2); }
+        .status-paid      { background: rgba(0,214,143,0.1);   color: var(--green);       border: 1px solid rgba(0,214,143,0.2); }
+
+        /* ── TIER CARDS ── */
+        .tier-summary { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 24px; }
+        .tier-card {
+            background: var(--panel-soft);
+            border: 1px solid var(--border);
+            border-radius: 14px; padding: 22px;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .tier-card.gold-card   { border-color: rgba(245,166,35,0.2); }
+        .tier-card.silver-card { border-color: rgba(139,164,192,0.2); }
+        .tier-card.bronze-card { border-color: rgba(180,83,9,0.2); }
+        .tier-card.gold-card::before   { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 80% 50%, rgba(245,166,35,0.06) 0%, transparent 60%); }
+        .tier-card.silver-card::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 80% 50%, rgba(139,164,192,0.06) 0%, transparent 60%); }
+        .tier-card.bronze-card::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 80% 50%, rgba(180,83,9,0.06) 0%, transparent 60%); }
+        .tier-card:hover { transform: translateY(-2px); }
+        .tier-card.gold-card:hover   { box-shadow: 0 8px 32px rgba(245,166,35,0.15); border-color: rgba(245,166,35,0.4); }
+        .tier-card.silver-card:hover { box-shadow: 0 8px 32px rgba(139,164,192,0.15); border-color: rgba(139,164,192,0.4); }
+        .tier-card.bronze-card:hover { box-shadow: 0 8px 32px rgba(180,83,9,0.15); border-color: rgba(180,83,9,0.4); }
+
+        .tier-matches { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; font-family: var(--font-display); }
+        .tier-score   { font-size: 42px; font-weight: 800; font-family: var(--font-display); }
+        .tier-score.gold   { color: var(--gold);   text-shadow: 0 0 20px rgba(245,166,35,0.4); }
+        .tier-score.silver { color: var(--silver); text-shadow: 0 0 20px rgba(139,164,192,0.3); }
+        .tier-score.bronze { color: #cd7c32;       text-shadow: 0 0 20px rgba(180,83,9,0.3); }
+        .tier-name { font-size: 14px; font-weight: 700; margin-top: 4px; font-family: var(--font-display); }
+        .tier-desc { font-size: 11px; color: var(--text-muted); margin-top: 3px; max-width: 200px; }
+        .tier-medal { font-size: 36px; filter: drop-shadow(0 0 8px rgba(245,166,35,0.4)); }
+
+        /* ── FILTER BAR ── */
+        .filter-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .filter-tabs {
+            display: flex; align-items: center; gap: 4px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 4px;
+        }
+        .filter-tab {
+            padding: 6px 16px; border-radius: 8px;
+            font-size: 12px; font-weight: 600;
+            color: var(--text-muted); cursor: pointer;
+            transition: all 0.15s;
+            display: flex; align-items: center; gap: 6px;
+            font-family: var(--font-display);
+        }
+        .filter-tab.active { background: rgba(29,110,245,0.15); color: var(--blue-bright); }
+        .dot { width: 7px; height: 7px; border-radius: 50%; }
+        .dot-gold   { background: var(--gold);   box-shadow: 0 0 6px var(--gold); }
+        .dot-silver { background: var(--silver); }
+        .dot-bronze { background: #cd7c32; }
+
+        /* ── CANDIDATE CARDS ── */
+        .candidates-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(300px,1fr)); gap: 16px; }
+        .candidate-card {
+            background: var(--panel-soft);
+            border: 1px solid var(--border);
+            border-radius: 14px; padding: 20px;
+            transition: all 0.25s;
+            position: relative; overflow: hidden;
+        }
+        .candidate-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(77,159,255,0.2), transparent);
+        }
+        .candidate-card:hover {
+            border-color: rgba(29,110,245,0.35);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 24px rgba(29,110,245,0.1);
+        }
+        .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+        .card-avatar { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.1); }
+        .card-tier-badge { display: flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; font-family: var(--font-display); letter-spacing: 0.04em; }
+        .badge-gold   { background: rgba(245,166,35,0.12); color: var(--gold);   border: 1px solid rgba(245,166,35,0.3); }
+        .badge-silver { background: rgba(139,164,192,0.12); color: var(--silver); border: 1px solid rgba(139,164,192,0.3); }
+        .badge-bronze { background: rgba(180,83,9,0.12);   color: #cd7c32;       border: 1px solid rgba(180,83,9,0.3); }
+        .card-score { font-size: 30px; font-weight: 800; font-family: var(--font-display); }
+        .score-gold   { color: var(--gold);   text-shadow: 0 0 16px rgba(245,166,35,0.4); }
+        .score-silver { color: var(--silver); }
+        .score-bronze { color: #cd7c32; }
+        .card-name    { font-size: 15px; font-weight: 700; margin-bottom: 2px; font-family: var(--font-display); }
+        .card-role    { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+        .card-analysis { font-size: 12px; color: var(--text-soft); line-height: 1.5; margin-bottom: 12px; font-style: italic; }
+        .card-footer  { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+        .view-profile-btn { font-size: 12px; color: var(--blue-bright); font-weight: 500; cursor: pointer; text-decoration: none; }
+        .view-profile-btn:hover { color: white; }
+
+        /* ── NARRATIVE PANEL ── */
+        .narrative-panel {
+            margin-top: 14px; padding: 14px;
+            background: rgba(29,110,245,0.06);
+            border: 1px solid rgba(29,110,245,0.15);
+            border-radius: 10px;
+        }
+        .narrative-text   { font-size: 12px; color: var(--text-soft); line-height: 1.6; margin-bottom: 10px; }
+        .narrative-meta   { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .narrative-tag    { font-size: 10px; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--border-soft); }
+        .narrative-tag.cached { background: rgba(0,214,143,0.08); color: var(--green); border-color: rgba(0,214,143,0.2); }
+        .narrative-actions { display: flex; gap: 6px; margin-top: 10px; }
+
+        /* ── PLAN CARDS ── */
+        .plan-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+        .plan-card {
+            background: var(--panel-soft); border: 1px solid var(--border);
+            border-radius: 14px; padding: 20px;
+            cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
+        }
+        .plan-card:hover { border-color: rgba(29,110,245,0.4); transform: translateY(-2px); }
+        .plan-card.current {
+            border-color: var(--blue);
+            box-shadow: 0 0 24px rgba(29,110,245,0.15);
+        }
+        .plan-card.current::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--blue),transparent); }
+        .plan-name  { font-size: 14px; font-weight: 700; font-family: var(--font-display); margin-bottom: 4px; }
+        .plan-price { font-size: 26px; font-weight: 800; font-family: var(--font-display); color: var(--blue-bright); }
+        .plan-price span { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+        .plan-features   { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+        .plan-feature    { font-size: 12px; color: var(--text-soft); display: flex; align-items: center; gap: 6px; }
+        .plan-feature::before { content: '✓'; color: var(--green); font-weight: 700; }
+
+        /* ── SLA STYLES ── */
+        .sla-status-bar {
+            display: flex; align-items: center; gap: 14px;
+            padding: 18px 22px; border-radius: 14px;
+            margin-bottom: 20px; border: 1px solid var(--border);
+            position: relative; overflow: hidden;
+        }
+        .sla-status-bar.healthy  { background: rgba(0,214,143,0.04);  border-color: rgba(0,214,143,0.15); }
+        .sla-status-bar.degraded { background: rgba(245,166,35,0.04);  border-color: rgba(245,166,35,0.15); }
+        .sla-status-bar.down     { background: rgba(255,77,109,0.04); border-color: rgba(255,77,109,0.15); }
+        .sla-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; animation: pulse 2s infinite; }
+        .sla-dot.healthy  { background: var(--green); box-shadow: 0 0 10px var(--green); }
+        .sla-dot.degraded { background: var(--gold);  box-shadow: 0 0 10px var(--gold); }
+        .sla-dot.down     { background: var(--red);   box-shadow: 0 0 10px var(--red); }
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+        .sla-status-text { font-size: 16px; font-weight: 700; font-family: var(--font-display); }
+        .sla-status-sub  { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+
+        .sla-metrics-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
+        .sla-metric-card  { background: var(--panel-soft); border: 1px solid var(--border); border-radius: 14px; padding: 20px; transition: all 0.2s; }
+        .sla-metric-card:hover { border-color: rgba(29,110,245,0.3); }
+        .sla-metric-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; font-family: var(--font-display); }
+        .sla-metric-value { font-size: 28px; font-weight: 800; font-family: var(--font-display); }
+        .sla-metric-value.good     { color: var(--green); text-shadow: 0 0 16px var(--green-glow); }
+        .sla-metric-value.warning  { color: var(--gold);  text-shadow: 0 0 16px var(--gold-glow); }
+        .sla-metric-value.critical { color: var(--red); }
+        .sla-metric-value.neutral  { color: var(--text); }
+        .sla-target { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+        .alert-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+        .alert-critical { background: rgba(255,77,109,0.12); color: var(--red);        border: 1px solid rgba(255,77,109,0.25); }
+        .alert-warning  { background: rgba(245,166,35,0.12); color: var(--gold);       border: 1px solid rgba(245,166,35,0.25); }
+        .alert-info     { background: rgba(29,110,245,0.12); color: var(--blue-bright); border: 1px solid rgba(29,110,245,0.25); }
+
+        /* ── COST STYLES ── */
+        .budget-bar-wrap { background: rgba(255,255,255,0.05); border-radius: 999px; height: 8px; margin: 8px 0; overflow: hidden; }
+        .budget-bar-fill { height: 100%; border-radius: 999px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+        .budget-bar-fill.good     { background: linear-gradient(90deg, #00d68f, #00b377); box-shadow: 0 0 8px rgba(0,214,143,0.5); }
+        .budget-bar-fill.warning  { background: linear-gradient(90deg, #f5a623, #e8940a); box-shadow: 0 0 8px rgba(245,166,35,0.5); }
+        .budget-bar-fill.critical { background: linear-gradient(90deg, #ff4d6d, #e03050); box-shadow: 0 0 8px rgba(255,77,109,0.5); }
+
+        .cost-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
+        .cost-card { background: var(--panel-soft); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+
+        .recommendation-list    { display: flex; flex-direction: column; gap: 8px; }
+        .recommendation-item    { display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px; background: rgba(29,110,245,0.05); border: 1px solid rgba(29,110,245,0.12); border-radius: 10px; font-size: 13px; color: var(--text-soft); transition: all 0.2s; }
+        .recommendation-item:hover { border-color: rgba(29,110,245,0.25); background: rgba(29,110,245,0.08); }
+        .rec-icon { font-size: 16px; flex-shrink: 0; }
+
+        /* ── TOGGLE ── */
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
+        .toggle-row:last-child { border-bottom: none; }
+        .toggle-label { font-size: 14px; font-weight: 600; font-family: var(--font-display); }
+        .toggle-sub   { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .toggle { position: relative; width: 44px; height: 24px; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; inset: 0; background: rgba(255,255,255,0.08); border-radius: 999px; cursor: pointer; transition: 0.2s; border: 1px solid var(--border); }
+        .toggle-slider::before { content: ''; position: absolute; width: 18px; height: 18px; left: 2px; bottom: 2px; background: rgba(255,255,255,0.5); border-radius: 50%; transition: 0.2s; }
+        input:checked + .toggle-slider { background: rgba(29,110,245,0.3); border-color: rgba(29,110,245,0.5); box-shadow: 0 0 10px rgba(29,110,245,0.3); }
+        input:checked + .toggle-slider::before { transform: translateX(20px); background: var(--blue-bright); }
+
+        /* ── VERSION CARDS ── */
+        .version-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
+        .version-card { background: var(--panel-soft); border: 1px solid var(--border); border-radius: 14px; padding: 18px; transition: all 0.2s; }
+        .version-card:hover { border-color: rgba(29,110,245,0.3); }
+        .version-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; font-family: var(--font-display); }
+        .version-value { font-size: 20px; font-weight: 800; font-family: var(--font-display); color: var(--blue-bright); }
+        .version-sub   { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+        /* ── MODAL ── */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 1000; display: none; align-items: center; justify-content: center; }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: var(--panel);
+            border: 1px solid rgba(29,110,245,0.2);
+            border-radius: 16px; padding: 28px;
+            width: 440px;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(29,110,245,0.1);
+            position: relative;
+        }
+        .modal::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(77,159,255,0.5),transparent); border-radius:16px 16px 0 0; }
+        .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 20px; font-family: var(--font-display); background: linear-gradient(135deg,#e8f0fe,#7eb8ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .form-group  { margin-bottom: 16px; }
+        .form-label  { display: block; font-size: 11px; font-weight: 600; color: var(--text-soft); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; font-family: var(--font-display); }
+        .form-input, .form-select { width: 100%; background: rgba(29,110,245,0.06); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); padding: 10px 14px; font-size: 13px; font-family: var(--font-body); transition: border-color 0.2s; }
+        .form-input:focus, .form-select:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29,110,245,0.1); }
+        .form-input::placeholder { color: var(--text-muted); }
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+
+        /* ── EMPTY STATE ── */
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+        .empty-icon  { font-size: 36px; margin-bottom: 10px; }
+        .empty-text  { font-size: 13px; }
+
+        /* ── TAB PANELS ── */
+        .tab-panel { display: none; animation: fadeInUp 0.3s ease both; }
+        .tab-panel.active { display: block; }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);} }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(29,110,245,0.3); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(29,110,245,0.5); }
+
+        /* ── TOAST ── */
+        .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+        .toast { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 10px; min-width: 280px; box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 20px rgba(29,110,245,0.1); animation: toastIn 0.3s ease both; pointer-events: all; backdrop-filter: blur(10px); }
+        @keyframes toastIn  { from{opacity:0;transform:translateX(24px);}to{opacity:1;transform:translateX(0);} }
+        @keyframes toastOut { from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(24px);} }
+        .toast.removing { animation: toastOut 0.25s ease forwards; }
+        .toast-success { border-left: 3px solid var(--green); }
+        .toast-error   { border-left: 3px solid var(--red); }
+        .toast-info    { border-left: 3px solid var(--blue-bright); }
+        .toast-icon    { font-size: 16px; }
+    </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+    <div class="topbar-left">
+        <div class="at-logo">AT</div>
+        <span class="app-name">AI Talent Match Pro</span>
+        <div class="company-switcher">🏢 <span id="companyName">Acme Talent</span> ▾</div>
+    </div>
+    <div class="topbar-right">
+        <div class="search-bar">🔍 Search candidates, roles...</div>
+        <button class="upgrade-btn">⚡ Upgrade</button>
+        <div class="avatar" id="topAvatar">SL</div>
+    </div>
+</header>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-user">
+            <div class="user-avatar" id="sidebarAvatar">SL</div>
+            <div class="user-name" id="sidebarName">Sarah Lin</div>
+            <div class="user-role">Head of Talent</div>
+        </div>
+
+        <div class="nav-section">Workspace</div>
+        <a class="nav-item" href="/workspace"><span class="nav-icon">👤</span> Your Roles</a>
+        <a class="nav-item" href="/workspace"><span class="nav-icon">🔖</span> Shortlists</a>
+
+        <div class="nav-section">Admin</div>
+        <a class="nav-item active" onclick="showSection('overview')"><span class="nav-icon">⚙️</span> Overview</a>
+        <a class="nav-item" onclick="showSection('team')"><span class="nav-icon">👥</span> Team</a>
+        <a class="nav-item" onclick="showSection('billing')"><span class="nav-icon">💲</span> Billing</a>
+
+        <div class="nav-section">Intelligence</div>
+        <a class="nav-item" onclick="showSection('sla')"><span class="nav-icon">🛡️</span> SLA & Health</a>
+        <a class="nav-item" onclick="showSection('cost')"><span class="nav-icon">💰</span> Cost Optimizer</a>
+        <a class="nav-item" onclick="showSection('narratives')"><span class="nav-icon">✨</span> Narratives</a>
+        <a class="nav-item" onclick="showSection('governance')"><span class="nav-icon">🔬</span> Governance</a>
+        <a class="nav-item" onclick="showSection('controls')"><span class="nav-icon">🎛️</span> Controls</a>
+
+        <div class="nav-section">Developer</div>
+        <a class="nav-item" onclick="showSection('apikeys')"><span class="nav-icon">🔑</span> API Keys</a>
+        <a class="nav-item" onclick="showSection('webhooks')"><span class="nav-icon">🪝</span> Webhooks</a>
+        <a class="nav-item" href="/developer" target="_blank"><span class="nav-icon">📖</span> Dev Portal ↗</a>
+
+        <div class="nav-section">Integrations</div>
+        <a class="nav-item" onclick="showSection('integrations')"><span class="nav-icon">🔌</span> ATS Integrations</a>
+        <a class="nav-item" onclick="showSection('jd')"><span class="nav-icon">📝</span> Job Descriptions</a>
+
+        <button class="create-role-btn" onclick="window.location='/workspace'">+ Create New Role</button>
+
+        <div class="api-status">
+            <div class="api-status-title">✦ API STATUS</div>
+            <div class="api-status-sub" id="apiStatusText">All engines operational</div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- ── OVERVIEW ── -->
+        <div class="tab-panel active" id="section-overview">
+            <div class="page-header">
+                <div>
+                    <div class="page-title">Admin Dashboard</div>
+                    <div class="page-meta">
+                        <span class="meta-item">📍 Company Overview</span>
+                        <span class="meta-item" id="latencyBadge">⚡ Sub-100ms</span>
+                    </div>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-outline" onclick="showSection('cost')">💰 Cost</button>
+                    <button class="btn btn-outline" onclick="showSection('sla')">🛡️ SLA</button>
+                    <button class="btn btn-primary" onclick="openInviteModal()">+ Invite Member</button>
+                </div>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-card"><div class="kpi-label">Total Searches</div><div class="kpi-value" id="kpiSearches">—</div><div class="kpi-sub">All time</div></div>
+                <div class="kpi-card"><div class="kpi-label">Candidates Scored</div><div class="kpi-value" id="kpiCandidates">—</div><div class="kpi-sub">All time</div></div>
+                <div class="kpi-card"><div class="kpi-label">Shortlisted</div><div class="kpi-value" id="kpiShortlists">—</div><div class="kpi-sub">All time</div></div>
+                <div class="kpi-card"><div class="kpi-label">Avg Latency</div><div class="kpi-value" id="kpiLatency">—</div><div class="kpi-sub">Sub-100ms target</div></div>
+            </div>
+
+            <div class="tier-summary">
+                <div class="tier-card">
+                    <div><div class="tier-matches">GOLD MATCHES</div><div class="tier-score gold" id="goldCount">—</div><div class="tier-name">The Perfect Soul</div><div class="tier-desc">Exact match, complete skill coverage, aligned trajectory.</div></div>
+                    <div class="tier-medal">🥇</div>
+                </div>
+                <div class="tier-card">
+                    <div><div class="tier-matches">SILVER MATCHES</div><div class="tier-score silver" id="silverCount">—</div><div class="tier-name">The Mirror</div><div class="tier-desc">Equivalent seniority, minor gaps in nice-to-haves.</div></div>
+                    <div class="tier-medal">🥈</div>
+                </div>
+                <div class="tier-card">
+                    <div><div class="tier-matches">BRONZE MATCHES</div><div class="tier-score bronze" id="bronzeCount">—</div><div class="tier-name">The Adjacent</div><div class="tier-desc">One step removed, high trajectory, worth a conversation.</div></div>
+                    <div class="tier-medal">🥉</div>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <div class="filter-tabs">
+                    <div class="filter-tab active" onclick="filterCandidates('all',this)">All</div>
+                    <div class="filter-tab" onclick="filterCandidates('gold',this)"><span class="dot dot-gold"></span> Gold</div>
+                    <div class="filter-tab" onclick="filterCandidates('silver',this)"><span class="dot dot-silver"></span> Silver</div>
+                    <div class="filter-tab" onclick="filterCandidates('bronze',this)"><span class="dot dot-bronze"></span> Bronze</div>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="generateAllNarratives()">✨ Generate All Narratives</button>
+            </div>
+
+            <div class="candidates-grid" id="candidatesGrid">
+                <div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">🎯</div><div class="empty-text">No candidates yet</div></div>
+            </div>
+        </div>
+
+        <!-- ── TEAM ── -->
+        <div class="tab-panel" id="section-team">
+            <div class="page-header">
+                <div><div class="back-link" onclick="showSection('overview')">← Back</div><div class="page-title">Team Management</div></div>
+                <div class="page-actions"><button class="btn btn-primary" onclick="openInviteModal()">+ Invite Member</button></div>
+            </div>
+            <div class="panel">
+                <div class="panel-header"><div class="panel-title">👥 Team Members</div><span style="font-size:12px;color:var(--text-muted);" id="seatCount">— / — seats</span></div>
+                <div class="panel-body-table">
+                    <table><thead><tr><th>Member</th><th>Role</th><th>Status</th><th>Last Login</th><th>Actions</th></tr></thead>
+                    <tbody id="teamTable"><tr><td colspan="5"><div class="empty-state"><div class="empty-text">Loading...</div></div></td></tr></tbody></table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── BILLING ── -->
+        <div class="tab-panel" id="section-billing">
+            <div class="page-header">
+                <div><div class="back-link" onclick="showSection('overview')">← Back</div><div class="page-title">Billing & Plans</div></div>
+            </div>
+            <div class="plan-grid" id="planGrid"></div>
+            <div class="panel">
+                <div class="panel-header"><div class="panel-title">🧾 Invoices</div></div>
+                <div class="panel-body-table">
+                    <table><thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th><th>PDF</th></tr></thead>
+                    <tbody id="invoicesTable"><tr><td colspan="5"><div class="empty-state"><div class="empty-text">No invoices yet</div></div></td></tr></tbody></table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── SLA ── -->
+        <div class="tab-panel" id="section-sla">
+            <div class="page-header">
+                <div><div class="back-link" onclick="showSection('overview')">← Back</div><div class="page-title">System Health & SLA</div>
+                <div class="page-meta"><span class="meta-item">🛡️ 99.9% Uptime Target</span><span class="meta-item">⚡ &lt;100ms Target</span></div></div>
+                <div class="page-actions">
+                    <button class="btn btn-outline" onclick="loadSLA()">🔄 Refresh</button>
+                    <button class="btn btn-primary" onclick="runSLACheck()">▶ Run Check</button>
+                </div>
+            </div>
+            <div class="sla-status-bar healthy" id="slaStatusBar">
+                <div class="sla-dot healthy" id="slaDot"></div>
+                <div class="sla-status-text" id="slaStatusText">All Systems Operational</div>
+                <div class="sla-status-sub" id="slaStatusSub">Checking...</div>
+            </div>
+            <div class="sla-metrics-grid">
+                <div class="sla-metric-card"><div class="sla-metric-label">Uptime</div><div class="sla-metric-value good" id="slaUptime">—</div><div class="sla-target">Target: &gt;99.9%</div></div>
+                <div class="sla-metric-card"><div class="sla-metric-label">P95 Latency</div><div class="sla-metric-value good" id="slaP95">—</div><div class="sla-target">Target: &lt;100ms</div></div>
+                <div class="sla-metric-card"><div class="sla-metric-label">P99 Latency</div><div class="sla-metric-value good" id="slaP99">—</div><div class="sla-target">Target: &lt;300ms</div></div>
+                <div class="sla-metric-card"><div class="sla-metric-label">Error Rate</div><div class="sla-metric-value good" id="slaErrorRate">—</div><div class="sla-target">Target: &lt;0.1%</div></div>
+                <div class="sla-metric-card"><div class="sla-metric-label">AI Latency</div><div class="sla-metric-value neutral" id="slaAILatency">—</div><div class="sla-target">Target: &lt;300ms</div></div>
+                <div class="sla-metric-card"><div class="sla-metric-label">Avg Latency</div><div class="sla-metric-value neutral" id="slaAvgLatency">—</div><div class="sla-target">All endpoints</div></div>
+                <div class="sla-metric-card"><div class="sla-metric-label">Total Requests</div><div class="sla-metric-value neutral" id="slaTotalReqs">—</div><div class="sla-target">Last 24h</div></div>
+                <div class="sla-metric-card"><div class="sla-metric-label">Req / Hour</div><div class="sla-metric-value neutral" id="slaReqPerHour">—</div><div class="sla-target">Average traffic</div></div>
+            </div>
+            <div class="panel">
+                <div class="panel-header"><div class="panel-title">🚨 Active Alerts</div><span id="alertCount" style="font-size:12px;color:var(--text-muted);">Loading...</span></div>
+                <div class="panel-body-table">
+                    <table><thead><tr><th>Type</th><th>Severity</th><th>Message</th><th>Value</th><th>Created</th><th>Action</th></tr></thead>
+                    <tbody id="activeAlertsTable"><tr><td colspan="6"><div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">No active alerts</div></div></td></tr></tbody></table>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header"><div class="panel-title">✅ Recently Resolved</div></div>
+                <div class="panel-body-table">
+                    <table><thead><tr><th>Type</th><th>Message</th><th>Resolved At</th></tr></thead>
+                    <tbody id="resolvedAlertsTable"><tr><td colspan="3"><div class="empty-state"><div class="empty-text">No resolved alerts</div></div></td></tr></tbody></table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── PHASE 30: COST OPTIMIZER ── -->
+        <div class="tab-panel" id="section-cost">
+            <div class="page-header">
+                <div><div class="back-link" onclick="showSection('overview')">← Back</div><div class="page-title">💰 Cost Optimizer</div>
+                <div class="page-meta"><span class="meta-item">Phase 28 — Smart AI Economics</span></div></div>
+                <div class="page-actions">
+                    <button class="btn btn-outline" onclick="loadCost()">🔄 Refresh</button>
+                    <button class="btn btn-primary" onclick="runCostOptimizer()">⚡ Optimize Now</button>
+                </div>
+            </div>
+
+            <!-- Budget bar -->
+            <div class="panel" style="margin-bottom:20px;">
+                <div class="panel-header"><div class="panel-title">Monthly Budget</div><span id="costMonth" style="font-size:12px;color:var(--text-muted);">—</span></div>
+                <div class="panel-body">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                        <span style="font-size:13px;color:var(--text-soft);" id="costAlert">Loading...</span>
+                        <span style="font-size:13px;font-weight:700;" id="budgetPct">—%</span>
+                    </div>
+                    <div class="budget-bar-wrap"><div class="budget-bar-fill good" id="budgetBar" style="width:0%"></div></div>
+                    <div style="display:flex;justify-content:space-between;margin-top:4px;">
+                        <span style="font-size:11px;color:var(--text-muted);">$0</span>
+                        <span style="font-size:11px;color:var(--text-muted);" id="budgetLimit">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cost metrics -->
+            <div class="cost-grid">
+                <div class="cost-card"><div class="kpi-label">AI Calls Used</div><div class="kpi-value" id="costCalls">—</div><div class="kpi-sub" id="costCallsRemain">— remaining</div></div>
+                <div class="cost-card"><div class="kpi-label">Total Cost</div><div class="kpi-value" id="costTotal">—</div><div class="kpi-sub" id="costProjected">Projected: —</div></div>
+                <div class="cost-card"><div class="kpi-label">Cache Hit Rate</div><div class="kpi-value" id="costCacheRate">—</div><div class="kpi-sub">Saving AI calls</div></div>
+                <div class="cost-card"><div class="kpi-label">Avg Latency</div><div class="kpi-value" id="costLatency">—</div><div class="kpi-sub">API response time</div></div>
+            </div>
+
+            <!-- Optimization recommendations -->
+            <div class="panel" style="margin-bottom:20px;">
+                <div class="panel-header"><div class="panel-title">🤖 Auto-Optimization Recommendations</div></div>
+                <div class="panel-body">
+                    <div class="recommendation-list" id="recommendationList">
+                        <div class="empty-state"><div class="empty-text">Run optimizer to see recommendations</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model tiering guide -->
+            <div class="panel">
+                <div class="panel-header"><div class="panel-title">🎯 Model Tiering — Cost Savings</div></div>
+                <div class="panel-body-table">
+                    <table>
+                        <thead><tr><th>Tier</th><th>Model</th><th>Reason</th><th>Est. Savings</th></tr></thead>
+                        <tbody>
+                            <tr><td>🥇 Gold</td><td style="color:var(--blue-light);">gpt-4o</td><td style="color:var(--text-muted);">Premium accuracy for top candidates</td><td style="color:var(--green);">Best quality</td></tr>
+                            <tr><td>🥈 Silver</td><td style="color:var(--green);">gpt-4o-mini</td><td style="color:var(--text-muted);">Cost-efficient for strong matches</td><td style="color:var(--green);">~60% saved</td></tr>
+                            <tr><td>🥉 Bronze</td><td style="color:var(--green);">gpt-4o-mini</td><td style="color:var(--text-muted);">Maximum savings for exploratory</td><td style="color:var(--green);">~60% saved</td></tr>
+                            <tr><td>✨ Narrative</td><td style="color:var(--blue-light);">gpt-4o</td><td style="color:var(--text-muted);">Premium narratives for trust</td><td style="color:var(--gold);">Cached 7 days</td></tr>
+                            <tr><td>📦 Bulk</td><td style="color:var(--green);">gpt-4o-mini</td><td style="color:var(--text-muted);">Mass scoring at scale</td><td style="color:var(--green);">~70% saved</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── PHASE 30: NARRATIVE INTELLIGENCE ── -->
+        <div class="tab-panel" id="section-narratives">
+            <div class="page-header">
+                <div><div class="back-link" onclick="showSection('overview')">← Back</div><div class="page-title">✨ Narrative Intelligence</div>
+                <div class="page-meta"><span class="meta-item">Phase 29 — AI Storytelling Engine</span></div></div>
+                <div class="page-actions">
+                    <button class="btn btn-outline" onclick="loadNarrativeInsights()">🔄 Refresh</button>
+                    <button class="btn btn-primary" onclick="generateAllNarratives()">✨ Generate All</button>
+                </div>
+            </div>
+
+            <!-- Insights -->
+            <div class="cost-grid" style="margin-bottom:20px;">
+                <div class="cost-card"><div class="kpi-label">Total Narratives</div><div class="kpi-value" id="narTotal">—</div><div class="kpi-sub">Generated</div></div>
+                <div class="cost-card"><div class="kpi-label">Positive Sentiment</div><div class="kpi-value" id="narPositive">—</div><div class="kpi-sub">Of all narratives</div></div>
+                <div class="cost-card"><div class="kpi-label">Avg Rec Strength</div><div class="kpi-value" id="narRecStr">—</div><div class="kpi-sub">0-1 scale</div></div>
+                <div class="cost-card"><div class="kpi-label">Narrative Cost</div><div class="kpi-value" id="narCost">—</div><div class="kpi-sub">Total spent</div></div>
+            </div>
+
+            <!-- Candidate narratives -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Candidate Narratives</div>
+                    <div style="display:flex;gap:8px;">
+                        <select id="narrativeTypeSelect" class="form-select" style="width:160px;padding:6px 10px;font-size:12px;">
+                            <option value="summary">Summary</option>
+                            <option value="strengths">Strengths</option>
+                            <option value="risks">Risks</option>
+                            <option value="culture_fit">Culture Fit</option>
+                            <option value="story_arc">Story Arc</option>
+                            <option value="pitch">Pitch</option>
+                            <option value="full">Full Brief</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div id="narrativeCandidateList">
+                        <div class="empty-state"><div class="empty-icon">✨</div><div class="empty-text">Generate narratives for your candidates above</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── PHASE 30: MODEL GOVERNANCE ── -->
+        <div class="tab-panel" id="section-governance">
+            <div class="page-header">
+                <div><div class="back-link" onclick="showSection('overview')">← Back</div><div class="page-title">🔬 Model Governance</div>
+                <div class="page-meta"><span class="meta-item">Phase 30 — Enterprise Compliance</span></div></div>
+                <div class="page-actions">
+                    <button class="btn btn-primary" onclick="loadGovernance()">🔄 Refresh</button>
+                </div>
+            </div>
+
+            <!-- Version registry -->
+            <div class="version-grid">
+                <div class="version-card"><div class="version-label">Model Version</div><div class="version-value" id="govModelVer">v29.1</div><div class="version-sub">Active scoring model</div></div>
+                <div class="version-card"><div class="version-label">Prompt Version</div><div class="version-value" id="govPromptVer">v29.1</div><div class="version-sub">Narrative prompts</div></div>
+                <div class="version-card"><div class="version-label">Narrative Version</div><div class="version-value" id="govNarVer">v29.1</div><div class="version-sub">Output format</div></div>
+                <div class="version-card"><div class="version-label">Cost Engine</div><div class="version-value" id="govCostVer">v28.1</div><div class="version-sub">Optimization engine</div></div>
+            </div>
+
+            <!-- Model history -->
+            <div class="panel">
+                <div class="panel-header"><div class="panel-title">Model Version History</div></div>
+                <div class="panel-body-table">
+                    <table>
+                        <thead><tr><th>Version</th><th>Status</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>Training Size</th><th>Deployed</th></tr></thead>
+                        <tbody id="modelHistoryTable"><tr><td colspan="7"><div class="empty-state"><div class="empty-text">Loading...</div></div></td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Audit log -->
+            <div class="panel">
+                <div class="panel-header"><div class="panel-title">📋 Audit Log</div></div>
+                <div class="panel-body-table">
+                    <table>
+                        <thead><tr><th>Action</th><th>Details</th><th>Latency</th><th>Cost</th><th>Timestamp</th></tr></thead>
+                        <tbody id="auditLogTable"><tr><td colspan="5"><div class="empty-state"><div class="empty-text">Loading...</div></div></td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── PHASE 30: ADMIN CONTROLS ── -->
+        <div class="tab-panel" id="section-controls">
+            <div class="page-header">
+                <div><div class="back-link" onclick="showSection('overview')">← Back</div><div class="page-title">🎛️ Admin Controls</div>
+                <div class="page-meta"><span class="meta-item">Phase 30 — Enterprise Feature Flags</span></div></div>
+            </div>
+
+            <div class="panel" style="margin-bottom:20px;">
+                <div class="panel-header"><div class="panel-title">✨ Narrative Engine</div></div>
+                <div class="panel-body">
+                    <div class="toggle-row">
+                        <div><div class="toggle-label">Narrative Generation</div><div class="toggle-sub">Enable AI narrative generation for candidates</div></div>
+                        <label class="toggle"><input type="checkbox" id="toggleNarrative" checked><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="toggle-row">
+                        <div><div class="toggle-label">Batch Narratives</div><div class="toggle-sub">Generate narratives for all shortlisted at once</div></div>
+                        <label class="toggle"><input type="checkbox" id="toggleBatch" checked><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="toggle-row">
+                        <div><div class="toggle-label">Narrative Caching</div><div class="toggle-sub">Cache narratives for 7 days to save costs</div></div>
+                        <label class="toggle"><input type="checkbox" id="toggleCache" checked><span class="toggle-slider"></span></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel" style="margin-bottom:20px;">
+                <div class="panel-header"><div class="panel-title">💰 Cost Controls</div></div>
+                <div class="panel-body">
+                    <div class="toggle-row">
+                        <div><div class="toggle-label">Model Tiering</div><div class="toggle-sub">Route Bronze/Silver to cheaper models</div></div>
+                        <label class="toggle"><input type="checkbox" id="toggleTiering" checked><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="toggle-row">
+                        <div><div class="toggle-label">Aggressive Caching</div><div class="toggle-sub">Cache AI responses for identical inputs</div></div>
+                        <label class="toggle"><input type="checkbox" id="toggleAggressiveCache" checked><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="toggle-row">
+                        <div><div class="toggle-label">Auto-Throttle</div><div class="toggle-sub">Throttle AI calls when budget is exceeded</div></div>
+                        <label class="toggle"><input type="checkbox" id="toggleThrottle" checked><span class="toggle-slider"></span></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header"><div class="panel-title">🛡️ SLA Controls</div></div>
+                <div class="panel-body">
+                    <div class="toggle-row">
+                        <div><div class="toggle-label">SLA Monitoring</div><div class="toggle-sub">Monitor latency and uptime in real-time</div></div>
+                        <label class="toggle"><input type="checkbox" id="toggleSLA" checked><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="toggle-row">
+                        <div><div class="toggle-label">Auto-Alert Creation</div><div class="toggle-sub">Create alerts when SLA thresholds are breached</div></div>
+                        <label class="toggle"><input type="checkbox" id="toggleAlerts" checked><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="toggle-row">
+                        <div><div class="toggle-label">Auto-Resolution</div><div class="toggle-sub">Auto-resolve alerts when metrics recover</div></div>
+                        <label class="toggle"><input type="checkbox" id="toggleAutoResolve" checked><span class="toggle-slider"></span></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── PHASE 31: API KEYS ── -->
+        <div class="tab-panel" id="section-apikeys">
+            <div class="page-header">
+                <div><div class="back-link" onclick="showSection('overview')">← Back</div><div class="page-title">🔑 API Keys</div>
+                <div class="page-meta"><span class="meta-item">Phase 31 — External API Access</span></div></div>
+                <div class="page-actions">
+                    <button class="btn btn-outline" href="/developer" onclick="window.open('/developer')">📖 Docs</button>
+                    <button class="btn btn-primary" onclick="openAPIKeyModal()">+ Create API Key</button>
+                </div>
+            </div>
+
+            <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
+                <div class="kpi-card"><div class="kpi-label">Total Keys</div><div class="kpi-value" id="totalKeys">—</div><div class="kpi-sub">Active keys</div></div>
+                <div class="kpi-card"><div class="kpi-label">Total API Calls</div><div class="kpi-value" id="totalAPICalls">—</div><div class="kpi-sub">All time</div></div>
+                <div class="kpi-card"><div class="kpi-label">Available Scopes</div><div class="kpi-value">8</div><div class="kpi-sub">Permission scopes</div></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header"><div class="panel-title">API Keys</div><span style="font-size:12px;color:var(--text-muted);">Keys are hashed — raw key shown once at creation</span></div>
+                <div class="panel-body-table">
+                    <table><thead><tr><th>Name</th><th>Key Prefix</th><th>Scopes</th><th>Calls</th><th>Last Used</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="apiKeysTable"><tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🔑</div><div class="empty-text">No API keys yet — create one to get started</div></div></td></tr></tbody></table>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header"><div class="panel-title">Available Scopes</div></div>
+                <div class="panel-body-table">
+                    <table>
+                        <thead><tr><th>Scope</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">candidates:read</td><td style="font-size:12px;color:var(--text-soft);">Read candidate data</td></tr>
+                            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">candidates:write</td><td style="font-size:12px;color:var(--text-soft);">Create, update, delete candidates</td></tr>
+                            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">narratives:generate</td><td style="font-size:12px;color:var(--text-soft);">Generate AI narratives</td></tr>
+                            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">analytics:read</td><td style="font-size:12px;color:var(--text-soft);">Read usage + talent analytics</td></tr>
+                            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">webhooks:manage</td><td style="font-size:12px;color:var(--text-soft);">Create + manage webhooks</td></tr>
+                            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">forecasts:read</td><td style="font-size:12px;color:var(--text-soft);">Read hiring forecasts</td></tr>
+                            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">cost:read</td><td style="font-size:12px;color:var(--text-soft);">Read cost analytics</td></tr>
+                            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">sla:read</td><td style="font-size:12px;color:var(--text-soft);">Read SLA metrics</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── PHASE 31: WEBHOOKS ── -->
+        <div class="tab-panel" id="section-webhooks">
+            <div class="page-header">
+                <div><div class="back-link" onclick="showSection('overview')">← Back</div><div class="page-title">🪝 Webhooks</div>
+                <div class="page-meta"><span class="meta-item">Phase 31 — Real-time Event Delivery</span></div></div>
+                <div class="page-actions">
+                    <button class="btn btn-outline" onclick="loadWebhooks()">🔄 Refresh</button>
+                    <button class="btn btn-primary" onclick="openWebhookModal()">+ Create Webhook</button>
+                </div>
+            </div>
+
+            <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
+                <div class="kpi-card"><div class="kpi-label">Total Webhooks</div><div class="kpi-value" id="totalWebhooks">—</div><div class="kpi-sub">Active endpoints</div></div>
+                <div class="kpi-card"><div class="kpi-label">Events Available</div><div class="kpi-value">10</div><div class="kpi-sub">Event types</div></div>
+                <div class="kpi-card"><div class="kpi-label">Signature</div><div class="kpi-value" style="font-size:14px;">HMAC-SHA256</div><div class="kpi-sub">X-AITMP-Signature</div></div>
+            </div>
+
+            <div class="panel" style="margin-bottom:20px;">
+                <div class="panel-header"><div class="panel-title">Webhooks</div></div>
+                <div class="panel-body-table">
+                    <table><thead><tr><th>Name</th><th>URL</th><th>Events</th><th>Delivered</th><th>Failures</th><th>Last Delivery</th><th>Actions</th></tr></thead>
+                    <tbody id="webhooksTable"><tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🪝</div><div class="empty-text">No webhooks yet — create one to receive events</div></div></td></tr></tbody></table>
+                </div>
+            </div>
+
+            <!-- Webhook logs -->
+            <div class="panel">
+                <div class="panel-header"><div class="panel-title">Recent Delivery Logs</div><span style="font-size:12px;color:var(--text-muted);" id="selectedWebhookName">Select a webhook to view logs</span></div>
+                <div class="panel-body-table">
+                    <table><thead><tr><th>Event</th><th>Status</th><th>HTTP</th><th>Latency</th><th>Attempt</th><th>Time</th></tr></thead>
+                    <tbody id="webhookLogsTable"><tr><td colspan="6"><div class="empty-state"><div class="empty-text">Click "Logs" on a webhook to see delivery history</div></div></td></tr></tbody></table>
+                </div>
+            </div>
+        </div>
+
+
+
+<!-- INVITE MODAL -->
+<div class="modal-overlay" id="inviteModal">
+    <div class="modal">
+        <div class="modal-title">Invite Team Member</div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="inviteEmail" placeholder="colleague@company.com" /></div>
+        <div class="form-group"><label class="form-label">Role</label>
+            <select class="form-select" id="inviteRole">
+                <option value="recruiter">Recruiter</option>
+                <option value="viewer">Viewer</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-primary" style="flex:1;" onclick="sendInvite()">Send Invite</button>
+            <button class="btn btn-outline" onclick="closeInviteModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- API KEYS MODAL -->
+<div class="modal-overlay" id="apiKeyModal">
+    <div class="modal">
+        <div class="modal-title">🔑 Create API Key</div>
+        <div class="form-group"><label class="form-label">Key Name</label><input class="form-input" id="apiKeyName" placeholder="e.g. Greenhouse Integration" /></div>
+        <div class="form-group"><label class="form-label">Scopes</label>
+            <div id="scopeCheckboxes" style="display:flex;flex-direction:column;gap:6px;margin-top:6px;"></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-primary" style="flex:1;" onclick="createAPIKey()">Create Key</button>
+            <button class="btn btn-outline" onclick="closeAPIKeyModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- NEW API KEY RESULT MODAL -->
+<div class="modal-overlay" id="apiKeyResultModal">
+    <div class="modal">
+        <div class="modal-title">✅ API Key Created</div>
+        <p style="font-size:13px;color:var(--text-soft);margin-bottom:16px;">Copy this key now — it will <strong style="color:var(--red);">never be shown again.</strong></p>
+        <div style="background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:monospace;font-size:12px;word-break:break-all;color:var(--green);" id="newKeyDisplay"></div>
+        <div class="modal-actions" style="margin-top:16px;">
+            <button class="btn btn-primary" style="flex:1;" onclick="copyNewKey()">📋 Copy Key</button>
+            <button class="btn btn-outline" onclick="closeAPIKeyResultModal()">Done</button>
+        </div>
+    </div>
+</div>
+
+<!-- WEBHOOK MODAL -->
+<div class="modal-overlay" id="webhookModal">
+    <div class="modal">
+        <div class="modal-title">🪝 Create Webhook</div>
+        <div class="form-group"><label class="form-label">Name</label><input class="form-input" id="webhookName" placeholder="e.g. Greenhouse Sync" /></div>
+        <div class="form-group"><label class="form-label">URL (must be HTTPS)</label><input class="form-input" id="webhookUrl" placeholder="https://your-app.com/webhook" /></div>
+        <div class="form-group"><label class="form-label">Events</label>
+            <div id="eventCheckboxes" style="display:flex;flex-direction:column;gap:5px;margin-top:6px;max-height:180px;overflow-y:auto;"></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-primary" style="flex:1;" onclick="createWebhook()">Create Webhook</button>
+            <button class="btn btn-outline" onclick="closeWebhookModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ── HELPERS ──
+const AVATAR_COLORS = ['#ef4444','#f97316','#eab308','#22c55e','#06b6d4','#3b82f6','#8b5cf6','#ec4899'];
+function getColor(name) { let h=0; for(let c of name) h=c.charCodeAt(0)+((h<<5)-h); return AVATAR_COLORS[Math.abs(h)%AVATAR_COLORS.length]; }
+function initials(name) { return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
+
+function toast(msg, type='success', dur=3000) {
+    const c=document.getElementById('toastContainer');
+    const icons={success:'✓',error:'✕',info:'ℹ'};
+    const t=document.createElement('div');
+    t.className=`toast toast-${type}`;
+    t.innerHTML=`<span class="toast-icon">${icons[type]||'ℹ'}</span><span>${msg}</span>`;
+    c.appendChild(t);
+    setTimeout(()=>{t.classList.add('removing');setTimeout(()=>t.remove(),280);},dur);
+}
+
+// ── SECTIONS ──
+function showSection(id) {
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    document.getElementById(`section-${id}`).classList.add('active');
+    if(id==='team')       loadTeam();
+    if(id==='billing')    loadBilling();
+    if(id==='sla')        loadSLA();
+    if(id==='cost')       loadCost();
+    if(id==='narratives') { loadNarrativeInsights(); loadNarrativeCandidates(); }
+    if(id==='governance') loadGovernance();
+    if(id==='apikeys')       loadAPIKeys();
+    if(id==='webhooks')      loadWebhooks();
+    if(id==='integrations')  loadIntegrations();
+    if(id==='jd')            loadJDSection();
+}
+
+// ── OVERVIEW ──
+async function loadOverview() {
+    try {
+        const res=await fetch('/api/analytics');
+        const data=await res.json();
+        if(!data.ok) return;
+        document.getElementById('kpiSearches').textContent   = data.total_searches   || 0;
+        document.getElementById('kpiCandidates').textContent = data.total_candidates || 0;
+        document.getElementById('kpiShortlists').textContent = data.total_shortlists || 0;
+        document.getElementById('kpiLatency').textContent    = data.avg_latency_ms ? `${Math.round(data.avg_latency_ms)}ms` : '—';
+        const t=data.candidates_by_tier||{};
+        document.getElementById('goldCount').textContent   = t.gold   || 0;
+        document.getElementById('silverCount').textContent = t.silver || 0;
+        document.getElementById('bronzeCount').textContent = t.bronze || 0;
+    } catch(e) {}
+    loadCandidatesGrid('all');
+}
+
+let allCandidates = [];
+
+async function loadCandidatesGrid(filter) {
+    try {
+        const res=await fetch('/api/candidates');
+        const data=await res.json();
+        if(!data.ok) return;
+        allCandidates=data.candidates||[];
+        renderCandidates(filter);
+    } catch(e) {}
+}
+
+function renderCandidates(filter) {
+    const grid=document.getElementById('candidatesGrid');
+    const list=filter==='all'?allCandidates:allCandidates.filter(c=>c.tier===filter);
+    if(!list.length){grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">🎯</div><div class="empty-text">No ${filter==='all'?'':filter} candidates yet</div></div>`;return;}
+    grid.innerHTML=list.map(c=>{
+        const color=getColor(c.name);
+        const init=initials(c.name);
+        const medal=c.tier==='gold'?'🥇':c.tier==='silver'?'🥈':'🥉';
+        return `
+        <div class="candidate-card">
+            <div class="card-top">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="card-avatar" style="background:${color};">${init}</div>
+                    <div><span class="card-tier-badge badge-${c.tier}">${medal} ${c.tier.toUpperCase()}</span><div class="card-score score-${c.tier}" style="margin-top:2px;">${c.match_score}%</div></div>
+                </div>
+            </div>
+            <div class="card-name">${c.name}</div>
+            <div class="card-role">${c.role||'Candidate'}</div>
+            <div class="card-analysis">"${(c.ai_analysis||'').slice(0,100)}${c.ai_analysis&&c.ai_analysis.length>100?'...':''}"</div>
+            <div id="narrative-${c.id}" class="narrative-panel" style="display:none;"></div>
+            <div class="card-footer">
+                <span style="font-size:11px;color:var(--text-muted);">${c.shortlisted?'🔖 Shortlisted':''}</span>
+                <div style="display:flex;gap:6px;align-items:center;">
+                    <button class="btn btn-outline btn-sm" onclick="generateNarrativeForCard('${c.id}','${c.tier}')">✨ Narrative</button>
+                    ${c.linkedin_url?`<a class="view-profile-btn" href="${c.linkedin_url}" target="_blank">Profile ›</a>`:''}
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function filterCandidates(filter,el) {
+    document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+    renderCandidates(filter);
+}
+
+// ── PHASE 30: NARRATIVE ON CANDIDATE CARD ──
+async function generateNarrativeForCard(candidateId, tier) {
+    const panel=document.getElementById(`narrative-${candidateId}`);
+    panel.style.display='block';
+    panel.innerHTML='<div style="font-size:12px;color:var(--text-muted);">✨ Generating narrative...</div>';
+
+    const type=document.getElementById('narrativeTypeSelect')?.value||'summary';
+    try {
+        const res=await fetch('/api/narrative/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({candidate_id:candidateId,narrative_type:type})});
+        const data=await res.json();
+        if(data.ok){
+            panel.innerHTML=`
+                <div class="narrative-text">${data.narrative}</div>
+                <div class="narrative-meta">
+                    <span class="narrative-tag ${data.cache_hit?'cached':''}">${data.cache_hit?'⚡ Cached':'🤖 Generated'}</span>
+                    <span class="narrative-tag">${data.model||'gpt-4o'}</span>
+                    <span class="narrative-tag">$${(data.cost_usd||0).toFixed(5)}</span>
+                    <span class="narrative-tag">${data.tone||'professional'} · ${data.sentiment||'neutral'}</span>
+                    ${data.quality_score?`<span class="narrative-tag">Quality: ${data.quality_score}/100</span>`:''}
+                </div>
+                <div class="narrative-actions">
+                    <button class="btn btn-outline btn-sm" onclick="submitNarrativeFeedback('${candidateId}','positive')">👍</button>
+                    <button class="btn btn-outline btn-sm" onclick="submitNarrativeFeedback('${candidateId}','negative')">👎</button>
+                    <button class="btn btn-outline btn-sm" onclick="submitNarrativeFeedback('${candidateId}','rewrite')">🔄 Rewrite</button>
+                </div>`;
+        } else {
+            panel.innerHTML=`<div style="font-size:12px;color:var(--red);">Failed to generate narrative</div>`;
+        }
+    } catch(e) {
+        panel.innerHTML=`<div style="font-size:12px;color:var(--red);">Error generating narrative</div>`;
+    }
+}
+
+async function generateAllNarratives() {
+    toast('Generating narratives for all shortlisted candidates...', 'info', 4000);
+    try {
+        const type=document.getElementById('narrativeTypeSelect')?.value||'summary';
+        const res=await fetch('/api/narrative/batch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({narrative_type:type})});
+        const data=await res.json();
+        if(data.ok){
+            toast(`✨ ${data.generated} generated · ${data.cache_hits} cached · $${(data.total_cost||0).toFixed(4)}`, 'success');
+            loadNarrativeCandidates();
+        }
+    } catch(e) { toast('Error generating narratives', 'error'); }
+}
+
+async function submitNarrativeFeedback(candidateId, feedback) {
+    try {
+        await fetch('/api/narrative/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({candidate_id:candidateId,feedback})});
+        toast(`Feedback recorded: ${feedback}`, 'success', 2000);
+    } catch(e) {}
+}
+
+// ── NARRATIVE INSIGHTS ──
+async function loadNarrativeInsights() {
+    try {
+        const res=await fetch('/api/narrative/insights');
+        const data=await res.json();
+        if(!data.ok) return;
+        const i=data.insights;
+        document.getElementById('narTotal').textContent    = i.total_narratives     || 0;
+        document.getElementById('narPositive').textContent = i.positive_pct?`${i.positive_pct}%`:'—';
+        document.getElementById('narRecStr').textContent   = i.avg_rec_strength     || '—';
+        document.getElementById('narCost').textContent     = i.total_narrative_cost?`$${i.total_narrative_cost}`:'$0';
+    } catch(e) {}
+}
+
+async function loadNarrativeCandidates() {
+    try {
+        const res=await fetch('/api/candidates');
+        const data=await res.json();
+        if(!data.ok) return;
+        const list=document.getElementById('narrativeCandidateList');
+        const candidates=data.candidates||[];
+        if(!candidates.length){list.innerHTML='<div class="empty-state"><div class="empty-text">No candidates yet</div></div>';return;}
+        list.innerHTML=candidates.map(c=>`
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:36px;height:36px;border-radius:50%;background:${getColor(c.name)};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">${initials(c.name)}</div>
+                    <div><div style="font-size:14px;font-weight:600;">${c.name}</div><div style="font-size:12px;color:var(--text-muted);">${c.role||'Candidate'} · ${c.tier}</div></div>
+                </div>
+                <div style="display:flex;gap:8px;">
+                    <select class="form-select" id="narType-${c.id}" style="width:130px;padding:5px 8px;font-size:12px;">
+                        <option value="summary">Summary</option>
+                        <option value="full">Full Brief</option>
+                        <option value="pitch">Pitch</option>
+                        <option value="strengths">Strengths</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" onclick="generateNarrativeInline('${c.id}')">✨ Generate</button>
+                </div>
+            </div>
+            <div id="narResult-${c.id}" style="font-size:12px;color:var(--text-soft);padding:8px 0;display:none;line-height:1.6;"></div>
+        `).join('');
+    } catch(e) {}
+}
+
+async function generateNarrativeInline(candidateId) {
+    const typeEl=document.getElementById(`narType-${candidateId}`);
+    const type=typeEl?typeEl.value:'summary';
+    const result=document.getElementById(`narResult-${candidateId}`);
+    result.style.display='block';
+    result.textContent='✨ Generating...';
+    try {
+        const res=await fetch('/api/narrative/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({candidate_id:candidateId,narrative_type:type})});
+        const data=await res.json();
+        if(data.ok){
+            result.innerHTML=`<div style="white-space:pre-wrap;">${data.narrative}</div><div style="margin-top:6px;display:flex;gap:6px;"><span class="narrative-tag ${data.cache_hit?'cached':''}">${data.cache_hit?'⚡ Cached':'🤖 AI Generated'}</span><span class="narrative-tag">$${(data.cost_usd||0).toFixed(5)}</span><span class="narrative-tag">Quality: ${data.quality_score||'—'}/100</span></div>`;
+        }
+    } catch(e) { result.textContent='Error generating narrative.'; }
+}
+
+// ── TEAM ──
+async function loadTeam() {
+    try {
+        const res=await fetch('/api/team');
+        const data=await res.json();
+        if(!data.ok) return;
+        document.getElementById('seatCount').textContent=`${data.seat_used}/${data.seat_limit} seats`;
+        const tbody=document.getElementById('teamTable');
+        if(!data.members?.length){tbody.innerHTML=`<tr><td colspan="5"><div class="empty-state"><div class="empty-text">No team members</div></div></td></tr>`;return;}
+        tbody.innerHTML=data.members.map(m=>`
+            <tr>
+                <td><div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:50%;background:${getColor(m.name)};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">${initials(m.name)}</div><div><div style="font-weight:600;">${m.name}</div><div style="font-size:11px;color:var(--text-muted);">${m.email}</div></div></div></td>
+                <td><span class="status-badge status-${m.role}">${m.role}</span></td>
+                <td><span class="status-badge ${m.is_active?'status-active':'status-inactive'}">${m.is_active?'Active':'Inactive'}</span></td>
+                <td style="font-size:12px;color:var(--text-muted);">${m.last_login?new Date(m.last_login).toLocaleDateString():'Never'}</td>
+                <td><div style="display:flex;gap:6px;"><button class="btn btn-outline btn-sm" onclick="changeRole('${m.id}','${m.role}')">Change Role</button><button class="btn btn-danger btn-sm" onclick="removeMember('${m.id}','${m.name}')">Remove</button></div></td>
+            </tr>`).join('');
+    } catch(e) {}
+}
+
+// ── BILLING ──
+const PLANS={free:{name:'Free',price:'$0',features:['1 user','1 candidate/search','Basic AI']},business:{name:'Business',price:'$99',features:['5 users','2 candidates/search','Full AI','Team collab']},corporate:{name:'Corporate',price:'$299',features:['20 users','3 candidates/search','Advanced AI','Analytics']},enterprise:{name:'Enterprise',price:'$999',features:['Unlimited','50 candidates/search','Custom AI','SLA']}};
+let currentPlan='free';
+
+async function loadBilling() {
+    try {
+        const res=await fetch('/api/billing');
+        const data=await res.json();
+        if(!data.ok) return;
+        currentPlan=data.company?.plan||'free';
+        renderPlans();
+        const tbody=document.getElementById('invoicesTable');
+        if(!data.invoices?.length){tbody.innerHTML=`<tr><td colspan="5"><div class="empty-state"><div class="empty-text">No invoices yet</div></div></td></tr>`;return;}
+        tbody.innerHTML=data.invoices.map(i=>`<tr><td style="font-size:12px;color:var(--text-muted);">${new Date(i.issued_at).toLocaleDateString()}</td><td>${i.description}</td><td style="color:var(--blue-light);">$${i.amount.toFixed(2)}</td><td><span class="status-badge status-paid">${i.status}</span></td><td>${i.pdf_url?`<a href="${i.pdf_url}" target="_blank" style="color:var(--blue-light);font-size:12px;">PDF →</a>`:'—'}</td></tr>`).join('');
+    } catch(e) { renderPlans(); }
+}
+
+function renderPlans() {
+    document.getElementById('planGrid').innerHTML=Object.entries(PLANS).map(([key,plan])=>`
+        <div class="plan-card ${key===currentPlan?'current':''}" onclick="upgradePlan('${key}')">
+            ${key===currentPlan?'<div style="font-size:10px;color:var(--blue-light);font-weight:600;margin-bottom:4px;">CURRENT PLAN</div>':''}
+            <div class="plan-name">${plan.name}</div>
+            <div class="plan-price">${plan.price}<span>/mo</span></div>
+            <div class="plan-features">${plan.features.map(f=>`<div class="plan-feature">${f}</div>`).join('')}</div>
+            ${key!==currentPlan?`<button class="btn btn-primary" style="width:100%;margin-top:12px;padding:8px;justify-content:center;">Upgrade</button>`:''}
+        </div>`).join('');
+}
+
+async function upgradePlan(plan) {
+    if(plan===currentPlan) return;
+    if(!confirm(`Upgrade to ${PLANS[plan]?.name}?`)) return;
+    try {
+        const res=await fetch('/api/billing/upgrade',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan,billing_cycle:'monthly'})});
+        const data=await res.json();
+        if(data.ok&&data.url) window.location.href=data.url;
+    } catch(e) { alert('Error starting upgrade'); }
+}
+
+// ── SLA ──
+async function loadSLA() {
+    try {
+        const res=await fetch('/api/sla');
+        const data=await res.json();
+        if(!data.ok) return;
+        const m=data.metrics;
+        const status=data.status||'healthy';
+        const bar=document.getElementById('slaStatusBar');
+        bar.className=`sla-status-bar ${status}`;
+        document.getElementById('slaDot').className=`sla-dot ${status}`;
+        document.getElementById('slaStatusText').textContent=status==='healthy'?'All Systems Operational':status==='degraded'?'System Degraded':'System Down';
+        document.getElementById('slaStatusSub').textContent=`Checked: ${new Date().toLocaleTimeString()}`;
+        const uptime=m.uptime_pct??100,p95=m.p95_latency_ms??0,p99=m.p99_latency_ms??0,errRate=m.error_rate_pct??0;
+        document.getElementById('slaUptime').textContent=`${uptime.toFixed(2)}%`;
+        document.getElementById('slaP95').textContent=`${p95}ms`;
+        document.getElementById('slaP99').textContent=`${p99}ms`;
+        document.getElementById('slaErrorRate').textContent=`${errRate.toFixed(3)}%`;
+        document.getElementById('slaAILatency').textContent=m.ai_latency_ms?`${m.ai_latency_ms}ms`:'N/A';
+        document.getElementById('slaAvgLatency').textContent=`${m.avg_latency_ms??0}ms`;
+        document.getElementById('slaTotalReqs').textContent=m.total_requests??0;
+        document.getElementById('slaReqPerHour').textContent=m.requests_per_hour??0;
+        document.getElementById('slaUptime').className=`sla-metric-value ${uptime>=99.9?'good':uptime>=99?'warning':'critical'}`;
+        document.getElementById('slaP95').className=`sla-metric-value ${p95<=100?'good':p95<=200?'warning':'critical'}`;
+        document.getElementById('slaErrorRate').className=`sla-metric-value ${errRate<=0.1?'good':errRate<=1?'warning':'critical'}`;
+        const active=data.active_alerts||[];
+        document.getElementById('alertCount').textContent=`${active.length} active`;
+        const tbody=document.getElementById('activeAlertsTable');
+        tbody.innerHTML=!active.length?`<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">No active alerts</div></div></td></tr>`:active.map(a=>`<tr><td style="font-size:12px;font-weight:600;">${a.type}</td><td><span class="alert-badge alert-${a.severity}">${a.severity}</span></td><td style="font-size:12px;color:var(--text-soft);">${a.message}</td><td style="font-size:12px;">${a.metric_value?.toFixed(1)??'—'}</td><td style="font-size:11px;color:var(--text-muted);">${new Date(a.created_at).toLocaleTimeString()}</td><td><button class="btn btn-outline btn-sm" onclick="resolveAlert('${a.id}')">Resolve</button></td></tr>`).join('');
+        const resolved=data.resolved_alerts||[];
+        document.getElementById('resolvedAlertsTable').innerHTML=!resolved.length?`<tr><td colspan="3"><div class="empty-state"><div class="empty-text">No resolved alerts</div></div></td></tr>`:resolved.map(a=>`<tr><td style="font-size:12px;font-weight:600;">${a.type}</td><td style="font-size:12px;color:var(--text-soft);">${a.message}</td><td style="font-size:11px;color:var(--text-muted);">${a.resolved_at?new Date(a.resolved_at).toLocaleString():'—'}</td></tr>`).join('');
+    } catch(e) {}
+}
+
+async function runSLACheck() {
+    toast('Running SLA check...','info',2000);
+    try {
+        const res=await fetch('/api/sla/run',{method:'POST'});
+        const data=await res.json();
+        if(data.ok){toast(`SLA check complete — ${data.alerts_created||0} alerts`,'success');loadSLA();}
+    } catch(e) { toast('SLA check failed','error'); }
+}
+
+async function resolveAlert(id) {
+    try {
+        const res=await fetch(`/api/sla/alerts/${id}/resolve`,{method:'PATCH'});
+        const data=await res.json();
+        if(data.ok){toast('Alert resolved ✓','success');loadSLA();}
+    } catch(e) {}
+}
+
+// ── PHASE 30: COST DASHBOARD ──
+async function loadCost() {
+    try {
+        const res=await fetch('/api/cost');
+        const data=await res.json();
+        if(!data.ok) return;
+        document.getElementById('costMonth').textContent=data.month||'—';
+        document.getElementById('costAlert').textContent=data.alert||'';
+        const pct=data.pct_used||0;
+        document.getElementById('budgetPct').textContent=`${pct}%`;
+        document.getElementById('budgetLimit').textContent=`$${data.budget_usd}`;
+        const bar=document.getElementById('budgetBar');
+        bar.style.width=`${Math.min(pct,100)}%`;
+        bar.className=`budget-bar-fill ${pct>=100?'critical':pct>=80?'warning':'good'}`;
+        document.getElementById('costCalls').textContent=data.ai_calls||0;
+        document.getElementById('costCallsRemain').textContent=`${data.ai_calls_remaining||0} remaining`;
+        document.getElementById('costTotal').textContent=`$${data.total_cost_usd||0}`;
+        document.getElementById('costProjected').textContent=`Projected: $${data.projected_usd||0}`;
+        document.getElementById('costCacheRate').textContent=`${data.cache_hit_rate||0}%`;
+        document.getElementById('costLatency').textContent=`${data.avg_latency_ms||0}ms`;
+    } catch(e) {}
+}
+
+async function runCostOptimizer() {
+    toast('Running cost optimization...','info',2000);
+    try {
+        const res=await fetch('/api/cost/optimize',{method:'POST'});
+        const data=await res.json();
+        if(data.ok){
+            const recs=data.report?.recommendations||[];
+            const list=document.getElementById('recommendationList');
+            list.innerHTML=recs.length?recs.map(r=>`<div class="recommendation-item"><span class="rec-icon">💡</span><span>${r}</span></div>`).join(''):'<div class="empty-state"><div class="empty-text">No optimizations needed — running efficiently!</div></div>';
+            toast(`Optimization complete — ${recs.length} recommendations`,'success');
+            loadCost();
+        }
+    } catch(e) { toast('Optimization failed','error'); }
+}
+
+// ── GOVERNANCE ──
+async function loadGovernance() {
+    try {
+        const res=await fetch('/api/models');
+        const data=await res.json();
+        if(!data.ok) return;
+        const tbody=document.getElementById('modelHistoryTable');
+        tbody.innerHTML=data.models.map(m=>`
+            <tr>
+                <td style="font-weight:600;color:var(--blue-light);">${m.version}</td>
+                <td><span class="status-badge ${m.status==='active'?'status-active':'status-inactive'}">${m.status}</span></td>
+                <td>${m.accuracy?(m.accuracy*100).toFixed(1)+'%':'—'}</td>
+                <td>${m.precision?(m.precision*100).toFixed(1)+'%':'—'}</td>
+                <td>${m.recall?(m.recall*100).toFixed(1)+'%':'—'}</td>
+                <td>${m.training_size||0}</td>
+                <td style="font-size:11px;color:var(--text-muted);">${m.deployed_at?new Date(m.deployed_at).toLocaleDateString():'—'}</td>
+            </tr>`).join('');
+    } catch(e) {}
+
+    // Audit log
+    try {
+        const res=await fetch('/api/analytics');
+        const data=await res.json();
+        if(!data.ok) return;
+        const tbody=document.getElementById('auditLogTable');
+        const logs=data.recent_activity||[];
+        tbody.innerHTML=!logs.length?`<tr><td colspan="5"><div class="empty-state"><div class="empty-text">No activity yet</div></div></td></tr>`:logs.map(l=>`<tr><td style="font-size:12px;font-weight:600;">${l.action}</td><td style="font-size:12px;color:var(--text-soft);">${l.details||'—'}</td><td style="font-size:12px;">${l.latency_ms?`${l.latency_ms}ms`:'—'}</td><td style="font-size:12px;color:var(--green);">$0.01</td><td style="font-size:11px;color:var(--text-muted);">${new Date(l.created_at).toLocaleString()}</td></tr>`).join('');
+    } catch(e) {}
+}
+
+// ── TEAM ACTIONS ──
+async function removeMember(userId,name) {
+    if(!confirm(`Remove ${name}?`)) return;
+    try {
+        const res=await fetch(`/api/team/${userId}`,{method:'DELETE'});
+        const data=await res.json();
+        if(data.ok){toast(`${name} removed`,'success');loadTeam();}
+        else toast(data.detail||'Failed','error');
+    } catch(e) { toast('Error','error'); }
+}
+
+async function changeRole(userId,currentRole) {
+    const roles=['admin','recruiter','viewer'].filter(r=>r!==currentRole);
+    const newRole=prompt(`Change role to (${roles.join(' or ')}):`,roles[0]);
+    if(!newRole||!roles.includes(newRole)) return;
+    try {
+        const res=await fetch(`/api/team/${userId}/role`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({role:newRole})});
+        const data=await res.json();
+        if(data.ok){toast(`Role updated to ${newRole}`,'success');loadTeam();}
+    } catch(e) {}
+}
+
+// ── INVITE ──
+function openInviteModal()  { document.getElementById('inviteModal').classList.add('open'); }
+function closeInviteModal() { document.getElementById('inviteModal').classList.remove('open'); }
+
+async function sendInvite() {
+    const email=document.getElementById('inviteEmail').value.trim();
+    const role=document.getElementById('inviteRole').value;
+    if(!email) return toast('Enter an email','error');
+    try {
+        const res=await fetch('/api/team/invite',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,role})});
+        const data=await res.json();
+        if(data.ok){toast(`Invite sent to ${email}`,'success');closeInviteModal();}
+        else toast(data.detail||'Error','error');
+    } catch(e) { toast('Error','error'); }
+}
+
+document.getElementById('inviteModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeInviteModal();});
+
+// ── USER INFO ──
+async function loadUserInfo() {
+    try {
+        const res=await fetch('/me');
+        const data=await res.json();
+        if(data.ok&&data.name){
+            const init=initials(data.name);
+            document.getElementById('sidebarAvatar').textContent=init;
+            document.getElementById('sidebarName').textContent=data.name;
+            document.getElementById('topAvatar').textContent=init;
+        }
+    } catch(e) {}
+}
+
+// ── API KEYS ──
+const ALL_SCOPES = ['candidates:read','candidates:write','narratives:generate','analytics:read','webhooks:manage','forecasts:read','cost:read','sla:read'];
+const ALL_EVENTS = ['candidate.created','candidate.updated','candidate.deleted','narrative.generated','narrative.updated','billing.invoice.created','billing.subscription.updated','sla.alert.created','sla.alert.resolved','model.retrained'];
+
+let _newKeyValue = '';
+
+function openAPIKeyModal() {
+    const box = document.getElementById('scopeCheckboxes');
+    box.innerHTML = ALL_SCOPES.map(s => `<label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-soft);cursor:pointer;"><input type="checkbox" value="${s}" style="accent-color:var(--blue);"> ${s}</label>`).join('');
+    document.getElementById('apiKeyModal').classList.add('open');
+}
+function closeAPIKeyModal()       { document.getElementById('apiKeyModal').classList.remove('open'); }
+function closeAPIKeyResultModal() { document.getElementById('apiKeyResultModal').classList.remove('open'); _newKeyValue=''; loadAPIKeys(); }
+
+async function createAPIKey() {
+    const name   = document.getElementById('apiKeyName').value.trim();
+    const scopes = [...document.querySelectorAll('#scopeCheckboxes input:checked')].map(i=>i.value);
+    if(!name)          return toast('Enter a key name','error');
+    if(!scopes.length) return toast('Select at least one scope','error');
+    try {
+        const res  = await fetch('/api/v1/api-keys',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,scopes})});
+        const data = await res.json();
+        if(data.ok){ closeAPIKeyModal(); _newKeyValue=data.key; document.getElementById('newKeyDisplay').textContent=data.key; document.getElementById('apiKeyResultModal').classList.add('open'); }
+        else toast(data.detail||'Error','error');
+    } catch(e){ toast('Error','error'); }
+}
+
+function copyNewKey() { navigator.clipboard.writeText(_newKeyValue); toast('API key copied!','success'); }
+
+async function loadAPIKeys() {
+    try {
+        const res  = await fetch('/api/v1/api-keys');
+        const data = await res.json();
+        if(!data.ok) return;
+        document.getElementById('totalKeys').textContent     = data.total||0;
+        document.getElementById('totalAPICalls').textContent = data.keys?.reduce((s,k)=>s+(k.total_calls||0),0)||0;
+        const tbody = document.getElementById('apiKeysTable');
+        if(!data.keys?.length){ tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🔑</div><div class="empty-text">No API keys yet</div></div></td></tr>`; return; }
+        tbody.innerHTML = data.keys.map(k=>`<tr><td style="font-weight:600;">${k.name}</td><td><span style="font-family:monospace;font-size:12px;color:var(--blue-light);">${k.key_prefix}...</span></td><td><div style="display:flex;gap:4px;flex-wrap:wrap;">${(k.scopes||[]).map(s=>`<span style="font-size:10px;padding:2px 6px;background:rgba(37,99,235,0.1);color:var(--blue-light);border-radius:4px;">${s}</span>`).join('')}</div></td><td style="font-size:12px;">${k.total_calls||0}</td><td style="font-size:11px;color:var(--text-muted);">${k.last_used_at?new Date(k.last_used_at).toLocaleDateString():'Never'}</td><td><span class="status-badge ${k.is_active?'status-active':'status-inactive'}">${k.is_active?'Active':'Revoked'}</span></td><td><button class="btn btn-danger btn-sm" onclick="revokeAPIKey('${k.id}','${k.name}')">Revoke</button></td></tr>`).join('');
+    } catch(e){}
+}
+
+async function revokeAPIKey(id, name) {
+    if(!confirm(`Revoke "${name}"? Cannot be undone.`)) return;
+    try {
+        const res  = await fetch(`/api/v1/api-keys/${id}`,{method:'DELETE'});
+        const data = await res.json();
+        if(data.ok){ toast(`Key revoked`,'success'); loadAPIKeys(); }
+    } catch(e){}
+}
+
+// ── WEBHOOKS ──
+function openWebhookModal() {
+    document.getElementById('eventCheckboxes').innerHTML = ALL_EVENTS.map(e=>`<label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-soft);cursor:pointer;"><input type="checkbox" value="${e}" style="accent-color:var(--green);"> <span style="font-family:monospace;color:var(--green);">${e}</span></label>`).join('');
+    document.getElementById('webhookModal').classList.add('open');
+}
+function closeWebhookModal() { document.getElementById('webhookModal').classList.remove('open'); }
+
+async function createWebhook() {
+    const name        = document.getElementById('webhookName').value.trim();
+    const url         = document.getElementById('webhookUrl').value.trim();
+    const event_types = [...document.querySelectorAll('#eventCheckboxes input:checked')].map(i=>i.value);
+    if(!url)               return toast('Enter a webhook URL','error');
+    if(!event_types.length) return toast('Select at least one event','error');
+    try {
+        const res  = await fetch('/api/v1/webhooks',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,url,event_types})});
+        const data = await res.json();
+        if(data.ok){ closeWebhookModal(); toast(`Webhook created! Secret: ${data.secret.slice(0,12)}... (save it now)`,'success',6000); loadWebhooks(); }
+        else toast(data.detail||'Error','error');
+    } catch(e){ toast('Error','error'); }
+}
+
+async function loadWebhooks() {
+    try {
+        const res  = await fetch('/api/v1/webhooks');
+        const data = await res.json();
+        if(!data.ok) return;
+        document.getElementById('totalWebhooks').textContent = data.total||0;
+        const tbody = document.getElementById('webhooksTable');
+        if(!data.webhooks?.length){ tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🪝</div><div class="empty-text">No webhooks yet</div></div></td></tr>`; return; }
+        tbody.innerHTML = data.webhooks.map(w=>`<tr><td style="font-weight:600;">${w.name}</td><td style="font-size:11px;color:var(--text-muted);max-width:160px;overflow:hidden;text-overflow:ellipsis;">${w.url}</td><td style="font-size:11px;">${(w.event_types||[]).length} events</td><td style="font-size:12px;">${w.total_sent||0}</td><td style="font-size:12px;color:${w.failure_count>0?'var(--red)':'var(--green)'};">${w.failure_count||0}</td><td style="font-size:11px;color:var(--text-muted);">${w.last_delivery?new Date(w.last_delivery).toLocaleString():'Never'}</td><td><div style="display:flex;gap:4px;"><button class="btn btn-outline btn-sm" onclick="testWebhook('${w.id}')">Test</button><button class="btn btn-outline btn-sm" onclick="viewWebhookLogs('${w.id}','${w.name}')">Logs</button><button class="btn btn-danger btn-sm" onclick="deleteWebhook('${w.id}','${w.name}')">Delete</button></div></td></tr>`).join('');
+    } catch(e){}
+}
+
+async function testWebhook(id) {
+    toast('Sending test event...','info',2000);
+    try {
+        const res  = await fetch('/api/v1/webhooks/test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({webhook_id:id})});
+        const data = await res.json();
+        if(data.ok) toast(`Test ${data.delivery?.status} — ${data.delivery?.latency_ms}ms`,'success');
+        else toast('Test failed','error');
+    } catch(e){ toast('Error','error'); }
+}
+
+async function viewWebhookLogs(id, name) {
+    document.getElementById('selectedWebhookName').textContent = name;
+    try {
+        const res  = await fetch(`/api/v1/webhooks/${id}/logs`);
+        const data = await res.json();
+        if(!data.ok) return;
+        const tbody = document.getElementById('webhookLogsTable');
+        if(!data.logs?.length){ tbody.innerHTML=`<tr><td colspan="6"><div class="empty-state"><div class="empty-text">No deliveries yet</div></div></td></tr>`; return; }
+        tbody.innerHTML = data.logs.map(l=>`<tr><td style="font-size:11px;font-family:monospace;color:var(--blue-light);">${l.event_type}</td><td><span class="status-badge ${l.status==='success'?'status-active':'status-inactive'}">${l.status}</span></td><td style="font-size:12px;">${l.http_status||'—'}</td><td style="font-size:12px;">${l.latency_ms?`${l.latency_ms}ms`:'—'}</td><td style="font-size:12px;">#${l.attempt}</td><td style="font-size:11px;color:var(--text-muted);">${new Date(l.created_at).toLocaleString()}</td></tr>`).join('');
+    } catch(e){}
+}
+
+async function deleteWebhook(id, name) {
+    if(!confirm(`Delete webhook "${name}"?`)) return;
+    try {
+        const res = await fetch(`/api/v1/webhooks/${id}`,{method:'DELETE'});
+        const data = await res.json();
+        if(data.ok){ toast('Webhook deleted','success'); loadWebhooks(); }
+    } catch(e){}
+}
+
+['apiKeyModal','apiKeyResultModal','webhookModal'].forEach(id=>{
+    document.getElementById(id)?.addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.classList.remove('open');});
+});
+
+// ── INIT ──
+loadUserInfo();
+loadOverview();
+
+// ── PHASE 32A: INTEGRATIONS ──
+async function loadIntegrations() {
+    try {
+        const res  = await fetch('/api/integrations/status');
+        const data = await res.json();
+        if(!data.ok) return;
+        const partners = data.integrations || {};
+        const map = {greenhouse:'gh',lever:'lev',zapier:'zap',make:'make'};
+        for(const [partner, info] of Object.entries(partners)) {
+            const prefix = map[partner];
+            if(!prefix) continue;
+            const statusEl = document.getElementById(`${prefix}Status`);
+            const syncsEl  = document.getElementById(`${prefix}Syncs`);
+            if(statusEl) statusEl.textContent = info.status === 'connected' ? '✅' : '—';
+            if(syncsEl)  syncsEl.textContent  = `${info.total||0} syncs · ${info.success_rate||0}% ok`;
+        }
+    } catch(e){}
+    loadIntegrationLogs();
+}
+
+async function loadIntegrationLogs() {
+    const partner = document.getElementById('logPartnerFilter')?.value || '';
+    const status  = document.getElementById('logStatusFilter')?.value  || '';
+    const params  = new URLSearchParams();
+    if(partner) params.set('partner', partner);
+    if(status)  params.set('status', status);
+    try {
+        const res  = await fetch(`/api/integrations/logs?${params}`);
+        const data = await res.json();
+        if(!data.ok) return;
+        const tbody = document.getElementById('syncLogsTable');
+        if(!data.logs?.length) {
+            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🔌</div><div class="empty-text">No sync logs yet</div></div></td></tr>`;
+            return;
+        }
+        tbody.innerHTML = data.logs.map(l => `
+            <tr>
+                <td><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px;background:rgba(29,110,245,0.1);color:var(--blue-light);">${l.partner}</span></td>
+                <td style="font-size:12px;">${l.direction==='inbound'?'⬇ Inbound':'⬆ Outbound'}</td>
+                <td style="font-size:11px;font-family:monospace;color:var(--text-soft);">${l.event_type}</td>
+                <td><span class="status-badge ${l.status==='success'?'status-active':l.status==='failed'?'status-inactive':'status-viewer'}">${l.status}</span></td>
+                <td style="font-size:12px;">${l.latency_ms?`${l.latency_ms}ms`:'—'}</td>
+                <td style="font-size:12px;">#${l.attempt}</td>
+                <td style="font-size:11px;color:var(--text-muted);">${new Date(l.created_at).toLocaleString()}</td>
+            </tr>`).join('');
+    } catch(e){}
+}
+
+async function retryFailedSyncs() {
+    toast('Retrying failed syncs...', 'info', 2000);
+    try {
+        const res  = await fetch('/api/integrations/retry', {method:'POST'});
+        const data = await res.json();
+        if(data.ok){ toast(`Retried ${data.retried} failed syncs`, 'success'); loadIntegrationLogs(); }
+    } catch(e){ toast('Error','error'); }
+}
+
+async function viewManifest(type) {
+    try {
+        const res  = await fetch(`/api/integrations/${type}/manifest`);
+        const data = await res.json();
+        const text = JSON.stringify(data, null, 2);
+        const w    = window.open('', '_blank');
+        w.document.write(`<pre style="background:#0d1117;color:#00d68f;padding:20px;font-family:monospace;font-size:13px;">${text}</pre>`);
+    } catch(e){ toast('Error loading manifest','error'); }
+}
+
+function copyText(text) {
+    navigator.clipboard.writeText(location.origin + text);
+    toast('URL copied!', 'success', 2000);
+}
+
+// ── PHASE 32B: JOB DESCRIPTIONS ──
+let _allRoles = [];
+let _currentJD = null;
+
+async function loadJDSection() {
+    // Load roles
+    try {
+        const res  = await fetch('/api/candidates'); // reuse — just need roles
+        // Actually load from roles endpoint
+        const rolesRes = await fetch('/workspace'); // fallback
+    } catch(e){}
+
+    // Count JDs across all roles
+    document.getElementById('jdTotal').textContent = '—';
+    document.getElementById('jdAvgQuality').textContent = '—';
+    loadJDRoles();
+}
+
+async function loadJDRoles() {
+    // We don't have a direct /api/roles endpoint in admin so we show a generate prompt
+    const list = document.getElementById('jdRoleList');
+    list.innerHTML = `
+        <div style="text-align:center;padding:24px;">
+            <p style="font-size:13px;color:var(--text-soft);margin-bottom:16px;">Generate AI-powered job descriptions for your roles. Each JD is crafted by GPT-4o with your chosen tone and role type.</p>
+            <button class="btn btn-primary" onclick="openJDModal()">✨ Generate Job Description</button>
+        </div>`;
+}
+
+function openJDModal() {
+    // Load roles into dropdown
+    fetch('/api/candidates').then(r=>r.json()).then(data=>{
+        // We'll use a text input as fallback since we need job_id
+        document.getElementById('jdJobSelect').innerHTML = '<option value="">Enter job ID manually below</option>';
+    }).catch(()=>{});
+    document.getElementById('jdModal').classList.add('open');
+}
+
+function closeJDModal() { document.getElementById('jdModal').classList.remove('open'); }
+
+async function generateJD() {
+    const job_id   = document.getElementById('jdJobSelect').value;
+    const tone     = document.getElementById('jdToneSelect').value;
+    const role_type = document.getElementById('jdRoleTypeSelect').value;
+    const context  = document.getElementById('jdContext').value;
+
+    if(!job_id) {
+        toast('Select a role first', 'error');
+        return;
+    }
+
+    toast('✨ Generating job description...', 'info', 4000);
+    closeJDModal();
+
+    try {
+        const res  = await fetch('/api/jd/generate', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({job_id, tone, role_type, additional_context: context})
+        });
+        const data = await res.json();
+        if(data.ok) {
+            toast(`JD generated! Quality: ${data.quality_score}/100 · $${(data.cost_usd||0).toFixed(4)}`, 'success');
+            _currentJD = data;
+            showJDPreview(data);
+            document.getElementById('jdTotal').textContent = data.version || 1;
+            document.getElementById('jdAvgQuality').textContent = data.quality_score || '—';
+        } else {
+            toast(data.detail || 'Generation failed', 'error');
+        }
+    } catch(e) { toast('Error generating JD', 'error'); }
+}
+
+function showJDPreview(data) {
+    const panel = document.getElementById('jdPreviewPanel');
+    panel.style.display = 'block';
+    document.getElementById('jdPreviewTitle').textContent = `Job Description — v${data.version}`;
+    document.getElementById('jdPreviewContent').textContent = data.content || '';
+    document.getElementById('jdMetaTags').innerHTML = `
+        <span class="narrative-tag">${data.tone_label || data.tone}</span>
+        <span class="narrative-tag">${data.role_type_label || data.role_type}</span>
+        <span class="narrative-tag">Quality: ${data.quality_score}/100 (${data.quality_grade})</span>
+        <span class="narrative-tag">${data.word_count} words</span>
+        <span class="narrative-tag">$${(data.cost_usd||0).toFixed(4)}</span>
+        ${data.cached?'<span class="narrative-tag cached">⚡ Cached</span>':''}`;
+    panel.scrollIntoView({behavior:'smooth'});
+}
+
+function copyJD() {
+    if(!_currentJD) return;
+    navigator.clipboard.writeText(_currentJD.content || '');
+    toast('Job description copied!', 'success');
+}
+
+document.getElementById('jdModal')?.addEventListener('click', e=>{if(e.target===e.currentTarget)closeJDModal();});
+</script>
+<!-- ── PHASE 31: API KEYS PANEL ── -->
+<div class="tab-panel" id="section-apikeys">
+    <div class="page-header">
+        <div><div class="back-link" onclick="showSection('overview')">← Back</div><div class="page-title">🔑 API Keys</div><div class="page-meta"><span class="meta-item">Phase 31 — External API Access</span></div></div>
+        <div class="page-actions"><button class="btn btn-outline" onclick="window.open('/developer')">📖 Docs</button><button class="btn btn-primary" onclick="openAPIKeyModal()">+ Create API Key</button></div>
+    </div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
+        <div class="kpi-card"><div class="kpi-label">Total Keys</div><div class="kpi-value" id="totalKeys">—</div><div class="kpi-sub">Active keys</div></div>
+        <div class="kpi-card"><div class="kpi-label">Total API Calls</div><div class="kpi-value" id="totalAPICalls">—</div><div class="kpi-sub">All time</div></div>
+        <div class="kpi-card"><div class="kpi-label">Available Scopes</div><div class="kpi-value">8</div><div class="kpi-sub">Permission scopes</div></div>
+    </div>
+    <div class="panel">
+        <div class="panel-header"><div class="panel-title">API Keys</div><span style="font-size:12px;color:var(--text-muted);">Raw key shown once at creation only</span></div>
+        <div class="panel-body-table"><table><thead><tr><th>Name</th><th>Key Prefix</th><th>Scopes</th><th>Calls</th><th>Last Used</th><th>Status</th><th>Actions</th></tr></thead><tbody id="apiKeysTable"><tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🔑</div><div class="empty-text">No API keys yet</div></div></td></tr></tbody></table></div>
+    </div>
+    <div class="panel">
+        <div class="panel-header"><div class="panel-title">Available Scopes</div></div>
+        <div class="panel-body-table"><table><thead><tr><th>Scope</th><th>Description</th></tr></thead><tbody>
+            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">candidates:read</td><td style="font-size:12px;color:var(--text-soft);">Read candidate data</td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">candidates:write</td><td style="font-size:12px;color:var(--text-soft);">Create, update, delete candidates</td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">narratives:generate</td><td style="font-size:12px;color:var(--text-soft);">Generate AI narratives</td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">analytics:read</td><td style="font-size:12px;color:var(--text-soft);">Read usage + talent analytics</td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">webhooks:manage</td><td style="font-size:12px;color:var(--text-soft);">Create + manage webhooks</td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">forecasts:read</td><td style="font-size:12px;color:var(--text-soft);">Read hiring forecasts</td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">cost:read</td><td style="font-size:12px;color:var(--text-soft);">Read cost analytics</td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:var(--blue-light);">sla:read</td><td style="font-size:12px;color:var(--text-soft);">Read SLA metrics</td></tr>
+        </tbody></table></div>
+    </div>
+</div>
+
+<!-- ── PHASE 31: WEBHOOKS PANEL ── -->
+<div class="tab-panel" id="section-webhooks">
+    <div class="page-header">
+        <div><div class="back-link" onclick="showSection('overview')">← Back</div><div class="page-title">🪝 Webhooks</div><div class="page-meta"><span class="meta-item">Phase 31 — Real-time Event Delivery</span></div></div>
+        <div class="page-actions"><button class="btn btn-outline" onclick="loadWebhooks()">🔄 Refresh</button><button class="btn btn-primary" onclick="openWebhookModal()">+ Create Webhook</button></div>
+    </div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
+        <div class="kpi-card"><div class="kpi-label">Total Webhooks</div><div class="kpi-value" id="totalWebhooks">—</div><div class="kpi-sub">Active endpoints</div></div>
+        <div class="kpi-card"><div class="kpi-label">Events Available</div><div class="kpi-value">10</div><div class="kpi-sub">Event types</div></div>
+        <div class="kpi-card"><div class="kpi-label">Signature</div><div class="kpi-value" style="font-size:14px;">HMAC-SHA256</div><div class="kpi-sub">X-AITMP-Signature</div></div>
+    </div>
+    <div class="panel" style="margin-bottom:20px;">
+        <div class="panel-header"><div class="panel-title">Webhooks</div></div>
+        <div class="panel-body-table"><table><thead><tr><th>Name</th><th>URL</th><th>Events</th><th>Delivered</th><th>Failures</th><th>Last Delivery</th><th>Actions</th></tr></thead><tbody id="webhooksTable"><tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🪝</div><div class="empty-text">No webhooks yet</div></div></td></tr></tbody></table></div>
+    </div>
+    <div class="panel">
+        <div class="panel-header"><div class="panel-title">Delivery Logs</div><span style="font-size:12px;color:var(--text-muted);" id="selectedWebhookName">Click Logs on a webhook</span></div>
+        <div class="panel-body-table"><table><thead><tr><th>Event</th><th>Status</th><th>HTTP</th><th>Latency</th><th>Attempt</th><th>Time</th></tr></thead><tbody id="webhookLogsTable"><tr><td colspan="6"><div class="empty-state"><div class="empty-text">Click "Logs" on a webhook above</div></div></td></tr></tbody></table></div>
+    </div>
+</div>
+
+<!-- API KEY MODALS -->
+<div class="modal-overlay" id="apiKeyModal">
+    <div class="modal">
+        <div class="modal-title">🔑 Create API Key</div>
+        <div class="form-group"><label class="form-label">Key Name</label><input class="form-input" id="apiKeyName" placeholder="e.g. Greenhouse Integration" /></div>
+        <div class="form-group"><label class="form-label">Scopes</label><div id="scopeCheckboxes" style="display:flex;flex-direction:column;gap:6px;margin-top:6px;"></div></div>
+        <div class="modal-actions"><button class="btn btn-primary" style="flex:1;" onclick="createAPIKey()">Create Key</button><button class="btn btn-outline" onclick="closeAPIKeyModal()">Cancel</button></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="apiKeyResultModal">
+    <div class="modal">
+        <div class="modal-title">✅ API Key Created</div>
+        <p style="font-size:13px;color:var(--text-soft);margin-bottom:16px;">Copy this key now — it will <strong style="color:var(--red);">never be shown again.</strong></p>
+        <div style="background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:12px;font-family:monospace;font-size:12px;word-break:break-all;color:var(--green);" id="newKeyDisplay"></div>
+        <div class="modal-actions" style="margin-top:16px;"><button class="btn btn-primary" style="flex:1;" onclick="copyNewKey()">📋 Copy Key</button><button class="btn btn-outline" onclick="closeAPIKeyResultModal()">Done</button></div>
+    </div>
+</div>
+
+<!-- WEBHOOK MODAL -->
+<div class="modal-overlay" id="webhookModal">
+    <div class="modal">
+        <div class="modal-title">🪝 Create Webhook</div>
+        <div class="form-group"><label class="form-label">Name</label><input class="form-input" id="webhookName" placeholder="e.g. Greenhouse Sync" /></div>
+        <div class="form-group"><label class="form-label">URL (HTTPS only)</label><input class="form-input" id="webhookUrl" placeholder="https://your-app.com/webhook" /></div>
+        <div class="form-group"><label class="form-label">Events</label><div id="eventCheckboxes" style="display:flex;flex-direction:column;gap:5px;margin-top:6px;max-height:200px;overflow-y:auto;"></div></div>
+        <div class="modal-actions"><button class="btn btn-primary" style="flex:1;" onclick="createWebhook()">Create Webhook</button><button class="btn btn-outline" onclick="closeWebhookModal()">Cancel</button></div>
+    </div>
+</div>
+
+
+<!-- ── PHASE 32A: INTEGRATIONS ── -->
+<div class="tab-panel" id="section-integrations">
+    <div class="page-header">
+        <div><div class="back-link" onclick="showSection('overview')">← Back</div><div class="page-title">🔌 ATS Integrations</div>
+        <div class="page-meta"><span class="meta-item">Phase 32 — Greenhouse · Lever · Zapier · Make.com</span></div></div>
+        <div class="page-actions">
+            <button class="btn btn-outline" onclick="loadIntegrations()">🔄 Refresh</button>
+            <button class="btn btn-outline" onclick="retryFailedSyncs()">🔁 Retry Failed</button>
+        </div>
+    </div>
+
+    <!-- Partner status cards -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;" id="partnerStatusGrid">
+        <div class="kpi-card"><div class="kpi-label">Greenhouse</div><div class="kpi-value" id="ghStatus" style="font-size:16px;">—</div><div class="kpi-sub" id="ghSyncs">0 syncs</div></div>
+        <div class="kpi-card"><div class="kpi-label">Lever</div><div class="kpi-value" id="levStatus" style="font-size:16px;">—</div><div class="kpi-sub" id="levSyncs">0 syncs</div></div>
+        <div class="kpi-card"><div class="kpi-label">Zapier</div><div class="kpi-value" id="zapStatus" style="font-size:16px;">—</div><div class="kpi-sub" id="zapSyncs">0 syncs</div></div>
+        <div class="kpi-card"><div class="kpi-label">Make.com</div><div class="kpi-value" id="makeStatus" style="font-size:16px;">—</div><div class="kpi-sub" id="makeSyncs">0 syncs</div></div>
+    </div>
+
+    <!-- Webhook URLs -->
+    <div class="panel" style="margin-bottom:20px;">
+        <div class="panel-header"><div class="panel-title">📡 Inbound Webhook URLs</div><span style="font-size:12px;color:var(--text-muted);">Configure these in your ATS settings</span></div>
+        <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(29,110,245,0.05);border:1px solid var(--border);border-radius:10px;">
+                    <span style="font-size:13px;font-weight:600;min-width:100px;">Greenhouse</span>
+                    <code style="font-size:11px;color:var(--green);flex:1;font-family:monospace;">POST /api/integrations/greenhouse/webhook</code>
+                    <button class="btn btn-outline btn-sm" onclick="copyText('/api/integrations/greenhouse/webhook')">Copy</button>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(29,110,245,0.05);border:1px solid var(--border);border-radius:10px;">
+                    <span style="font-size:13px;font-weight:600;min-width:100px;">Lever</span>
+                    <code style="font-size:11px;color:var(--green);flex:1;font-family:monospace;">POST /api/integrations/lever/webhook</code>
+                    <button class="btn btn-outline btn-sm" onclick="copyText('/api/integrations/lever/webhook')">Copy</button>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(29,110,245,0.05);border:1px solid var(--border);border-radius:10px;">
+                    <span style="font-size:13px;font-weight:600;min-width:100px;">Zapier</span>
+                    <code style="font-size:11px;color:var(--green);flex:1;font-family:monospace;">POST /api/integrations/zapier/webhook</code>
+                    <button class="btn btn-outline btn-sm" onclick="copyText('/api/integrations/zapier/webhook')">Copy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manifests -->
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px;">
+        <div class="panel">
+            <div class="panel-header"><div class="panel-title">⚡ Zapier App Manifest</div></div>
+            <div class="panel-body">
+                <p style="font-size:12px;color:var(--text-soft);margin-bottom:12px;">Use this manifest to publish AITMP as a Zapier app.</p>
+                <button class="btn btn-outline" onclick="viewManifest('zapier')">View Manifest</button>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-header"><div class="panel-title">🔧 Make.com Modules</div></div>
+            <div class="panel-body">
+                <p style="font-size:12px;color:var(--text-soft);margin-bottom:12px;">Watch Candidates, Generate Narrative, Create Candidate.</p>
+                <button class="btn btn-outline" onclick="viewManifest('make')">View Manifest</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sync logs -->
+    <div class="panel">
+        <div class="panel-header">
+            <div class="panel-title">📋 Sync Logs</div>
+            <div style="display:flex;gap:8px;">
+                <select id="logPartnerFilter" class="form-select" style="width:130px;padding:5px 8px;font-size:12px;" onchange="loadIntegrationLogs()">
+                    <option value="">All Partners</option>
+                    <option value="greenhouse">Greenhouse</option>
+                    <option value="lever">Lever</option>
+                    <option value="zapier">Zapier</option>
+                    <option value="make">Make.com</option>
+                </select>
+                <select id="logStatusFilter" class="form-select" style="width:110px;padding:5px 8px;font-size:12px;" onchange="loadIntegrationLogs()">
+                    <option value="">All Status</option>
+                    <option value="success">Success</option>
+                    <option value="failed">Failed</option>
+                    <option value="retrying">Retrying</option>
+                </select>
+            </div>
+        </div>
+        <div class="panel-body-table">
+            <table><thead><tr><th>Partner</th><th>Direction</th><th>Event</th><th>Status</th><th>Latency</th><th>Attempt</th><th>Time</th></tr></thead>
+            <tbody id="syncLogsTable"><tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🔌</div><div class="empty-text">No sync logs yet — connect an ATS to get started</div></div></td></tr></tbody></table>
+        </div>
+    </div>
+</div>
+
+<!-- ── PHASE 32B: JOB DESCRIPTIONS ── -->
+<div class="tab-panel" id="section-jd">
+    <div class="page-header">
+        <div><div class="back-link" onclick="showSection('overview')">← Back</div><div class="page-title">📝 AI Job Descriptions</div>
+        <div class="page-meta"><span class="meta-item">Phase 32 — GPT-4o Powered JD Generator</span></div></div>
+        <div class="page-actions">
+            <button class="btn btn-outline" onclick="loadJDSection()">🔄 Refresh</button>
+            <button class="btn btn-primary" onclick="openJDModal()">✨ Generate JD</button>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;">
+        <div class="kpi-card"><div class="kpi-label">JDs Generated</div><div class="kpi-value" id="jdTotal">—</div><div class="kpi-sub">All roles</div></div>
+        <div class="kpi-card"><div class="kpi-label">Avg Quality</div><div class="kpi-value" id="jdAvgQuality">—</div><div class="kpi-sub">0-100 score</div></div>
+        <div class="kpi-card"><div class="kpi-label">Tones Available</div><div class="kpi-value">4</div><div class="kpi-sub">Pro · Chat · Bold · Enterprise</div></div>
+        <div class="kpi-card"><div class="kpi-label">Role Types</div><div class="kpi-value">4</div><div class="kpi-sub">Tech · Lead · Creative · Sales</div></div>
+    </div>
+
+    <!-- JD list per role -->
+    <div class="panel">
+        <div class="panel-header"><div class="panel-title">Job Descriptions by Role</div></div>
+        <div class="panel-body" id="jdRoleList">
+            <div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">No job descriptions yet — click "Generate JD" to create one</div></div>
+        </div>
+    </div>
+
+    <!-- JD preview -->
+    <div class="panel" id="jdPreviewPanel" style="display:none;">
+        <div class="panel-header">
+            <div class="panel-title" id="jdPreviewTitle">JD Preview</div>
+            <div style="display:flex;gap:8px;">
+                <button class="btn btn-outline btn-sm" onclick="copyJD()">📋 Copy</button>
+                <button class="btn btn-outline btn-sm" onclick="document.getElementById('jdPreviewPanel').style.display='none'">✕ Close</button>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;" id="jdMetaTags"></div>
+            <div id="jdPreviewContent" style="font-size:13px;color:var(--text-soft);line-height:1.8;white-space:pre-wrap;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- JD GENERATE MODAL -->
+<div class="modal-overlay" id="jdModal">
+    <div class="modal" style="width:500px;">
+        <div class="modal-title">✨ Generate Job Description</div>
+        <div class="form-group">
+            <label class="form-label">Role</label>
+            <select class="form-select" id="jdJobSelect">
+                <option value="">Loading roles...</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Tone</label>
+            <select class="form-select" id="jdToneSelect">
+                <option value="professional">Professional — Formal, structured</option>
+                <option value="conversational">Conversational — Friendly, human</option>
+                <option value="bold">Bold / Startup — Energetic, ambitious</option>
+                <option value="enterprise">Enterprise — Compliance-ready</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Role Type</label>
+            <select class="form-select" id="jdRoleTypeSelect">
+                <option value="technical">Technical — Skills-forward</option>
+                <option value="leadership">Leadership — Vision-driven</option>
+                <option value="creative">Creative — Brand-voice</option>
+                <option value="sales">Sales — Achievement-oriented</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Additional Context (optional)</label>
+            <input class="form-input" id="jdContext" placeholder="e.g. Remote-first, Series B startup, fast-paced" />
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-primary" style="flex:1;" onclick="generateJD()">✨ Generate</button>
+            <button class="btn btn-outline" onclick="closeJDModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

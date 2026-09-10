@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Talent Match Pro — API Documentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:         #0a0f1e;
+            --panel:      #111827;
+            --panel-soft: #1a2235;
+            --border:     rgba(255,255,255,0.08);
+            --blue:       #2563eb;
+            --blue-light: #3b82f6;
+            --gold:       #f59e0b;
+            --silver:     #94a3b8;
+            --green:      #22c55e;
+            --red:        #ef4444;
+            --text:       #ffffff;
+            --text-soft:  rgba(255,255,255,0.6);
+            --text-muted: rgba(255,255,255,0.35);
+            --code-bg:    #0d1a2d;
+            --radius:     10px;
+            --sidebar-w:  220px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(37,99,235,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(37,99,235,0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            height: 56px;
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .at-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .app-name { font-size: 15px; font-weight: 700; }
+
+        .company-switcher {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--panel-soft);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 6px 12px;
+            font-size: 13px;
+            color: var(--text-soft);
+            cursor: pointer;
+            margin-left: 8px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .upgrade-btn {
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* ── LAYOUT ── */
+        .layout {
+            display: flex;
+            margin-top: 56px;
+            min-height: calc(100vh - 56px);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── LEFT SIDEBAR (nav) ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--panel);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            top: 56px; left: 0; bottom: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 16px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-user {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 20px 24px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 8px;
+        }
+
+        .user-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .user-name { font-size: 14px; font-weight: 600; text-align: center; }
+        .user-role { font-size: 11px; color: var(--text-muted); }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-soft);
+            cursor: pointer;
+            transition: all 0.15s;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+        .nav-item.active { color: var(--blue-light); background: rgba(37,99,235,0.08); border-left-color: var(--blue-light); }
+        .nav-icon { font-size: 16px; width: 18px; }
+
+        .create-role-btn {
+            margin: 16px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .api-status {
+            margin: 0 16px;
+            padding: 10px 12px;
+            background: rgba(34,197,94,0.08);
+            border: 1px solid rgba(34,197,94,0.2);
+            border-radius: var(--radius);
+            font-size: 11px;
+        }
+
+        .api-status-title { color: var(--green); font-weight: 600; margin-bottom: 2px; }
+        .api-status-sub { color: var(--text-muted); }
+
+        /* ── RIGHT SIDEBAR (doc nav) ── */
+        .doc-sidebar {
+            width: 200px;
+            position: fixed;
+            top: 56px; right: 0; bottom: 0;
+            padding: 24px 16px;
+            border-left: 1px solid var(--border);
+            overflow-y: auto;
+        }
+
+        .doc-nav-title {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            margin-top: 16px;
+        }
+
+        .doc-nav-title:first-child { margin-top: 0; }
+
+        .doc-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.15s;
+            margin-bottom: 2px;
+        }
+
+        .doc-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+        .doc-nav-link.active { color: var(--blue-light); background: rgba(37,99,235,0.08); }
+
+        .method-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .dot-post { background: var(--green); }
+        .dot-get  { background: var(--blue-light); }
+
+        /* ── CONTENT ── */
+        .content {
+            margin-left: var(--sidebar-w);
+            margin-right: 200px;
+            padding: 32px 40px;
+            max-width: 900px;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            margin-bottom: 48px;
+        }
+
+        .hero-eyebrow {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--blue-light);
+            margin-bottom: 12px;
+        }
+
+        .hero-title {
+            font-size: 36px;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+
+        .hero-subtitle {
+            font-size: 15px;
+            color: var(--text-soft);
+            line-height: 1.6;
+            max-width: 560px;
+            margin-bottom: 24px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 32px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--blue-light);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ── SECTION ── */
+        .section {
+            margin-bottom: 48px;
+            scroll-margin-top: 72px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 3px;
+            height: 20px;
+            background: var(--blue-light);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .section-desc {
+            font-size: 14px;
+            color: var(--text-soft);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* ── ENDPOINT CARD ── */
+        .endpoint-card {
+            background: var(--panel-soft);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .method-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .method-post { background: rgba(34,197,94,0.12); color: var(--green); }
+        .method-get  { background: rgba(59,130,246,0.12); color: var(--blue-light); }
+
+        .endpoint-url {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            flex: 1;
+        }
+
+        .endpoint-desc { font-size: 12px; color: var(--text-muted); }
+
+        .endpoint-body { padding: 18px; }
+
+        /* ── CODE BLOCK ── */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 14px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(0,0,0,0.15);
+        }
+
+        .code-lang {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+        }
+
+        .code-copy {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.15s;
+        }
+
+        .code-copy:hover { border-color: var(--blue-light); color: var(--blue-light); }
+
+        pre {
+            padding: 16px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.7;
+            color: var(--text-soft);
+        }
+
+        .tk  { color: #7dd3fc; }   /* key */
+        .ts  { color: #86efac; }   /* string */
+        .tn  { color: #fbbf24; }   /* number */
+        .tc  { color: var(--text-muted); font-style: italic; }  /* comment */
+        .tm  { color: #c4b5fd; }   /* method */
+        .tu  { color: var(--blue-light); }  /* url */
+
+        /* ── PARAMS TABLE ── */
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 14px;
+            background: var(--panel-soft);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .params-table th {
+            text-align: left;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            padding: 8px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .params-table td {
+            padding: 10px 14px;
+            font-size: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            vertical-align: top;
+        }
+
+        .params-table tr:last-child td { border-bottom: none; }
+
+        .param-name { font-family: 'JetBrains Mono', monospace; color: var(--blue-light); font-size: 12px; }
+        .param-type { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--gold); background: rgba(245,158,11,0.1); padding: 2px 5px; border-radius: 4px; }
+        .param-req  { font-size: 10px; color: var(--red); font-weight: 600; }
+        .param-opt  { font-size: 10px; color: var(--text-muted); }
+        .param-desc { color: var(--text-soft); line-height: 1.5; }
+
+        /* ── RESPONSE FIELDS ── */
+        .response-field {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .response-field:last-child { border-bottom: none; }
+        .rf-name { font-family: 'JetBrains Mono', monospace; color: var(--blue-light); font-size: 12px; min-width: 130px; }
+        .rf-type { font-family: 'JetBrains Mono', monospace; color: var(--gold); font-size: 11px; min-width: 55px; }
+        .rf-desc { font-size: 13px; color: var(--text-soft); flex: 1; }
+
+        /* ── TIER CARDS ── */
+        .tier-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .tier-card {
+            background: var(--panel-soft);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+        }
+
+        .tier-card.gold-card   { border: 1px solid rgba(245,158,11,0.3); }
+        .tier-card.silver-card { border: 1px solid rgba(148,163,184,0.3); }
+        .tier-card.bronze-card { border: 1px solid rgba(180,83,9,0.3); }
+
+        .tier-medal { font-size: 28px; margin-bottom: 8px; }
+        .tier-score-val { font-size: 22px; font-weight: 800; }
+        .gold-card .tier-score-val   { color: var(--gold); }
+        .silver-card .tier-score-val { color: var(--silver); }
+        .bronze-card .tier-score-val { color: #cd7c32; }
+        .tier-label { font-size: 13px; font-weight: 600; margin: 4px 0; }
+        .tier-sub   { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+
+        /* ── LATENCY BANNER ── */
+        .latency-banner {
+            background: rgba(34,197,94,0.06);
+            border: 1px solid rgba(34,197,94,0.2);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .latency-val { font-size: 36px; font-weight: 800; color: var(--green); font-family: 'JetBrains Mono', monospace; }
+        .latency-label { font-size: 13px; color: var(--text-soft); line-height: 1.5; }
+        .latency-label strong { color: var(--green); display: block; font-size: 15px; }
+
+        /* ── INFO BOX ── */
+        .info-box {
+            background: rgba(37,99,235,0.06);
+            border: 1px solid rgba(37,99,235,0.2);
+            border-radius: var(--radius);
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: var(--text-soft);
+            line-height: 1.6;
+        }
+
+        .info-box strong { color: var(--blue-light); }
+
+
+        /* ENHANCEMENT 1 - SMOOTH SCROLL */
+        html { scroll-behavior: smooth; }
+
+        /* ENHANCEMENT 2 - LANGUAGE TABS */
+        .lang-tabs {
+            display: flex;
+            gap: 4px;
+            background: rgba(0,0,0,0.2);
+            padding: 4px;
+            border-bottom: 1px solid var(--border);
+        }
+        .lang-tab {
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: "JetBrains Mono", monospace;
+        }
+        .lang-tab:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+        .lang-tab.active { background: var(--blue); color: white; }
+        .lang-panel { display: none; }
+        .lang-panel.active { display: block; }
+
+        /* ENHANCEMENT 3 - TRY IT CONSOLE */
+        .try-console {
+            background: var(--code-bg);
+            border: 1px solid rgba(37,99,235,0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .try-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(37,99,235,0.08);
+        }
+        .try-title { font-size: 13px; font-weight: 600; color: var(--blue-light); display: flex; align-items: center; gap: 8px; }
+        .try-live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 1.5s ease-in-out infinite; }
+        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+        .try-body { padding: 16px; }
+        .try-field { margin-bottom: 12px; }
+        .try-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; display: block; }
+        .try-input {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text);
+            padding: 8px 12px;
+            font-size: 13px;
+            font-family: "Inter", sans-serif;
+            transition: border-color 0.15s;
+        }
+        .try-input:focus { outline: none; border-color: var(--blue-light); }
+        .try-input::placeholder { color: var(--text-muted); }
+        .try-btn {
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 9px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: "Inter", sans-serif;
+            transition: background 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .try-btn:hover { background: var(--blue-light); }
+        .try-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .try-response {
+            margin-top: 12px;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 12px;
+            color: var(--text-soft);
+            line-height: 1.6;
+            max-height: 280px;
+            overflow-y: auto;
+            display: none;
+        }
+        .try-response.visible { display: block; animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+        /* ENHANCEMENT 5 - LAST UPDATED */
+        .last-updated {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--panel-soft);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 4px 10px;
+            margin-left: 8px;
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(37,99,235,0.3); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+    <div class="topbar-left">
+        <div class="at-logo">AT</div>
+        <span class="app-name">AI Talent Match Pro</span>
+        <div class="company-switcher">🏢 Acme Talent ▾</div>
+    </div>
+    <div class="topbar-right">
+        <button class="upgrade-btn">⚡ Upgrade to Pro</button>
+        <div class="avatar">SL</div>
+    </div>
+</header>
+
+<div class="layout">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-user">
+            <div class="user-avatar">SL</div>
+            <div class="user-name">Sarah Lin</div>
+            <div class="user-role">Head of Talent</div>
+        </div>
+
+        <a class="nav-item" href="/workspace"><span class="nav-icon">👤</span> Your Roles</a>
+        <a class="nav-item" href="/workspace"><span class="nav-icon">🔖</span> Shortlists</a>
+        <a class="nav-item" href="/admin"><span class="nav-icon">👥</span> Team</a>
+        <a class="nav-item" href="/admin"><span class="nav-icon">⚙️</span> Admin</a>
+        <a class="nav-item" href="/admin"><span class="nav-icon">💲</span> Billing</a>
+        <a class="nav-item active"><span class="nav-icon">📄</span> API Docs</a>
+
+        <button class="create-role-btn" onclick="window.location='/workspace'">+ Create New Role</button>
+
+        <div class="api-status">
+            <div class="api-status-title">✦ API STATUS</div>
+            <div class="api-status-sub">All engines operational · 87ms · p95</div>
+        </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+        <!-- HERO -->
+        <div class="hero" id="overview">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <div class="hero-eyebrow" style="margin-bottom:0;">API Reference · v20.0.0</div>
+            <span class="last-updated">🕐 Last updated: April 2026</span>
+        </div>
+            <h1 class="hero-title">AI Talent Match Pro<br>Developer API</h1>
+            <p class="hero-subtitle">
+                Real-time, multi-dimensional candidate scoring powered by GPT-4o on Azure.
+                Sub-100ms responses. Built for enterprise recruiting platforms.
+            </p>
+            <div class="hero-stats">
+                <div>
+                    <div class="stat-value">&lt;100ms</div>
+                    <div class="stat-label">Average latency</div>
+                </div>
+                <div>
+                    <div class="stat-value">99.9%</div>
+                    <div class="stat-label">Uptime SLA</div>
+                </div>
+                <div>
+                    <div class="stat-value">GPT-4o</div>
+                    <div class="stat-label">AI engine</div>
+                </div>
+                <div>
+                    <div class="stat-value">Azure</div>
+                    <div class="stat-label">Infrastructure</div>
+                </div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:20px;">
+                <a href="/api/v1/openapi.json" download="aitmp-openapi.json"
+                   style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--panel-soft);border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-weight:600;color:var(--text-soft);text-decoration:none;transition:all 0.15s;"
+                   onmouseover="this.style.borderColor='var(--blue-light)';this.style.color='var(--text)'"
+                   onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-soft)'">
+                    ⬇ Download OpenAPI JSON
+                </a>
+                <a href="#try-it"
+                   style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.3);border-radius:var(--radius);font-size:13px;font-weight:600;color:var(--blue-light);text-decoration:none;">
+                    ▶ Try the API
+                </a>
+            </div>
+        </div>
+
+        <!-- TRY IT CONSOLE -->
+        <div class="section" id="try-it">
+            <div class="section-title">Try It</div>
+            <p class="section-desc">Runs a live GPT-4o candidate evaluation from your browser — real output from our scoring engine, no setup or key needed.</p>
+            <div class="try-console">
+                <div class="try-header">
+                    <div class="try-title">
+                        <div class="try-live-dot"></div>
+                        Live API Console
+                    </div>
+                    <span style="font-size:11px;color:var(--text-muted);">GET /api/demo/example</span>
+                </div>
+                <div class="try-body">
+                    <div class="try-field">
+                        <label class="try-label">Job Title</label>
+                        <input class="try-input" id="tryTitle" placeholder="e.g. Senior Marketing Manager" value="Senior Marketing Manager" />
+                    </div>
+                    <div class="try-field">
+                        <label class="try-label">Location</label>
+                        <input class="try-input" id="tryLocation" placeholder="e.g. New York, NY" value="New York, NY" />
+                    </div>
+                    <div class="try-field">
+                        <label class="try-label">Required Skills (comma separated)</label>
+                        <input class="try-input" id="trySkills" placeholder="e.g. Marketing, SEO, Leadership" value="Marketing, SEO, Leadership" />
+                    </div>
+                    <button class="try-btn" id="tryBtn" onclick="tryAPI()">▶ Run Request</button>
+                    <div class="try-response" id="tryResponse"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AUTHENTICATION -->
+        <div class="section" id="authentication">
+            <div class="section-title">Authentication</div>
+            <p class="section-desc">All API requests require a function key passed as a query parameter. Contact <strong>api@aitmp.io</strong> for enterprise API access.</p>
+            <div class="info-box">
+                <strong>Enterprise Access:</strong> API keys are provisioned per organization with rate limiting, usage analytics, and dedicated support.
+            </div>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Authentication</span>
+                    <button class="code-copy" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="tu">https://api.aitmp.io/api/candidates/search?code=YOUR_API_KEY</span></pre>
+            </div>
+        </div>
+
+        <!-- BASE URL -->
+        <div class="section" id="base-url">
+            <div class="section-title">Base URL</div>
+            <div class="code-block">
+                <div class="code-header"><span class="code-lang">Production</span></div>
+                <pre><span class="tu">https://api.aitmp.io</span></pre>
+            </div>
+        </div>
+
+        <!-- GRADE ENDPOINT -->
+        <div class="section" id="grade">
+            <div class="section-title">Search Candidates</div>
+            <p class="section-desc">Source candidates from a job description across 275M+ profiles (requires Apollo). To score candidates you already have — with Gold / Silver / Bronze tiers and reasoning — use <strong>POST /api/candidates/score</strong>.</p>
+
+            <div class="latency-banner">
+                <div class="latency-val">&lt;100ms</div>
+                <div class="latency-label">
+                    <strong>Sub-100ms Response Time</strong>
+                    Proven via Azure Application Insights. Average p95 latency is 87ms.
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-url">/api/candidates/search</span>
+                    <span class="endpoint-desc">Score candidates against a job description</span>
+                </div>
+                <div class="endpoint-body">
+
+                    <p style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:10px;">Request Body</p>
+
+                    <table class="params-table">
+                        <tr>
+                            <th>Parameter</th><th>Type</th><th>Required</th><th>Description</th>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">job_description</span></td>
+                            <td><span class="param-type">string</span></td>
+                            <td><span class="param-req">Required</span></td>
+                            <td class="param-desc">The role and its requirements, as free text. Used to source matching candidates.</td>
+                        </tr>
+                    </table>
+
+                    <p style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin:16px 0 10px;">Example Request</p>
+
+                    <div class="code-block" style="overflow:hidden;">
+                        <div class="lang-tabs">
+                            <div class="lang-tab active" onclick="switchLang(this,'curl')">cURL</div>
+                            <div class="lang-tab" onclick="switchLang(this,'js')">JavaScript</div>
+                            <div class="lang-tab" onclick="switchLang(this,'python')">Python</div>
+                        </div>
+                        <div class="lang-panel active" id="lang-curl">
+                        <div class="code-header" style="border-top:none;">
+                            <span class="code-lang">cURL</span>
+                            <button class="code-copy" onclick="copyLangCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="tm">curl</span> -X POST <span class="tu">"https://api.aitmp.io/api/candidates/search?code=YOUR_KEY"</span> \
+  -H <span class="ts">"Content-Type: application/json"</span> \
+  -d <span class="ts">'{
+    "job_description": "Senior Backend Engineer — 6+ years Python or Go, Kafka, PostgreSQL, AWS. Payments experience a plus."
+  }'</span></pre>
+                        </div></div><!-- end curl panel -->
+                        <div class="lang-panel" id="lang-js">
+                        <div class="code-header" style="border-top:none;">
+                            <span class="code-lang">JavaScript</span>
+                            <button class="code-copy" onclick="copyLangCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="tm">const</span> response = <span class="tm">await</span> fetch(<span class="ts">"https://api.aitmp.io/api/candidates/search?code=YOUR_KEY"</span>, {
+  method: <span class="ts">"POST"</span>,
+  headers: { <span class="ts">"Content-Type"</span>: <span class="ts">"application/json"</span> },
+  body: JSON.stringify({
+    job_description: <span class="ts">"Senior Backend Engineer — 6+ years Python or Go, Kafka, PostgreSQL, AWS."</span>
+  })
+});
+<span class="tm">const</span> data = <span class="tm">await</span> response.json();
+console.log(data); <span class="tc">// sourcing status (ok / configured / message)</span></pre>
+                        </div></div><!-- end js panel -->
+                        <div class="lang-panel" id="lang-python">
+                        <div class="code-header" style="border-top:none;">
+                            <span class="code-lang">Python</span>
+                            <button class="code-copy" onclick="copyLangCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="tm">import</span> requests
+
+response = requests.post(
+    <span class="ts">"https://api.aitmp.io/api/candidates/search"</span>,
+    params={<span class="ts">"code"</span>: <span class="ts">"YOUR_KEY"</span>},
+    json={
+        <span class="tk">"job_description"</span>: <span class="ts">"Senior Backend Engineer — 6+ years Python or Go, Kafka, PostgreSQL, AWS."</span>
+    }
+)
+data = response.json()
+<span class="tm">print</span>(data)</pre>
+                        </div></div><!-- end python panel -->
+                    </div><!-- end tabbed code block -->
+
+                    <p style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin:16px 0 10px;">Example Response</p>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">JSON Response</span>
+                            <button class="code-copy" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>{
+  <span class="tk">"ok"</span>: <span class="tn">true</span>,
+  <span class="tk">"configured"</span>: <span class="tn">true</span>,
+  <span class="tk">"message"</span>: <span class="ts">"Apollo is connected — call POST /api/apollo/search to source candidates."</span>
+}</pre>
+                    </div>
+                    <p style="font-size:13px;color:var(--text-muted);margin-top:12px;line-height:1.6;">
+                        If sourcing isn't connected yet, this returns an honest <strong>501</strong> — never fabricated people:
+                        <code>{ "ok": false, "configured": false, "error": "Candidate sourcing isn't connected yet…" }</code>.
+                        To get scored candidates with Gold / Silver / Bronze tiers, adaptability, focus penalty and reasoning,
+                        send candidates you already have to <strong>POST /api/candidates/score</strong>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TIER SYSTEM -->
+        <div class="section" id="tier-system">
+            <div class="section-title">Tier System</div>
+            <p class="section-desc">Every candidate is automatically ranked into one of three tiers:</p>
+            <div class="tier-grid">
+                <div class="tier-card gold-card">
+                    <div class="tier-medal">🥇</div>
+                    <div class="tier-score-val">95–100</div>
+                    <div class="tier-label">The Perfect Soul</div>
+                    <div class="tier-sub">Exact title match, complete skill coverage, aligned trajectory.</div>
+                </div>
+                <div class="tier-card silver-card">
+                    <div class="tier-medal">🥈</div>
+                    <div class="tier-score-val">85–94</div>
+                    <div class="tier-label">The Mirror</div>
+                    <div class="tier-sub">Equivalent seniority and scope, minor gaps in nice-to-haves.</div>
+                </div>
+                <div class="tier-card bronze-card">
+                    <div class="tier-medal">🥉</div>
+                    <div class="tier-score-val">70–84</div>
+                    <div class="tier-label">The Adjacent</div>
+                    <div class="tier-sub">One step removed, high trajectory velocity, worth a conversation.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESPONSE SCHEMA -->
+        <div class="section" id="response-schema">
+            <div class="section-title">Response Schema</div>
+            <div class="endpoint-card">
+                <div class="endpoint-body">
+                    <div class="response-field">
+                        <span class="rf-name">match_score</span>
+                        <span class="rf-type">integer</span>
+                        <span class="rf-desc">Overall fit score 0–100. Gold ≥95, Silver ≥85, Bronze ≥70.</span>
+                    </div>
+                    <div class="response-field">
+                        <span class="rf-name">adaptability</span>
+                        <span class="rf-type">integer</span>
+                        <span class="rf-desc">How well the candidate transfers skills across roles. 100 = highly adaptable.</span>
+                    </div>
+                    <div class="response-field">
+                        <span class="rf-name">focus_penalty</span>
+                        <span class="rf-type">integer</span>
+                        <span class="rf-desc">Career scatteredness penalty. 0 = highly focused. 100 = very scattered.</span>
+                    </div>
+                    <div class="response-field">
+                        <span class="rf-name">silent_skill</span>
+                        <span class="rf-type">string</span>
+                        <span class="rf-desc">AI-identified psychological strength e.g. "Creates clarity in chaos".</span>
+                    </div>
+                    <div class="response-field">
+                        <span class="rf-name">ai_analysis</span>
+                        <span class="rf-type">string</span>
+                        <span class="rf-desc">Natural language justification explaining the score and trajectory bonus.</span>
+                    </div>
+                    <div class="response-field">
+                        <span class="rf-name">latency_ms</span>
+                        <span class="rf-type">integer</span>
+                        <span class="rf-desc">End-to-end API response time in milliseconds.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HEALTH -->
+        <div class="section" id="health">
+            <div class="section-title">Health Check</div>
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-url">/api/health</span>
+                    <span class="endpoint-desc">Check API status and version</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="code-block">
+                        <div class="code-header"><span class="code-lang">Response</span></div>
+                        <pre>{
+  <span class="tk">"status"</span>: <span class="ts">"healthy"</span>,
+  <span class="tk">"service"</span>: <span class="ts">"AI Talent Match Pro"</span>,
+  <span class="tk">"version"</span>: <span class="ts">"20.0.0"</span>,
+  <span class="tk">"cold_start"</span>: <span class="tn">false</span>
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ERRORS -->
+        <div class="section" id="errors">
+            <div class="section-title">Error Codes</div>
+            <table class="params-table">
+                <tr><th>Status</th><th>Code</th><th>Description</th></tr>
+                <tr>
+                    <td style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:12px;">200</td>
+                    <td><span class="param-name">success</span></td>
+                    <td class="param-desc">Request successful</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:12px;">400</td>
+                    <td><span class="param-name">invalid_request</span></td>
+                    <td class="param-desc">Missing or invalid parameters</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:12px;">401</td>
+                    <td><span class="param-name">unauthorized</span></td>
+                    <td class="param-desc">Invalid or missing API key</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:12px;">500</td>
+                    <td><span class="param-name">internal_error</span></td>
+                    <td class="param-desc">Server error — contact support</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- RATE LIMITS -->
+        <div class="section" id="rate-limits">
+            <div class="section-title">Rate Limits</div>
+            <table class="params-table">
+                <tr><th>Plan</th><th>Requests/min</th><th>Candidates/request</th></tr>
+                <tr><td>Free</td><td><span class="param-name">10</span></td><td><span class="param-name">1</span></td></tr>
+                <tr><td>Business</td><td><span class="param-name">60</span></td><td><span class="param-name">2</span></td></tr>
+                <tr><td>Corporate</td><td><span class="param-name">300</span></td><td><span class="param-name">3</span></td></tr>
+                <tr><td style="color:var(--blue-light);">Enterprise</td><td><span class="param-name">Unlimited</span></td><td><span class="param-name">50</span></td></tr>
+            </table>
+        </div>
+
+        <!-- LINKEDIN -->
+        <div class="section" id="linkedin">
+            <div class="section-title">LinkedIn Integration</div>
+            <p class="section-desc">AI Talent Match Pro is designed to plug directly into LinkedIn Talent Solutions as a scoring layer.</p>
+            <div class="info-box">
+                <strong>LinkedIn Talent Solutions Partner:</strong> Actively applying for the LinkedIn Talent Solutions Partner Program. Contact <strong>partnerships@aitmp.io</strong> for integration discussions.
+            </div>
+            <div class="code-block">
+                <div class="code-header"><span class="code-lang">Integration Flow</span></div>
+                <pre><span class="tc">// LinkedIn sends candidate → we score → return tier</span>
+
+<span class="tn">1.</span> LinkedIn Recruiter surfaces a candidate
+<span class="tn">2.</span> POST /api/candidates/search with candidate + job description
+<span class="tn">3.</span> AIGradeEngine scores in &lt;100ms
+<span class="tn">4.</span> Gold / Silver / Bronze tier returned
+<span class="tn">5.</span> LinkedIn displays tier badge on candidate card</pre>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- RIGHT DOC SIDEBAR -->
+    <aside class="doc-sidebar">
+        <div class="doc-nav-title">Getting Started</div>
+        <a class="doc-nav-link active" href="#overview">Overview</a>
+        <a class="doc-nav-link" href="#try-it">▶ Try It</a>
+        <a class="doc-nav-link" href="#authentication">Authentication</a>
+        <a class="doc-nav-link" href="#base-url">Base URL</a>
+
+        <div class="doc-nav-title">Endpoints</div>
+        <a class="doc-nav-link" href="#grade">
+            <span class="method-dot dot-post"></span> Grade Candidates
+        </a>
+        <a class="doc-nav-link" href="#health">
+            <span class="method-dot dot-get"></span> Health Check
+        </a>
+
+        <div class="doc-nav-title">Reference</div>
+        <a class="doc-nav-link" href="#tier-system">Tier System</a>
+        <a class="doc-nav-link" href="#response-schema">Response Schema</a>
+        <a class="doc-nav-link" href="#errors">Error Codes</a>
+        <a class="doc-nav-link" href="#rate-limits">Rate Limits</a>
+        <a class="doc-nav-link" href="#linkedin">LinkedIn Integration</a>
+    </aside>
+
+</div>
+
+<script>
+function copyCode(btn) {
+    const pre  = btn.closest('.code-block').querySelector('pre');
+    const text = pre.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!';
+        btn.style.color = 'var(--green)';
+        btn.style.borderColor = 'var(--green)';
+        setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = ''; btn.style.borderColor = ''; }, 2000);
+    });
+}
+
+// ENHANCEMENT 2 - Language tabs
+function switchLang(tab, lang) {
+    const block = tab.closest('.code-block');
+    block.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+    block.querySelectorAll('.lang-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    const panel = block.querySelector(`#lang-${lang}`);
+    if (panel) panel.classList.add('active');
+}
+
+function copyLangCode(btn) {
+    const panel = btn.closest('.lang-panel');
+    const pre   = panel ? panel.querySelector('pre') : btn.closest('.code-block').querySelector('pre');
+    if (!pre) return;
+    navigator.clipboard.writeText(pre.textContent).then(() => {
+        btn.textContent = 'Copied!';
+        btn.style.color = 'var(--green)';
+        setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = ''; }, 2000);
+    });
+}
+
+// ENHANCEMENT 3 - Try It console
+async function tryAPI() {
+    // Live GPT-4o sample: hits the public /api/demo/example endpoint (real scoring, cached
+    // server-side). Same-origin relative URL — no key, no CORS.
+    const btn  = document.getElementById('tryBtn');
+    const resp = document.getElementById('tryResponse');
+
+    btn.disabled    = true;
+    btn.textContent = '⏳ Running...';
+    resp.className   = 'try-response visible';
+    resp.textContent = 'Calling the live GPT-4o scoring engine...';
+
+    try {
+        const start = Date.now();
+        const res   = await fetch('/api/demo/example');
+        const data  = await res.json();
+        const elapsed = Date.now() - start;
+        if (!data || !data.ok) {
+            resp.textContent = 'The scoring engine is momentarily unavailable — please try again in a moment.';
+        } else {
+            resp.textContent = JSON.stringify({
+                ok:            true,
+                role:          data.role,
+                candidate:     data.name,
+                tier:          data.tier,
+                match_score:   data.match_score,
+                adaptability:  data.adaptability,
+                focus_penalty: data.focus_penalty,
+                ai_analysis:   data.ai_analysis,
+                _note:               'Live GPT-4o sample evaluation',
+                _client_latency_ms:  elapsed
+            }, null, 2);
+        }
+    } catch(e) {
+        resp.textContent = `Error: ${e.message}`;
+    }
+
+    btn.disabled  = false;
+    btn.innerHTML = '&#9654; Run Request';
+}
+
+// Active right nav on scroll
+const sections = document.querySelectorAll('.section');
+const links    = document.querySelectorAll('.doc-nav-link');
+
+window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) current = s.id; });
+    links.forEach(l => {
+        l.classList.remove('active');
+        if (l.getAttribute('href') === '#' + current) l.classList.add('active');
+    });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#000000">
+<meta property="og:title" content="Accessibility — AI Talent Match Pro">
+<meta property="og:description" content="How we make AI Talent Match Pro usable for everyone — and where we're still improving.">
+<meta property="og:image" content="/static/og-image.png">
+<meta property="og:url" content="https://aitmp.io/accessibility">
+<title>Accessibility | AI Talent Match Pro</title>
+<link rel="icon" href="/static/at-hexagon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:#050914;color:#fff;font-family:'Inter',-apple-system,sans-serif;min-height:100vh;}
+.nav{position:fixed;top:0;left:0;width:100%;height:64px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,9,20,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.07);z-index:999;}
+.nav-left{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo{width:36px;height:36px;object-fit:contain;}
+.nav-logo-fallback{width:36px;height:36px;background:linear-gradient(135deg,#1d6ef5,#4d9fff);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;}
+.nav-name{font-size:15px;font-weight:700;color:#fff;}
+.nav-right{display:flex;align-items:center;gap:20px;}
+.nav-link{font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;}
+.nav-link:hover{color:#fff;}
+.nav-cta{padding:7px 16px;background:#2563eb;color:#fff;font-size:13px;font-weight:600;border-radius:8px;text-decoration:none;}
+.page{max-width:760px;margin:0 auto;padding:100px 32px 80px;}
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#4d9fff;margin-bottom:16px;}
+h1{font-size:clamp(28px,4vw,42px);font-weight:800;color:#fff;letter-spacing:-0.02em;margin-bottom:8px;}
+.updated{font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:32px;}
+.toc{background:rgba(29,110,245,0.06);border:1px solid rgba(29,110,245,0.2);border-radius:12px;padding:20px 24px;margin-bottom:40px;}
+.toc-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#4d9fff;margin-bottom:12px;}
+.toc ol{padding-left:18px;display:flex;flex-direction:column;gap:6px;}
+.toc li a{font-size:14px;color:rgba(255,255,255,0.6);text-decoration:none;}
+.toc li a:hover{color:#4d9fff;}
+.intro{font-size:16px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:40px;padding:16px 20px;background:rgba(255,255,255,0.03);border-left:3px solid #2563eb;border-radius:0 8px 8px 0;}
+h2{font-size:20px;font-weight:700;color:#fff;margin:40px 0 14px;padding-top:20px;}
+p{font-size:15px;color:rgba(255,255,255,0.65);line-height:1.75;margin-bottom:14px;}
+ul{padding-left:20px;margin-bottom:14px;display:flex;flex-direction:column;gap:8px;}
+li{font-size:15px;color:rgba(255,255,255,0.65);line-height:1.65;}
+a{color:#4d9fff;text-decoration:none;}
+a:hover{text-decoration:underline;}
+.back-top{font-size:12px;color:rgba(255,255,255,0.3);text-decoration:none;display:inline-block;margin-top:8px;}
+.back-top:hover{color:#4d9fff;}
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.tool-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;}
+.tool-name{font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;}
+.tool-desc{font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;}
+.response-box{background:rgba(0,214,143,0.06);border:1px solid rgba(0,214,143,0.2);border-radius:10px;padding:14px 18px;margin-bottom:14px;}
+.response-box p{color:rgba(255,255,255,0.7);margin:0;}
+.response-box strong{color:#00d68f;}
+.contact-box{background:rgba(29,110,245,0.08);border:1px solid rgba(29,110,245,0.25);border-radius:12px;padding:20px 24px;text-align:center;margin-top:40px;}
+.contact-box p{color:rgba(255,255,255,0.6);margin-bottom:12px;}
+.contact-btn{display:inline-block;padding:10px 24px;background:#2563eb;color:#fff;font-size:14px;font-weight:600;border-radius:8px;text-decoration:none;}
+footer{border-top:1px solid rgba(255,255,255,0.07);padding:24px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.footer-copy{font-size:12px;color:rgba(255,255,255,0.3);}
+.footer-links{display:flex;gap:20px;}
+.footer-links a{font-size:12px;color:rgba(255,255,255,0.3);text-decoration:none;}
+.footer-links a:hover{color:#fff;}
+@media(max-width:600px){.nav{padding:0 20px;}.page{padding:90px 20px 60px;}.tool-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-left">
+    <img src="/static/at-hexagon.png" class="nav-logo" alt="AT" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="nav-logo-fallback" style="display:none;">AT</div>
+    <span class="nav-name">AI Talent Match·Pro</span>
+  </a>
+  <div class="nav-right">
+    <a href="/" class="nav-link">← Home</a>
+    <a href="/login" class="nav-link">Sign In</a>
+    <a href="/register" class="nav-cta">Register</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="eyebrow">Legal</div>
+  <h1>Accessibility</h1>
+  <div class="updated">Last updated: July 2026</div>
+
+  <div class="toc">
+    <div class="toc-title">Table of Contents</div>
+    <ol>
+      <li><a href="#commitment">Our commitment</a></li>
+      <li><a href="#what-we-built">What's in place today</a></li>
+      <li><a href="#limitations">Where we're honest about gaps</a></li>
+      <li><a href="#testing-tools">How we test</a></li>
+      <li><a href="#feedback">Tell us what's broken</a></li>
+      <li><a href="#standard">The standard we're aiming for</a></li>
+    </ol>
+  </div>
+
+  <div class="intro">Hiring tools decide who gets seen. It would be a strange irony to build one that some people can't use. So: everyone should be able to use AI Talent Match Pro — with a screen reader, a keyboard, voice control, or whatever way you access the web. This page is where we are on that, honestly.</div>
+
+  <h2 id="commitment">Our commitment</h2>
+  <p>Accessibility isn't a checkbox we tick before launch — it's part of how we build, and it's never finished. We're a small team, which means we can't claim perfection, but it also means feedback goes straight to the people writing the code.</p>
+  <a href="#" class="back-top">↑ Back to top</a>
+
+  <h2 id="what-we-built">What's in place today</h2>
+  <ul>
+    <li>Interactive elements carry descriptive labels for assistive technology</li>
+    <li>Keyboard navigation across the main flows — no mouse required</li>
+    <li>Visible focus states, so you always know where you are</li>
+    <li>Reduced-motion support: if your system says less animation, we listen</li>
+    <li>Semantic HTML — real headings, landmarks, and lists, not styled divs pretending</li>
+  </ul>
+  <a href="#" class="back-top">↑ Back to top</a>
+
+  <h2 id="limitations">Where we're honest about gaps</h2>
+  <p>Some things aren't there yet. Rather than hide them, here's the current list:</p>
+  <ul>
+    <li>Some low-emphasis text doesn't yet meet our contrast target — we're working through it</li>
+    <li>Complex AI result visualizations may not yet read well with screen readers</li>
+    <li>Mobile works, but hasn't been through a full accessibility audit</li>
+    <li>Some dynamic AI animations still need ARIA live region support</li>
+  </ul>
+  <a href="#" class="back-top">↑ Back to top</a>
+
+  <h2 id="testing-tools">How we test</h2>
+  <div class="tool-grid">
+    <div class="tool-card">
+      <div class="tool-name">Axe</div>
+      <div class="tool-desc">Automated accessibility checks during development.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">Lighthouse</div>
+      <div class="tool-desc">Google's audit tool — 90+ accessibility score is our bar.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">VoiceOver</div>
+      <div class="tool-desc">Apple's screen reader, tested on macOS and iOS.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">Keyboard only</div>
+      <div class="tool-desc">Unplug the mouse and use the product — regularly.</div>
+    </div>
+  </div>
+  <div class="response-box">
+    <p><strong>Our response commitment:</strong> Accessibility feedback gets a reply within 5 business days. If something is blocking you from using the platform at all, we treat it as urgent and aim to respond the same day.</p>
+  </div>
+  <a href="#" class="back-top">↑ Back to top</a>
+
+  <h2 id="feedback">Tell us what's broken</h2>
+  <p>If you hit a barrier anywhere on the platform, we genuinely want to know — every report makes the product better for the next person. Nothing is too small to mention.</p>
+  <div class="contact-box">
+    <p>Write to us and we'll fix it.</p>
+    <a href="mailto:hello@aitmp.io?subject=Accessibility%20Feedback" class="contact-btn">hello@aitmp.io</a>
+  </div>
+  <a href="#" class="back-top" style="margin-top:16px;">↑ Back to top</a>
+
+  <h2 id="standard">The standard we're aiming for</h2>
+  <p>Our target is WCAG 2.1 Level AA. We're not claiming full conformance today — the gaps above are real — but every release moves us closer, and we review where we stand regularly.</p>
+  <a href="#" class="back-top">↑ Back to top</a>
+</div>
+
+<footer>
+  <div class="footer-copy">© 2026 AI Talent Match·Pro. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="/terms">Terms &amp; Conditions</a>
+    <a href="/privacy">Privacy Policy</a>
+    <a href="/accessibility">Accessibility</a>
+  </div>
+</footer>
+
+</body>
+</html>

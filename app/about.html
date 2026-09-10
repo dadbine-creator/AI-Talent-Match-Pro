@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#050914">
+  <meta name="description" content="AI Talent Match Pro — enterprise AI hiring platform built to find the people behind the résumé.">
+  <link rel="icon" href="/static/at-hexagon.png">
+  <link rel="apple-touch-icon" href="/static/at-hexagon.png">
+  <title>About Us | AI Talent Match Pro — Hire Faster, Stay in Control</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css" />
+  <style>
+    body { background: #050914; color: #fff; font-family: 'Inter', -apple-system, sans-serif; }
+    :root {
+      --accent-blue: #4d9fff;
+      --primary-blue: #2563eb;
+      --bg: #050914;
+      --card: rgba(10,20,50,0.7);
+    }
+    a.primary-button:hover, button.primary-button:hover {
+      background: #1e4fd9 !important;
+      box-shadow: 0 0 40px rgba(37,99,235,0.6) !important;
+      transform: translateY(-2px);
+    }
+    .apply-btn:hover { background: #1e4fd9 !important; box-shadow: 0 0 40px rgba(37,99,235,0.6) !important; }
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #050914; }
+    ::-webkit-scrollbar-thumb { background: rgba(37,99,235,0.4); border-radius: 999px; }
+    * { scrollbar-width: thin; scrollbar-color: rgba(37,99,235,0.4) #050914; }
+    .page-hero { min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 40px 80px; position: relative; background: #050914; }
+    .page-hero::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 300px; background: radial-gradient(ellipse at 50% 100%, rgba(0,120,180,0.3) 0%, transparent 70%); pointer-events: none; }
+    .eyebrow { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #4d9fff; margin-bottom: 16px; }
+    .page-title { font-size: clamp(36px,5vw,64px); font-weight: 800; color: #fff; line-height: 1.1; margin-bottom: 20px; letter-spacing: -0.02em; }
+    .page-sub { font-size: 18px; color: rgba(255,255,255,0.55); max-width: 560px; line-height: 1.7; }
+    .content-section { max-width: 860px; margin: 0 auto; padding: 80px 40px; }
+    .content-section h2 { font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 16px; }
+    .content-section p { font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.8; margin-bottom: 24px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin: 60px 0; }
+    .stat-card { background: rgba(10,20,50,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(37,99,235,0.2); border-radius: 16px; padding: 32px; text-align: center; }
+    .stat-number { font-size: 48px; font-weight: 800; color: #4d9fff; line-height: 1; margin-bottom: 8px; }
+    .stat-label { font-size: 14px; color: rgba(255,255,255,0.5); }
+    .values-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; margin-top: 40px; }
+    .value-card { background: rgba(10,20,50,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(37,99,235,0.15); border-radius: 16px; padding: 28px; }
+    .value-icon { font-size: 32px; margin-bottom: 12px; }
+    .value-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .value-text { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.6; }
+    .team-section { background: rgba(5,9,20,0.8); border-top: 1px solid rgba(255,255,255,0.07); padding: 80px 40px; }
+    .team-inner { max-width: 860px; margin: 0 auto; }
+    @media (max-width: 768px) { .stats-grid, .values-grid { grid-template-columns: 1fr; } }
+      .page-hero::after {
+        animation: pulseGlow 6s ease-in-out infinite;
+        will-change: transform, opacity;
+    }
+    @keyframes pulseGlow {
+        0%   { opacity: 0.25; transform: translateX(-50%) scale(1); }
+        50%  { opacity: 0.45; transform: translateX(-50%) scale(1.15); }
+        100% { opacity: 0.25; transform: translateX(-50%) scale(1); }
+    }
+
+    /* Value card hover */
+    .value-card {
+        transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .value-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(77,159,255,0.3) !important;
+    }
+
+    /* CTA glow */
+    .cta-glow {
+        background: radial-gradient(ellipse at 50% 100%, rgba(37,99,235,0.15), transparent 70%), #050914;
+    }
+
+    /* Scroll padding for navbar */
+    html { scroll-padding-top: 80px; }
+
+    /* Fade in up */
+    .fade-in-up { opacity:0; transform:translateY(32px); transition:opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); }
+    .fade-in-up.visible { opacity:1; transform:translateY(0); }
+
+  
+    a[aria-label="Register for AI Talent Match Pro"]:hover {
+        background: #1e4fd9 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 0 40px rgba(37,99,235,0.6) !important;
+    }
+    a[aria-label="Register for AI Talent Match Pro"] {
+        transition: background 0.2s, transform 0.15s, box-shadow 0.2s !important;
+    }
+
+  
+    /* Scroll to top */
+    .scroll-top {
+        position: fixed; bottom: 32px; right: 32px;
+        width: 40px; height: 40px;
+        background: rgba(37,99,235,0.15);
+        border: 1px solid rgba(37,99,235,0.3);
+        border-radius: 50%; color: #4d9fff;
+        font-size: 16px; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; transform: translateY(10px);
+        transition: all 0.3s ease;
+        z-index: 999;
+    }
+    .scroll-top.show { opacity: 1; transform: translateY(0); }
+    .scroll-top:hover { background: rgba(37,99,235,0.3); }
+
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<nav style="position:fixed;top:0;left:0;width:100%;height:64px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,9,20,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.07);z-index:9999;">
+  <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+    <img src="/static/at-hexagon.png" style="width:32px;height:32px;" alt="AI Talent Match Pro logo" loading="lazy">
+    <span style="font-size:15px;font-weight:700;color:#fff;">AI Talent Match·Pro</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:28px;">
+    <a href="/#how-it-works" aria-label="How it works" style="font-size:14px;font-weight:500;color:rgba(255,255,255,0.65);text-decoration:none;">How it works</a>
+    <a href="/#pricing" aria-label="Pricing" style="font-size:14px;font-weight:500;color:rgba(255,255,255,0.65);text-decoration:none;">Pricing</a>
+    <a href="/login" style="font-size:14px;font-weight:500;color:rgba(255,255,255,0.65);text-decoration:none;">Sign In</a>
+    <a href="/register" aria-label="Register for AI Talent Match Pro" style="padding:8px 18px;background:#2563eb;color:#fff;font-size:14px;font-weight:600;border-radius:8px;text-decoration:none;">Register</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <p class="eyebrow" style="color:#4d9fff;">About Us</p>
+  <h1 class="page-title">Built to find the<br>people behind the résumé</h1>
+  <p class="page-sub" style="font-size:16px;color:rgba(255,255,255,0.55);max-width:520px;line-height:1.7;margin:0 auto;">AI Talent Match Pro is an enterprise AI platform that goes beyond keywords — into the human story behind every candidate.</p>
+</div>
+
+<div class="content-section">
+  <div class="stats-grid fade-in-up">
+    <div class="stat-card">
+      <div class="stat-number" aria-label="43 AI phases completed">43</div>
+      <div class="stat-label">AI Phases Completed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" aria-label="Sub 100 millisecond scoring latency">&lt;100ms</div>
+      <div class="stat-label">Scoring Latency</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" aria-label="Powered by GPT-4o on Azure OpenAI">GPT-4o</div>
+      <div class="stat-label">Powered by Azure OpenAI</div>
+    </div>
+  </div>
+
+  <div style="background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.2);border-radius:16px;padding:28px 32px;margin-bottom:40px;">
+    <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#4d9fff;margin-bottom:10px;">Our Mission</h2>
+    <p style="font-size:18px;font-weight:600;color:#fff;line-height:1.6;margin:0;">"Our mission is simple: to make hiring deeply human again — powered by AI that understands people, not just profiles."</p>
+  </div>
+
+  <h2>Why we started this</h2>
+  <p>We've all seen it happen. A recruiter spends three weeks sourcing for a role, reviews 200 profiles, and still misses the one person who would have been perfect — because the algorithm ranked them low on keywords.</p>
+  <p>That's not a technology problem. That's a philosophy problem. Most tools treat hiring like a search engine. We treat it like what it actually is — one human trying to find another human who will genuinely thrive in a role.</p>
+  <p>So we built something different. A Deep-Thinking Engine that studies how people grow, how they adapt, and how they think in real situations. Not just what they've done — but who they are.</p>
+
+  <h2>What makes us different</h2>
+  <p>Every search gives you exactly three tiers — The Perfect Soul (100%), The Mirror (90%), and The Adjacent (80%). Not a ranked list of 50 names. Three people you should actually call. That clarity is intentional.</p>
+  <p>Under the hood, we're running GPT-4o on Azure, scoring candidates in under 100ms, and returning a full picture — match score, adaptability, growth pattern, silent skills, and a plain-English explanation of why this person fits. No black box. No mystery.</p>
+  <p>We built this for HR professionals only. Every account is verified. Because this tool deserves to be in the hands of people who actually care about hiring well.</p>
+
+  <h2>What we believe in</h2>
+  <div class="values-grid fade-in-up">
+    <div class="value-card">
+      <div class="value-icon" aria-label="Deep Thinking">🧠</div>
+      <div class="value-title">Deep Thinking</div>
+      <div class="value-text">A résumé is a document. A person is a story. We read the story.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon" aria-label="Speed">⚡</div>
+      <div class="value-title">Speed Without Compromise</div>
+      <div class="value-text">Recruiters are busy. We respect their time. Every result is instant — not because we rushed, but because we planned it that way.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon" aria-label="HR Professionals Only">🔒</div>
+      <div class="value-title">HR Professionals Only</div>
+      <div class="value-text">We only let HR professionals in. Not because we're exclusive — because this tool works best when it's used by people who genuinely care about the humans behind the profiles.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon" aria-label="Enterprise Ready">🚀</div>
+      <div class="value-title">Enterprise Ready</div>
+      <div class="value-text">We're not a startup experiment. We're production-grade, enterprise-ready, and built to handle the volume that real companies need.</div>
+    </div>
+  </div>
+</div>
+
+<div class="cta-glow" style="text-align:center;padding:60px 40px;">
+  <h2 style="font-size:32px;font-weight:800;color:#fff;margin-bottom:16px;">Come find someone great</h2>
+  <p style="color:rgba(255,255,255,0.55);margin-bottom:32px;">Your next hire is already out there. Let's find them together.</p>
+  <a href="/register" aria-label="Register for AI Talent Match Pro" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 0 30px rgba(37,99,235,0.4);transition:background 0.2s;">Get Started Free</a>
+</div>
+
+<footer style="background:#07111f;border-top:1px solid rgba(255,255,255,0.07);padding:24px 40px;text-align:center;">
+  <p style="font-size:12px;color:rgba(255,255,255,0.25);">© <span id="year"></span> AI Talent Match·Pro · <a href="/" style="color:rgba(255,255,255,0.4);text-decoration:none;">Home</a> · <a href="/privacy" style="color:rgba(255,255,255,0.4);text-decoration:none;">Privacy</a> · <a href="/terms" style="color:rgba(255,255,255,0.4);text-decoration:none;">Terms</a></p>
+</footer>
+
+<script>
+const fadeEls = document.querySelectorAll('.fade-in-up');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 100);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+fadeEls.forEach(el => observer.observe(el));
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">↑</button>
+<script>
+window.addEventListener('scroll', () => {
+    const btn = document.getElementById('scrollTop');
+    if (btn) btn.classList.toggle('show', window.scrollY > 600);
+}, { passive: true });
+</script>
+</body>
+</html>

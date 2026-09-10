@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Talent Match Pro — Developer Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:         #0a0f1e;
+            --panel:      #111827;
+            --panel-soft: #1a2235;
+            --border:     rgba(255,255,255,0.08);
+            --blue:       #2563eb;
+            --blue-light: #3b82f6;
+            --green:      #22c55e;
+            --gold:       #f59e0b;
+            --red:        #ef4444;
+            --text:       #ffffff;
+            --text-soft:  rgba(255,255,255,0.6);
+            --text-muted: rgba(255,255,255,0.35);
+            --radius:     10px;
+            --code-bg:    #0d1117;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(37,99,235,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(37,99,235,0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            height: 56px;
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+        }
+
+        .topbar-left { display: flex; align-items: center; gap: 12px; }
+        .at-logo { width: 32px; height: 32px; background: linear-gradient(135deg,#1d4ed8,#2563eb); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: white; }
+        .app-name { font-size: 15px; font-weight: 700; }
+        .dev-badge { background: rgba(37,99,235,0.15); border: 1px solid rgba(37,99,235,0.3); color: var(--blue-light); font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
+
+        .topbar-right { display: flex; align-items: center; gap: 16px; }
+        .nav-link { font-size: 13px; color: var(--text-soft); text-decoration: none; transition: color 0.15s; }
+        .nav-link:hover { color: var(--text); }
+        .cta-btn { background: var(--blue); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+
+        /* ── LAYOUT ── */
+        .layout {
+            display: flex;
+            margin-top: 56px;
+            min-height: calc(100vh - 56px);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: 240px;
+            background: var(--panel);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            top: 56px; left: 0; bottom: 0;
+            padding: 24px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-section { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding: 12px 20px 4px; }
+
+        .sidebar-link { display: flex; align-items: center; gap: 8px; padding: 8px 20px; font-size: 13px; color: var(--text-soft); text-decoration: none; cursor: pointer; transition: all 0.15s; border-left: 2px solid transparent; }
+        .sidebar-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+        .sidebar-link.active { color: var(--blue-light); background: rgba(37,99,235,0.06); border-left-color: var(--blue-light); }
+
+        .method-badge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; }
+        .method-get    { background: rgba(34,197,94,0.15); color: var(--green); }
+        .method-post   { background: rgba(37,99,235,0.15); color: var(--blue-light); }
+        .method-patch  { background: rgba(245,158,11,0.15); color: var(--gold); }
+        .method-delete { background: rgba(239,68,68,0.15); color: var(--red); }
+
+        /* ── MAIN CONTENT ── */
+        .main { margin-left: 240px; flex: 1; padding: 40px 48px; max-width: 900px; }
+
+        /* ── HERO ── */
+        .hero { margin-bottom: 48px; }
+        .hero-eyebrow { font-size: 12px; font-weight: 600; color: var(--blue-light); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+        .hero-title { font-size: 40px; font-weight: 800; margin-bottom: 16px; line-height: 1.1; }
+        .hero-sub { font-size: 17px; color: var(--text-soft); line-height: 1.6; max-width: 600px; margin-bottom: 24px; }
+        .hero-badges { display: flex; gap: 10px; flex-wrap: wrap; }
+        .hero-badge { display: flex; align-items: center; gap: 6px; background: var(--panel-soft); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 14px; font-size: 13px; color: var(--text-soft); }
+
+        /* ── SECTION ── */
+        .section { margin-bottom: 56px; }
+        .section-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+        .section-sub { font-size: 14px; color: var(--text-soft); margin-bottom: 24px; line-height: 1.6; }
+
+        /* ── CODE BLOCK ── */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-lang { font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+        .code-copy { font-size: 11px; color: var(--blue-light); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; }
+        .code-copy:hover { color: white; }
+
+        pre {
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #e2e8f0;
+            overflow-x: auto;
+        }
+
+        .kw  { color: #ff79c6; }
+        .str { color: #f1fa8c; }
+        .cm  { color: #6272a4; }
+        .fn  { color: #50fa7b; }
+        .num { color: #bd93f9; }
+        .var { color: #8be9fd; }
+
+        /* ── ENDPOINT CARD ── */
+        .endpoint-card {
+            background: var(--panel-soft);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .endpoint-header:hover { background: rgba(255,255,255,0.02); }
+
+        .endpoint-path { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500; color: var(--text); }
+        .endpoint-desc { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+
+        .endpoint-body {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            display: none;
+        }
+
+        .endpoint-body.open { display: block; }
+
+        .param-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+        .param-table th { text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); padding: 8px 12px; border-bottom: 1px solid var(--border); }
+        .param-table td { padding: 8px 12px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .param-name { font-family: 'JetBrains Mono', monospace; color: var(--blue-light); }
+        .param-type { font-size: 11px; color: var(--text-muted); }
+        .param-required { font-size: 10px; background: rgba(239,68,68,0.1); color: var(--red); padding: 2px 6px; border-radius: 4px; }
+        .param-optional { font-size: 10px; background: rgba(255,255,255,0.06); color: var(--text-muted); padding: 2px 6px; border-radius: 4px; }
+
+        /* ── SCOPE TABLE ── */
+        .scope-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 24px; }
+        .scope-card { background: var(--panel-soft); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }
+        .scope-name { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--blue-light); margin-bottom: 4px; }
+        .scope-desc { font-size: 12px; color: var(--text-muted); }
+
+        /* ── WEBHOOK EVENTS ── */
+        .event-list { display: flex; flex-direction: column; gap: 6px; }
+        .event-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--panel-soft); border: 1px solid var(--border); border-radius: 8px; }
+        .event-name { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--green); }
+        .event-desc { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+
+        /* ── RATE LIMIT TABLE ── */
+        .rate-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+        .rate-card { background: var(--panel-soft); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: center; }
+        .rate-plan { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+        .rate-limit { font-size: 22px; font-weight: 700; color: var(--blue-light); }
+        .rate-unit  { font-size: 11px; color: var(--text-muted); }
+
+        /* ── SLA BOX ── */
+        .sla-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+        .sla-card { background: var(--panel-soft); border: 1px solid rgba(34,197,94,0.2); border-radius: var(--radius); padding: 16px; text-align: center; }
+        .sla-value { font-size: 24px; font-weight: 800; color: var(--green); }
+        .sla-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+        /* ── TABS ── */
+        .lang-tabs { display: flex; gap: 4px; margin-bottom: 0; }
+        .lang-tab { padding: 6px 14px; border-radius: 6px 6px 0 0; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--text-muted); background: transparent; border: 1px solid transparent; border-bottom: none; font-family: 'Inter', sans-serif; }
+        .lang-tab.active { background: var(--code-bg); color: var(--text); border-color: var(--border); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(37,99,235,0.3); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+    <div class="topbar-left">
+        <div class="at-logo">AT</div>
+        <span class="app-name">AI Talent Match Pro</span>
+        <span class="dev-badge">Developer Portal</span>
+    </div>
+    <div class="topbar-right">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/admin">Admin</a>
+        <a class="nav-link" href="/api/v1/openapi.json" target="_blank">OpenAPI</a>
+        <button class="cta-btn" onclick="window.location='/admin'">Get API Key</button>
+    </div>
+</header>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-section">Getting Started</div>
+        <a class="sidebar-link active" onclick="scrollTo('overview')">Overview</a>
+        <a class="sidebar-link" onclick="scrollTo('auth')">Authentication</a>
+        <a class="sidebar-link" onclick="scrollTo('quickstart')">Quick Start</a>
+
+        <div class="sidebar-section">Endpoints</div>
+        <a class="sidebar-link" onclick="scrollTo('candidates')"><span class="method-badge method-get">GET</span> Candidates</a>
+        <a class="sidebar-link" onclick="scrollTo('narratives')"><span class="method-badge method-post">POST</span> Narratives</a>
+        <a class="sidebar-link" onclick="scrollTo('analytics')"><span class="method-badge method-get">GET</span> Analytics</a>
+        <a class="sidebar-link" onclick="scrollTo('webhooks')"><span class="method-badge method-post">POST</span> Webhooks</a>
+
+        <div class="sidebar-section">Reference</div>
+        <a class="sidebar-link" onclick="scrollTo('scopes')">Scopes</a>
+        <a class="sidebar-link" onclick="scrollTo('events')">Webhook Events</a>
+        <a class="sidebar-link" onclick="scrollTo('rate-limits')">Rate Limits</a>
+        <a class="sidebar-link" onclick="scrollTo('sla')">SLA</a>
+        <a class="sidebar-link" href="/api/v1/openapi.json" target="_blank">OpenAPI JSON ↗</a>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- HERO -->
+        <div class="hero" id="overview">
+            <div class="hero-eyebrow">Developer Documentation</div>
+            <h1 class="hero-title">AI Talent Match Pro API</h1>
+            <p class="hero-sub">Build powerful recruiting workflows with the most intelligent candidate scoring API. Sub-100ms responses, GPT-4o powered narratives, enterprise webhooks.</p>
+            <div class="hero-badges">
+                <div class="hero-badge">⚡ &lt;100ms p95 latency</div>
+                <div class="hero-badge">🛡️ 99.9% uptime SLA</div>
+                <div class="hero-badge">🔑 API key auth</div>
+                <div class="hero-badge">🪝 Webhooks</div>
+                <div class="hero-badge">📊 OpenAPI 3.0</div>
+            </div>
+        </div>
+
+        <!-- AUTH -->
+        <div class="section" id="auth">
+            <div class="section-title">Authentication</div>
+            <p class="section-sub">All API requests require an API key passed in the <code style="color:var(--blue-light);font-family:JetBrains Mono,monospace;">X-API-Key</code> header. Create keys in your Admin panel under Developer Settings.</p>
+
+            <div class="code-block">
+                <div class="code-header"><span class="code-lang">http</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                <pre>GET /api/v1/candidates HTTP/1.1
+Host: api.aitmp.io
+X-API-Key: aitmp_your_key_here
+Content-Type: application/json</pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header"><span class="code-lang">Response — Invalid Key</span></div>
+                <pre>{
+  <span class="str">"detail"</span>: <span class="str">"Invalid or revoked API key"</span>
+}</pre>
+            </div>
+        </div>
+
+        <!-- QUICK START -->
+        <div class="section" id="quickstart">
+            <div class="section-title">Quick Start</div>
+            <p class="section-sub">Get up and running in 60 seconds. Choose your language:</p>
+
+            <div class="lang-tabs">
+                <button class="lang-tab active" onclick="switchTab('qs','python',this)">Python</button>
+                <button class="lang-tab" onclick="switchTab('qs','js',this)">JavaScript</button>
+                <button class="lang-tab" onclick="switchTab('qs','curl',this)">cURL</button>
+            </div>
+
+            <div id="qs-python" class="tab-content active">
+                <div class="code-block" style="border-radius:0 12px 12px 12px;">
+                    <div class="code-header"><span class="code-lang">python</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                    <pre><span class="kw">import</span> requests
+
+API_KEY = <span class="str">"aitmp_your_key_here"</span>
+BASE_URL = <span class="str">"https://api.aitmp.io/api/v1"</span>
+
+headers = {<span class="str">"X-API-Key"</span>: API_KEY}
+
+<span class="cm"># Get all candidates</span>
+response = requests.get(<span class="fn">f"{BASE_URL}/candidates"</span>, headers=headers)
+candidates = response.json()
+
+<span class="cm"># Generate a narrative</span>
+narrative = requests.post(
+    <span class="fn">f"{BASE_URL}/narratives/generate"</span>,
+    headers=headers,
+    json={
+        <span class="str">"candidate_id"</span>: <span class="str">"candidate_uuid_here"</span>,
+        <span class="str">"narrative_type"</span>: <span class="str">"full"</span>
+    }
+).json()
+
+<span class="kw">print</span>(narrative[<span class="str">"narrative"</span>])</pre>
+                </div>
+            </div>
+
+            <div id="qs-js" class="tab-content">
+                <div class="code-block" style="border-radius:0 12px 12px 12px;">
+                    <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                    <pre><span class="kw">const</span> <span class="var">API_KEY</span> = <span class="str">"aitmp_your_key_here"</span>;
+<span class="kw">const</span> <span class="var">BASE_URL</span> = <span class="str">"https://api.aitmp.io/api/v1"</span>;
+
+<span class="kw">const</span> <span class="var">headers</span> = { <span class="str">"X-API-Key"</span>: <span class="var">API_KEY</span> };
+
+<span class="cm">// Get all candidates</span>
+<span class="kw">const</span> <span class="var">candidates</span> = <span class="kw">await</span> fetch(<span class="fn">`${BASE_URL}/candidates`</span>, { headers })
+    .then(<span class="var">r</span> => r.json());
+
+<span class="cm">// Generate a narrative</span>
+<span class="kw">const</span> <span class="var">narrative</span> = <span class="kw">await</span> fetch(<span class="fn">`${BASE_URL}/narratives/generate`</span>, {
+    method: <span class="str">"POST"</span>,
+    headers: { ...<span class="var">headers</span>, <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span> },
+    body: JSON.stringify({
+        candidate_id: <span class="str">"candidate_uuid_here"</span>,
+        narrative_type: <span class="str">"full"</span>
+    })
+}).then(<span class="var">r</span> => r.json());
+
+console.log(narrative.narrative);</pre>
+                </div>
+            </div>
+
+            <div id="qs-curl" class="tab-content">
+                <div class="code-block" style="border-radius:0 12px 12px 12px;">
+                    <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                    <pre><span class="cm"># Get candidates</span>
+curl https://api.aitmp.io/api/v1/candidates \
+  -H <span class="str">"X-API-Key: aitmp_your_key_here"</span>
+
+<span class="cm"># Generate narrative</span>
+curl -X POST https://api.aitmp.io/api/v1/narratives/generate \
+  -H <span class="str">"X-API-Key: aitmp_your_key_here"</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"candidate_id":"uuid","narrative_type":"full"}'</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- CANDIDATES -->
+        <div class="section" id="candidates">
+            <div class="section-title">Candidates API</div>
+            <p class="section-sub">Read, create, update, and delete candidates. Required scope: <code style="color:var(--blue-light);font-family:JetBrains Mono,monospace;">candidates:read</code> or <code style="color:var(--blue-light);font-family:JetBrains Mono,monospace;">candidates:write</code></p>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/api/v1/candidates</span>
+                    <span class="endpoint-desc">List all candidates</span>
+                </div>
+                <div class="endpoint-body">
+                    <p style="font-size:13px;color:var(--text-soft);margin-bottom:16px;">Returns up to 100 candidates for your company, ordered by most recent.</p>
+                    <div class="code-block">
+                        <div class="code-header"><span class="code-lang">Response</span></div>
+                        <pre>{
+  <span class="str">"ok"</span>: <span class="kw">true</span>,
+  <span class="str">"candidates"</span>: [
+    {
+      <span class="str">"id"</span>: <span class="str">"uuid"</span>,
+      <span class="str">"name"</span>: <span class="str">"Alex Chen"</span>,
+      <span class="str">"tier"</span>: <span class="str">"gold"</span>,
+      <span class="str">"match_score"</span>: <span class="num">94.2</span>,
+      <span class="str">"ai_analysis"</span>: <span class="str">"..."</span>,
+      <span class="str">"linkedin_url"</span>: <span class="str">"https://..."</span>,
+      <span class="str">"created_at"</span>: <span class="str">"2026-04-27T..."</span>
+    }
+  ],
+  <span class="str">"total"</span>: <span class="num">42</span>
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-path">/api/v1/candidates</span>
+                    <span class="endpoint-desc">Push candidate from ATS</span>
+                </div>
+                <div class="endpoint-body">
+                    <table class="param-table">
+                        <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td class="param-name">name</td><td class="param-type">string</td><td><span class="param-required">required</span></td><td style="font-size:12px;color:var(--text-soft);">Candidate full name</td></tr>
+                            <tr><td class="param-name">role</td><td class="param-type">string</td><td><span class="param-optional">optional</span></td><td style="font-size:12px;color:var(--text-soft);">Job role applied for</td></tr>
+                            <tr><td class="param-name">tier</td><td class="param-type">string</td><td><span class="param-optional">optional</span></td><td style="font-size:12px;color:var(--text-soft);">gold / silver / bronze</td></tr>
+                            <tr><td class="param-name">match_score</td><td class="param-type">float</td><td><span class="param-optional">optional</span></td><td style="font-size:12px;color:var(--text-soft);">0-100 match score</td></tr>
+                            <tr><td class="param-name">linkedin_url</td><td class="param-type">string</td><td><span class="param-optional">optional</span></td><td style="font-size:12px;color:var(--text-soft);">LinkedIn profile URL</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- NARRATIVES -->
+        <div class="section" id="narratives">
+            <div class="section-title">Narratives API</div>
+            <p class="section-sub">Generate GPT-4o powered candidate narratives. Required scope: <code style="color:var(--blue-light);font-family:JetBrains Mono,monospace;">narratives:generate</code></p>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-path">/api/v1/narratives/generate</span>
+                    <span class="endpoint-desc">Generate AI narrative</span>
+                </div>
+                <div class="endpoint-body">
+                    <table class="param-table">
+                        <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td class="param-name">candidate_id</td><td class="param-type">string</td><td><span class="param-required">required</span></td><td style="font-size:12px;color:var(--text-soft);">Candidate UUID</td></tr>
+                            <tr><td class="param-name">narrative_type</td><td class="param-type">string</td><td><span class="param-optional">optional</span></td><td style="font-size:12px;color:var(--text-soft);">summary / strengths / risks / culture_fit / story_arc / pitch / full</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="code-block">
+                        <div class="code-header"><span class="code-lang">Response</span></div>
+                        <pre>{
+  <span class="str">"ok"</span>: <span class="kw">true</span>,
+  <span class="str">"narrative"</span>: <span class="str">"Alex's trajectory suggests rapid growth potential..."</span>,
+  <span class="str">"tone"</span>: <span class="str">"warm"</span>,
+  <span class="str">"sentiment"</span>: <span class="str">"positive"</span>,
+  <span class="str">"rec_strength"</span>: <span class="num">0.94</span>,
+  <span class="str">"quality_score"</span>: <span class="num">92</span>,
+  <span class="str">"cost_usd"</span>: <span class="num">0.000024</span>,
+  <span class="str">"cached"</span>: <span class="kw">false</span>,
+  <span class="str">"model"</span>: <span class="str">"gpt-4o"</span>
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ANALYTICS -->
+        <div class="section" id="analytics">
+            <div class="section-title">Analytics API</div>
+            <p class="section-sub">Access usage and talent analytics. Required scope: <code style="color:var(--blue-light);font-family:JetBrains Mono,monospace;">analytics:read</code></p>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/api/v1/analytics/usage</span>
+                    <span class="endpoint-desc">AI usage + cost metrics</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="code-block">
+                        <div class="code-header"><span class="code-lang">Response</span></div>
+                        <pre>{
+  <span class="str">"ok"</span>: <span class="kw">true</span>,
+  <span class="str">"ai_calls"</span>: <span class="num">142</span>,
+  <span class="str">"cost_usd"</span>: <span class="num">1.42</span>,
+  <span class="str">"cache_hit_rate"</span>: <span class="num">34.5</span>,
+  <span class="str">"avg_latency_ms"</span>: <span class="num">87.3</span>,
+  <span class="str">"uptime_pct"</span>: <span class="num">99.97</span>
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/api/v1/analytics/talent</span>
+                    <span class="endpoint-desc">Talent metrics + tier distribution</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="code-block">
+                        <div class="code-header"><span class="code-lang">Response</span></div>
+                        <pre>{
+  <span class="str">"ok"</span>: <span class="kw">true</span>,
+  <span class="str">"total_candidates"</span>: <span class="num">84</span>,
+  <span class="str">"tier_distribution"</span>: { <span class="str">"gold"</span>: <span class="num">12</span>, <span class="str">"silver"</span>: <span class="num">31</span>, <span class="str">"bronze"</span>: <span class="num">41</span> },
+  <span class="str">"shortlist_rate"</span>: <span class="num">28.6</span>,
+  <span class="str">"avg_match_score"</span>: <span class="num">79.4</span>
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WEBHOOKS -->
+        <div class="section" id="webhooks">
+            <div class="section-title">Webhooks</div>
+            <p class="section-sub">Receive real-time events when candidates are created, narratives generated, or billing events occur. All deliveries are signed with HMAC-SHA256.</p>
+
+            <div class="code-block">
+                <div class="code-header"><span class="code-lang">Verifying webhook signatures (Python)</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                <pre><span class="kw">import</span> hmac, hashlib
+
+<span class="kw">def</span> <span class="fn">verify_webhook</span>(payload: bytes, signature: str, secret: str) -> bool:
+    expected = hmac.new(
+        secret.encode(),
+        payload,
+        hashlib.sha256
+    ).hexdigest()
+    <span class="kw">return</span> hmac.compare_digest(<span class="fn">f"sha256={expected}"</span>, signature)
+
+<span class="cm"># In your endpoint:</span>
+signature = request.headers.get(<span class="str">"X-AITMP-Signature"</span>)
+is_valid  = verify_webhook(request.body, signature, <span class="var">WEBHOOK_SECRET</span>)</pre>
+            </div>
+        </div>
+
+        <!-- SCOPES -->
+        <div class="section" id="scopes">
+            <div class="section-title">API Scopes</div>
+            <p class="section-sub">Each API key must be granted specific scopes. Use the minimum scopes required.</p>
+            <div class="scope-grid">
+                <div class="scope-card"><div class="scope-name">candidates:read</div><div class="scope-desc">Read candidate data</div></div>
+                <div class="scope-card"><div class="scope-name">candidates:write</div><div class="scope-desc">Create, update, delete candidates</div></div>
+                <div class="scope-card"><div class="scope-name">narratives:generate</div><div class="scope-desc">Generate AI narratives</div></div>
+                <div class="scope-card"><div class="scope-name">analytics:read</div><div class="scope-desc">Read usage + talent analytics</div></div>
+                <div class="scope-card"><div class="scope-name">webhooks:manage</div><div class="scope-desc">Create + manage webhooks</div></div>
+                <div class="scope-card"><div class="scope-name">forecasts:read</div><div class="scope-desc">Read hiring forecasts</div></div>
+                <div class="scope-card"><div class="scope-name">cost:read</div><div class="scope-desc">Read cost analytics</div></div>
+                <div class="scope-card"><div class="scope-name">sla:read</div><div class="scope-desc">Read SLA metrics + alerts</div></div>
+            </div>
+        </div>
+
+        <!-- WEBHOOK EVENTS -->
+        <div class="section" id="events">
+            <div class="section-title">Webhook Events</div>
+            <p class="section-sub">Subscribe to any combination of these events when creating a webhook.</p>
+            <div class="event-list">
+                <div class="event-item"><span class="event-name">candidate.created</span><span class="event-desc">New candidate added</span></div>
+                <div class="event-item"><span class="event-name">candidate.updated</span><span class="event-desc">Candidate notes/shortlist updated</span></div>
+                <div class="event-item"><span class="event-name">candidate.deleted</span><span class="event-desc">Candidate soft-deleted</span></div>
+                <div class="event-item"><span class="event-name">narrative.generated</span><span class="event-desc">AI narrative generated</span></div>
+                <div class="event-item"><span class="event-name">narrative.updated</span><span class="event-desc">Narrative regenerated</span></div>
+                <div class="event-item"><span class="event-name">billing.invoice.created</span><span class="event-desc">New invoice created</span></div>
+                <div class="event-item"><span class="event-name">billing.subscription.updated</span><span class="event-desc">Plan changed</span></div>
+                <div class="event-item"><span class="event-name">sla.alert.created</span><span class="event-desc">SLA breach detected</span></div>
+                <div class="event-item"><span class="event-name">sla.alert.resolved</span><span class="event-desc">SLA alert resolved</span></div>
+                <div class="event-item"><span class="event-name">model.retrained</span><span class="event-desc">AI model retrained</span></div>
+            </div>
+        </div>
+
+        <!-- RATE LIMITS -->
+        <div class="section" id="rate-limits">
+            <div class="section-title">Rate Limits</div>
+            <p class="section-sub">Rate limits are per API key, per minute. Exceeding returns HTTP 429.</p>
+            <div class="rate-grid">
+                <div class="rate-card"><div class="rate-plan">Free</div><div class="rate-limit">60</div><div class="rate-unit">req / min</div></div>
+                <div class="rate-card"><div class="rate-plan">Business</div><div class="rate-limit">120</div><div class="rate-unit">req / min</div></div>
+                <div class="rate-card"><div class="rate-plan">Corporate</div><div class="rate-limit">300</div><div class="rate-unit">req / min</div></div>
+                <div class="rate-card"><div class="rate-plan">Enterprise</div><div class="rate-limit">600</div><div class="rate-unit">req / min</div></div>
+            </div>
+        </div>
+
+        <!-- SLA -->
+        <div class="section" id="sla">
+            <div class="section-title">SLA Guarantees</div>
+            <p class="section-sub">AI Talent Match Pro guarantees enterprise-grade reliability for all paid plans.</p>
+            <div class="sla-grid">
+                <div class="sla-card"><div class="sla-value">99.9%</div><div class="sla-label">Uptime</div></div>
+                <div class="sla-card"><div class="sla-value">&lt;100ms</div><div class="sla-label">P95 Latency</div></div>
+                <div class="sla-card"><div class="sla-value">&lt;0.1%</div><div class="sla-label">Error Rate</div></div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+function scrollTo(id) {
+    document.getElementById(id)?.scrollIntoView({behavior:'smooth', block:'start'});
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    event.target.closest('.sidebar-link').classList.add('active');
+}
+
+function toggleEndpoint(header) {
+    const body = header.nextElementSibling;
+    body.classList.toggle('open');
+}
+
+function switchTab(group, lang, btn) {
+    document.querySelectorAll(`[id^="${group}-"]`).forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(`${group}-${lang}`).classList.add('active');
+    btn.classList.add('active');
+}
+
+function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText);
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+}
+</script>
+
+</body>
+</html>

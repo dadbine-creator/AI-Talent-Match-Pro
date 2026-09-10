@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Talent Match Pro — Pricing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:       #050914;
+            --blue:     #2563eb;
+            --blue-l:   #3b82f6;
+            --blue-glow:rgba(37,99,235,0.5);
+            --text:     #ffffff;
+            --soft:     rgba(255,255,255,0.65);
+            --muted:    rgba(255,255,255,0.38);
+            --border:   rgba(255,255,255,0.1);
+            --panel:    rgba(10,20,50,0.7);
+            --radius:   16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── STARFIELD ── */
+        .stars {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .stars::before, .stars::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+        }
+
+        .stars::before {
+            background-image:
+                radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.8) 0%, transparent 100%),
+                radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 40% 10%, rgba(255,255,255,0.7) 0%, transparent 100%),
+                radial-gradient(1px 1px at 55% 60%, rgba(255,255,255,0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 70% 25%, rgba(255,255,255,0.8) 0%, transparent 100%),
+                radial-gradient(1px 1px at 85% 45%, rgba(255,255,255,0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 15% 70%, rgba(255,255,255,0.7) 0%, transparent 100%),
+                radial-gradient(1px 1px at 30% 85%, rgba(255,255,255,0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 60% 80%, rgba(255,255,255,0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 90% 90%, rgba(255,255,255,0.8) 0%, transparent 100%),
+                radial-gradient(1px 1px at 5% 50%, rgba(255,255,255,0.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 75% 70%, rgba(255,255,255,0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 45% 35%, rgba(255,255,255,0.7) 0%, transparent 100%),
+                radial-gradient(1px 1px at 92% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 8% 92%, rgba(255,255,255,0.5) 0%, transparent 100%);
+        }
+
+        .stars::after {
+            background-image:
+                radial-gradient(ellipse at 50% 100%, rgba(37,99,235,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 0% 50%, rgba(37,99,235,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 50%, rgba(37,99,235,0.08) 0%, transparent 50%);
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 100;
+            background: rgba(5,9,20,0.6);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .at-hex {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #1e40af, #2563eb);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 0 16px rgba(37,99,235,0.4);
+        }
+
+        .nav-brand { font-size: 16px; font-weight: 700; }
+        .nav-brand span { color: var(--blue-l); }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--soft);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--text); }
+
+        .nav-cta {
+            background: var(--blue);
+            color: white !important;
+            padding: 9px 20px;
+            border-radius: 999px;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: all 0.2s !important;
+            box-shadow: 0 0 20px rgba(37,99,235,0.4);
+        }
+
+        .nav-cta:hover {
+            background: var(--blue-l) !important;
+            box-shadow: 0 0 30px rgba(59,130,246,0.5) !important;
+            transform: translateY(-1px);
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            z-index: 1;
+            padding-top: 120px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero-title {
+            font-size: 64px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-sub {
+            font-size: 20px;
+            color: var(--soft);
+            margin-bottom: 8px;
+        }
+
+        .hero-sub2 {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 36px;
+        }
+
+        /* ── BILLING TOGGLE ── */
+        .billing-toggle {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 4px;
+            gap: 2px;
+        }
+
+        .toggle-btn {
+            padding: 8px 20px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--muted);
+            border: none;
+            background: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .toggle-btn.active {
+            background: var(--blue);
+            color: white;
+            font-weight: 600;
+        }
+
+        .discount-badge {
+            background: rgba(37,99,235,0.2);
+            border: 1px solid rgba(37,99,235,0.4);
+            color: var(--blue-l);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 999px;
+            margin-left: 4px;
+        }
+
+        /* ── PLANS GRID ── */
+        .plans-section {
+            position: relative;
+            z-index: 1;
+            padding: 0 40px 80px;
+        }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .plan-card {
+            background: var(--panel);
+            border: 1px solid rgba(37,99,235,0.25);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            position: relative;
+            transition: all 0.25s;
+            backdrop-filter: blur(10px);
+        }
+
+        .plan-card:hover {
+            border-color: rgba(37,99,235,0.6);
+            transform: translateY(-4px);
+            box-shadow: 0 0 40px rgba(37,99,235,0.2);
+        }
+
+        .plan-card.popular {
+            border-color: var(--blue);
+            box-shadow: 0 0 30px rgba(37,99,235,0.25);
+        }
+
+        .plan-card.popular:hover {
+            box-shadow: 0 0 50px rgba(37,99,235,0.4);
+        }
+
+        /* Blue glow border effect */
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: calc(var(--radius) + 1px);
+            background: linear-gradient(135deg, rgba(37,99,235,0.4), transparent, rgba(37,99,235,0.2));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+
+        .plan-card:hover::before { opacity: 1; }
+        .plan-card.popular::before { opacity: 0.6; }
+
+        /* MOST POPULAR badge */
+        .popular-badge {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--blue);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 5px 14px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        .plan-name {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .plan-trial-badge {
+            display: inline-block;
+            background: var(--blue);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 999px;
+            margin-bottom: 12px;
+        }
+
+        .plan-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 14px 0;
+        }
+
+        .plan-price {
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .plan-price sup {
+            font-size: 24px;
+            font-weight: 700;
+            vertical-align: top;
+            margin-top: 8px;
+        }
+
+        .plan-price span {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--soft);
+        }
+
+        .plan-price-sub {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .plan-features li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--soft);
+        }
+
+        .check {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(37,99,235,0.15);
+            border: 1px solid rgba(37,99,235,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 10px;
+            color: var(--blue-l);
+        }
+
+        .plan-btn {
+            width: 100%;
+            padding: 13px;
+            border-radius: 999px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .btn-filled {
+            background: var(--blue);
+            color: white;
+            box-shadow: 0 4px 20px rgba(37,99,235,0.35);
+        }
+
+        .btn-filled:hover {
+            background: var(--blue-l);
+            box-shadow: 0 4px 30px rgba(59,130,246,0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-outline:hover {
+            border-color: white;
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* ── ANNUAL STRIKETHROUGH ── */
+        .original-price {
+            font-size: 14px;
+            color: var(--muted);
+            text-decoration: line-through;
+            margin-left: 4px;
+        }
+
+        /* ── FOOTER NOTE ── */
+        .footer-note {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding-bottom: 60px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .footer-note a { color: var(--blue-l); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<div class="stars"></div>
+
+<!-- NAV -->
+<nav>
+    <a href="/" class="nav-logo">
+        <div class="at-hex">AT</div>
+        <span class="nav-brand">AI <span>Talent</span> Match Pro</span>
+    </a>
+    <ul class="nav-links">
+        <li><a href="/api-docs">API Docs</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/register" class="nav-cta">Get Started</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+    <h1 class="hero-title">Pricing Plans</h1>
+    <p class="hero-sub">Flexible plans that grow with your team</p>
+    <p class="hero-sub2">Sub-100ms scoring powered by GPT-4o on Azure</p>
+
+    <div class="billing-toggle">
+        <button class="toggle-btn" id="monthlyBtn" onclick="setBilling('monthly')">Monthly</button>
+        <button class="toggle-btn active" id="annualBtn" onclick="setBilling('annual')">
+            Annual <span class="discount-badge">10% ▾</span>
+        </button>
+    </div>
+</div>
+
+<!-- PLANS -->
+<div class="plans-section">
+    <div class="plans-grid">
+
+        <!-- FREE -->
+        <div class="plan-card">
+            <div class="plan-name">Free Trial</div>
+            <div class="plan-trial-badge">7-Day Access</div>
+            <div class="plan-divider"></div>
+            <div class="plan-price">
+                <sup>$</sup>0
+                <span> for 7 days</span>
+            </div>
+            <div class="plan-price-sub">Card required · then $89/mo</div>
+            <ul class="plan-features">
+                <li><span class="check">✓</span> Full Business plan for 7 days</li>
+                <li><span class="check">✓</span> AI candidate scoring</li>
+                <li><span class="check">✓</span> Cancel before day 7 — no charge</li>
+            </ul>
+            <button class="plan-btn btn-filled" onclick="startTrial()">Start 7-Day Trial</button>
+        </div>
+
+        <!-- BUSINESS -->
+        <div class="plan-card popular">
+            <div class="popular-badge">MOST POPULAR</div>
+            <div class="plan-name">Business</div>
+            <div class="plan-divider"></div>
+            <div class="plan-price" id="businessPrice">
+                <sup>$</sup>89<span>/mo</span>
+            </div>
+            <div class="plan-price-sub" id="businessSub">Billed monthly or annually</div>
+            <ul class="plan-features">
+                <li><span class="check">✓</span> 5 users</li>
+                <li><span class="check">✓</span> 2 candidates/search</li>
+                <li><span class="check">✓</span> Full AI</li>
+                <li><span class="check">✓</span> Team collab</li>
+            </ul>
+            <button class="plan-btn btn-filled" onclick="openPaddleCheckout('business')">Upgrade</button>
+        </div>
+
+        <!-- CORPORATE -->
+        <div class="plan-card">
+            <div class="plan-name">Corporate</div>
+            <div class="plan-divider"></div>
+            <div class="plan-price" id="corporatePrice">
+                <sup>$</sup>299<span>/mo</span>
+            </div>
+            <div class="plan-price-sub" id="corporateSub">Billed monthly</div>
+            <ul class="plan-features">
+                <li><span class="check">✓</span> 20 users</li>
+                <li><span class="check">✓</span> 3 candidates/search</li>
+                <li><span class="check">✓</span> Advanced AI</li>
+                <li><span class="check">✓</span> Analytics</li>
+            </ul>
+            <button class="plan-btn btn-filled" onclick="openPaddleCheckout('corporate')">Upgrade</button>
+        </div>
+
+        <!-- ENTERPRISE -->
+        <div class="plan-card">
+            <div class="plan-name">Enterprise</div>
+            <div class="plan-divider"></div>
+            <div class="plan-price" style="font-size:32px;padding-top:8px;">
+                Custom Quote
+            </div>
+            <div class="plan-price-sub">Tailored to your team · billed by invoice (bank transfer)</div>
+            <ul class="plan-features">
+                <li><span class="check">✓</span> Unlimited users</li>
+                <li><span class="check">✓</span> 50 candidates/search</li>
+                <li><span class="check">✓</span> Custom AI</li>
+                <li><span class="check">✓</span> SLA &amp; Support</li>
+                <li><span class="check">✓</span> Pay by bank transfer / invoice</li>
+            </ul>
+            <button class="plan-btn btn-outline" onclick="contactSales()">Contact Us</button>
+            <div style="font-size:11px;color:var(--text-muted,#888);text-align:center;margin-top:10px;">We'll send you an onboarding form + invoice.</div>
+        </div>
+
+    </div>
+</div>
+
+<!-- FOOTER NOTE -->
+<div class="footer-note">
+    Paid plans start with a 7-day free trial — card required, cancel anytime before day 7 and you won't be charged. 14-day money-back guarantee on any charge, no questions asked. &nbsp;·&nbsp;
+    <a href="/api-docs">API Documentation</a> &nbsp;·&nbsp;
+    <a href="mailto:hello@aitmp.io">Contact Sales</a>
+</div>
+
+<script>
+let billing = 'annual';
+
+const prices = {
+    business:  { monthly: 89,  annual: 89  },
+    corporate: { monthly: 299, annual: 269 }
+};
+
+function setBilling(type) {
+    billing = type;
+    document.getElementById('monthlyBtn').classList.toggle('active', type === 'monthly');
+    document.getElementById('annualBtn').classList.toggle('active',  type === 'annual');
+
+    const b = prices.business[type];
+    const c = prices.corporate[type];
+
+    document.getElementById('businessPrice').innerHTML  = `<sup>$</sup>${b}<span>/mo</span>`;
+    document.getElementById('corporatePrice').innerHTML = `<sup>$</sup>${c}<span>/mo</span>`;
+
+    document.getElementById('businessSub').textContent  = 'Billed monthly or annually';
+    document.getElementById('corporateSub').textContent = type === 'annual' ? 'Billed annually — save 10%' : 'Billed monthly';
+}
+
+function startTrial() {
+    // Card-required 7-day trial: capture the card via Paddle checkout (Business price
+    // must have a 7-day trial configured in Paddle). openPaddleCheckout is defined in the
+    // Paddle block at the bottom of this page.
+    if (typeof openPaddleCheckout === 'function') { openPaddleCheckout('business'); }
+    else { window.location.href = '/register'; }
+}
+
+// Billing is consolidated on Paddle — all upgrades go through the Paddle checkout.
+function upgrade(plan) {
+    if (typeof openPaddleCheckout === 'function') { openPaddleCheckout(plan); }
+    else { window.location.href = '/register'; }
+}
+
+function contactSales() {
+    window.location.href = 'mailto:hello@aitmp.io?subject=Enterprise%20Plan%20Inquiry%20-%20AI%20Talent%20Match%20Pro&body=Hi%2C%0A%0AI%27m%20interested%20in%20the%20Enterprise%20plan%20for%20AI%20Talent%20Match%20Pro.%0A%0ACompany%20name%3A%20%0ATeam%20size%3A%20%0ACurrent%20ATS%2FCRM%3A%20%0AWhat%20I%27m%20looking%20for%3A%20%0A%0ABest%20time%20to%20reach%20me%3A%20';
+}
+
+// Init with annual
+setBilling('annual');
+</script>
+
+<!-- Paddle Billing (sandbox) — checkout wiring. Stripe code above is untouched. -->
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+<script>
+(function(){
+  let ready=false, prices={};
+  async function initPaddle(){
+    try{
+      const cfg = await fetch('/api/paddle/config').then(r=>r.json());
+      if(!cfg || !cfg.configured || !window.Paddle) return;
+      Paddle.Environment.set(cfg.environment || 'sandbox');
+      Paddle.Initialize({ token: cfg.token });
+      prices = cfg.prices || {};
+      ready = true;
+    }catch(e){ /* Paddle not configured yet */ }
+  }
+  window.openPaddleCheckout = async function(plan){
+    const notify = (m)=>{ (window.showToast ? showToast(m,'') : alert(m)); };
+    if(!ready){ notify('Checkout is being set up — please try again in a moment.'); return; }
+    const priceId = prices[plan];
+    if(!priceId){ notify("That plan isn't available yet."); return; }
+    let customData = { plan }, customer;
+    try{
+      const me = await fetch('/api/me').then(r=>r.ok?r.json():null);
+      if(me && me.ok){
+        const cid = me.company_id || (me.company && me.company.id);
+        if(cid) customData.company_id = cid;
+        if(me.email) customer = { email: me.email };
+      }
+    }catch(e){}
+    const opts = { items:[{ priceId, quantity:1 }], customData, settings:{ displayMode:'overlay' } };
+    if(customer) opts.customer = customer;
+    Paddle.Checkout.open(opts);
+  };
+  document.addEventListener('DOMContentLoaded', initPaddle);
+})();
+</script>
+
+</body>
+</html>
+

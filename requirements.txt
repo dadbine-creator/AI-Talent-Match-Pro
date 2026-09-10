@@ -1,0 +1,20 @@
+fastapi
+uvicorn
+sqlalchemy
+python-dotenv
+requests
+stripe
+jinja2
+passlib[bcrypt]
+bcrypt
+python-multipart
+pydantic
+gunicorn
+uvicorn[standard]
+openai
+httpx
+itsdangerous
+aiofiles
+# Team DNA — CV text extraction (PDF/DOCX)
+pdfplumber
+python-docx

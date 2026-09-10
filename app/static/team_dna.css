@@ -1,0 +1,239 @@
+/* ============================================================
+   team_dna.css — Team DNA panel, bulk dropzone, feedback controls
+   Additive: scoped to .tdna-* so it cannot touch existing workspace styles.
+   Palette lifted from the workspace's existing cinematic dark theme.
+   ============================================================ */
+
+.tdna-overlay {
+    position: fixed; inset: 0; z-index: 700;
+    display: none; align-items: center; justify-content: center;
+    background: rgba(2, 6, 16, 0.78); backdrop-filter: blur(8px);
+    padding: 24px;
+}
+.tdna-overlay.open { display: flex; }
+
+.tdna-modal {
+    width: min(980px, 100%); max-height: 88vh;
+    display: flex; flex-direction: column;
+    background: linear-gradient(180deg, #0b1428 0%, #070d1c 100%);
+    border: 1px solid rgba(59, 130, 246, 0.18);
+    border-radius: 18px;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255,255,255,0.02) inset;
+    overflow: hidden;
+}
+
+.tdna-head {
+    display: flex; align-items: center; gap: 14px;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.tdna-head h2 {
+    font-size: 17px; font-weight: 800; color: #fff; letter-spacing: -0.01em;
+}
+.tdna-head p { font-size: 12.5px; color: rgba(200, 220, 255, 0.5); margin-top: 3px; line-height: 1.5; }
+.tdna-head .tdna-spark {
+    width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+    background: rgba(29, 110, 245, 0.16); border: 1px solid rgba(77, 159, 255, 0.32);
+}
+.tdna-close {
+    margin-left: auto; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);
+    width: 30px; height: 30px; border-radius: 9px; cursor: pointer;
+    font-size: 14px; font-family: inherit; flex-shrink: 0;
+}
+.tdna-close:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+.tdna-body { padding: 20px 24px 24px; overflow-y: auto; }
+
+/* ── role selector ─────────────────────────────────────── */
+.tdna-rolebar { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
+.tdna-rolebar select {
+    flex: 1; min-width: 200px; padding: 10px 12px; border-radius: 10px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12);
+    color: #fff; font-size: 13px; font-family: inherit; outline: none;
+}
+.tdna-rolebar select:focus { border-color: #4d9fff; }
+.tdna-rolebar option { background: #0b1428; color: #fff; }
+
+/* ── section scaffolding ───────────────────────────────── */
+.tdna-section { margin-bottom: 22px; }
+.tdna-section-title {
+    font-size: 10.5px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.12em; color: rgba(150, 180, 220, 0.45); margin-bottom: 10px;
+}
+.tdna-hint { font-size: 12px; color: rgba(200,220,255,0.42); line-height: 1.6; }
+
+/* ── exemplar profiles ─────────────────────────────────── */
+.tdna-profiles { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.tdna-profile {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px; border-radius: 11px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+}
+.tdna-profile-name { font-size: 13px; font-weight: 600; color: #fff; flex: 1; }
+.tdna-profile-meta { font-size: 11px; color: rgba(255,255,255,0.32); }
+.tdna-profile-del {
+    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.22);
+    color: rgba(239,68,68,0.8); border-radius: 7px; padding: 5px 9px;
+    font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.tdna-profile-del:hover { background: rgba(239,68,68,0.16); color: #ff8080; }
+
+.tdna-counter {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 999px;
+    background: rgba(29,110,245,0.12); border: 1px solid rgba(77,159,255,0.28); color: #4d9fff;
+}
+.tdna-counter.ready { background: rgba(0,214,143,0.1); border-color: rgba(0,214,143,0.3); color: #00d68f; }
+
+/* ── trait chips ───────────────────────────────────────── */
+.tdna-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.tdna-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 12px; border-radius: 999px;
+    background: rgba(29,110,245,0.1); border: 1px solid rgba(77,159,255,0.26);
+    font-size: 12.5px; color: #cfe2ff; cursor: default;
+}
+.tdna-chip b { color: #fff; font-weight: 600; }
+.tdna-chip .w {
+    font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 999px;
+    background: rgba(77,159,255,0.22); color: #9ecbff;
+}
+/* Weight drives the chip's intensity, so the strongest signals read first. */
+.tdna-chip[data-w="high"] { background: rgba(0,214,143,0.1); border-color: rgba(0,214,143,0.32); }
+.tdna-chip[data-w="high"] .w { background: rgba(0,214,143,0.2); color: #6ff0c0; }
+.tdna-chip[data-w="low"] { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.55); }
+.tdna-chip[data-w="low"] .w { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+
+.tdna-evidence {
+    font-size: 11.5px; color: rgba(200,220,255,0.45); line-height: 1.6;
+    padding: 9px 12px; margin-top: 8px; border-radius: 9px;
+    background: rgba(255,255,255,0.02); border-left: 2px solid rgba(77,159,255,0.4);
+}
+
+.tdna-summary {
+    font-size: 13px; line-height: 1.65; color: rgba(220,235,255,0.72);
+    padding: 13px 15px; border-radius: 11px;
+    background: rgba(29,110,245,0.06); border: 1px solid rgba(77,159,255,0.16);
+}
+
+.tdna-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.tdna-list li {
+    font-size: 12.5px; color: rgba(200,220,255,0.6); line-height: 1.55;
+    padding-left: 16px; position: relative;
+}
+.tdna-list li::before {
+    content: ''; position: absolute; left: 3px; top: 8px;
+    width: 4px; height: 4px; border-radius: 50%; background: rgba(77,159,255,0.6);
+}
+
+/* ── dropzone ──────────────────────────────────────────── */
+.tdna-drop {
+    border: 1.5px dashed rgba(77,159,255,0.32); border-radius: 14px;
+    padding: 26px 20px; text-align: center; cursor: pointer;
+    background: rgba(29,110,245,0.04);
+    transition: background 0.2s, border-color 0.2s;
+}
+.tdna-drop:hover, .tdna-drop.drag {
+    background: rgba(29,110,245,0.1); border-color: rgba(77,159,255,0.6);
+}
+.tdna-drop.disabled { opacity: 0.4; cursor: not-allowed; }
+.tdna-drop-icon { font-size: 24px; margin-bottom: 8px; }
+.tdna-drop-title { font-size: 13.5px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.tdna-drop-sub { font-size: 11.5px; color: rgba(255,255,255,0.35); }
+
+.tdna-progress-wrap { margin-top: 14px; display: none; }
+.tdna-progress-wrap.on { display: block; }
+.tdna-progress-bar {
+    height: 6px; border-radius: 999px; overflow: hidden;
+    background: rgba(255,255,255,0.07);
+}
+.tdna-progress-fill {
+    height: 100%; width: 0%; border-radius: 999px;
+    background: linear-gradient(90deg, #1d6ef5, #4d9fff);
+    transition: width 0.35s ease;
+}
+.tdna-progress-text {
+    font-size: 11.5px; color: rgba(200,220,255,0.5); margin-top: 7px;
+    display: flex; justify-content: space-between; gap: 12px;
+}
+
+/* ── errors / rejected files ───────────────────────────── */
+.tdna-errors {
+    margin-top: 12px; padding: 11px 14px; border-radius: 10px;
+    background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2);
+}
+.tdna-errors-title { font-size: 11.5px; font-weight: 700; color: rgba(239,68,68,0.85); margin-bottom: 6px; }
+.tdna-errors ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.tdna-errors li { font-size: 11.5px; color: rgba(255,190,190,0.7); line-height: 1.5; }
+.tdna-errors code { color: rgba(255,255,255,0.6); font-size: 11px; }
+
+.tdna-alert {
+    padding: 12px 15px; border-radius: 11px; font-size: 12.5px; line-height: 1.6;
+    background: rgba(245,166,35,0.07); border: 1px solid rgba(245,166,35,0.25);
+    color: rgba(255,220,160,0.85);
+}
+
+/* ── buttons ───────────────────────────────────────────── */
+.tdna-btn {
+    padding: 10px 16px; border-radius: 10px; cursor: pointer;
+    font-size: 12.5px; font-weight: 700; font-family: inherit;
+    border: 1px solid rgba(29,110,245,0.4); background: rgba(29,110,245,0.16); color: #4d9fff;
+    transition: background 0.18s;
+}
+.tdna-btn:hover:not(:disabled) { background: rgba(29,110,245,0.28); color: #fff; }
+.tdna-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.tdna-btn--ghost {
+    background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.6);
+}
+.tdna-btn--ghost:hover:not(:disabled) { background: rgba(255,255,255,0.09); color: #fff; }
+
+.tdna-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* ── results ───────────────────────────────────────────── */
+.tdna-results { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+.tdna-rank {
+    font-size: 10.5px; font-weight: 800; color: rgba(255,255,255,0.28);
+    text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+/* Feedback controls, appended to the existing candidate card. */
+.tdna-fb { display: flex; gap: 8px; margin-top: 8px; }
+.tdna-fb button {
+    flex: 1; padding: 7px; border-radius: 8px; cursor: pointer;
+    font-size: 11px; font-weight: 600; font-family: inherit;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5); transition: all 0.18s;
+}
+.tdna-fb button:hover:not(:disabled) { color: #fff; background: rgba(255,255,255,0.08); }
+.tdna-fb button.good.on {
+    background: rgba(0,214,143,0.16); border-color: rgba(0,214,143,0.4); color: #00d68f;
+}
+.tdna-fb button.bad.on {
+    background: rgba(239,68,68,0.14); border-color: rgba(239,68,68,0.36); color: #ff7a7a;
+}
+.tdna-fb button:disabled { cursor: default; }
+
+/* DNA trait matches on a result card. */
+.tdna-matches { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 2px; }
+.tdna-match {
+    font-size: 10.5px; padding: 3px 8px; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);
+    color: rgba(255,255,255,0.4);
+}
+.tdna-match.found {
+    border-color: rgba(0,214,143,0.32); background: rgba(0,214,143,0.09); color: #6ff0c0;
+}
+
+.tdna-empty {
+    text-align: center; padding: 26px 18px;
+    font-size: 12.5px; color: rgba(255,255,255,0.32); line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+    .tdna-overlay { padding: 12px; }
+    .tdna-body { padding: 16px; }
+    .tdna-head { padding: 16px 16px 13px; }
+}

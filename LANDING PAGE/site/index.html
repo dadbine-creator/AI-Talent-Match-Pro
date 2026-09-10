@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>AI Talent Match Pro — Hire deeper than keywords.</title>
+<meta name="description" content="AI Talent Match Pro scans real LinkedIn profiles, ranks candidates by fit, and shows hiring teams the best matches in minutes." />
+<meta name="theme-color" content="#04070d" />
+<link rel="preload" href="assets/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="assets/css/style.css" />
+<script>document.documentElement.className+=" js"</script>
+</head>
+<body>
+
+<!-- ============ ambient background ============ -->
+<div class="bg" aria-hidden="true">
+  <div class="bg__stars"></div>
+  <div class="bg__glow bg__glow--center"></div>
+  <div class="bg__glow bg__glow--left"></div>
+  <div class="bg__vignette"></div>
+</div>
+
+<!-- ============ header ============ -->
+<header class="nav" data-reveal>
+  <a class="brand" href="#top" aria-label="AI Talent Match Pro — home">
+    <span class="brand__mark" aria-hidden="true">
+      <picture>
+        <source srcset="assets/img/logo-mark.webp" type="image/webp" />
+        <img src="assets/img/logo-mark.png" alt="" width="264" height="300" fetchpriority="high" decoding="async" />
+      </picture>
+    </span>
+    <span class="brand__word">
+      <picture>
+        <source srcset="assets/img/logo-word.webp" type="image/webp" />
+        <img src="assets/img/logo-word.png" alt="AI Talent Match Pro" width="820" height="80" fetchpriority="high" decoding="async" />
+      </picture>
+    </span>
+  </a>
+
+  <nav class="nav__links" id="nav-links" aria-label="Main">
+    <a href="#how">How it works</a>
+    <a href="#demo">Live Demo</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#resources">Resources</a>
+    <a href="#signin">Sign In</a>
+  </nav>
+
+  <div class="nav__actions">
+    <a class="btn btn--primary btn--sm" href="#demo">
+      <span>Book a Demo</span>
+      <svg class="i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5"/></svg>
+    </a>
+    <button class="nav__burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ============ hero ============ -->
+<main>
+<section class="hero">
+
+  <div class="hero__portrait" aria-hidden="true">
+    <picture>
+      <source type="image/webp"
+              srcset="assets/img/hero-portrait-1400.webp 1400w, assets/img/hero-portrait.webp 2400w"
+              sizes="(max-width:900px) 78vw, min(1150px,88vw)" />
+      <img src="assets/img/hero-portrait.jpg"
+           srcset="assets/img/hero-portrait-1400.jpg 1400w, assets/img/hero-portrait.jpg 2400w"
+           sizes="(max-width:900px) 78vw, min(1150px,88vw)"
+           alt="" width="2400" height="1600" fetchpriority="high" decoding="async" />
+    </picture>
+  </div>
+
+  <div class="hero__inner">
+
+    <!-- ---------- copy ---------- -->
+    <div class="hero__copy">
+      <h1 class="hero__title">
+        <span class="s">
+          <span class="l" data-reveal style="--d:.05s">Hire deeper</span>
+          <span class="l" data-reveal style="--d:.12s">than keywords.</span>
+        </span>
+        <span class="s">
+          <span class="l" data-reveal style="--d:.19s">Find the right</span>
+          <span class="l" data-reveal style="--d:.26s">talent <em>faster.</em></span>
+        </span>
+      </h1>
+
+      <p class="hero__lede" data-reveal style="--d:.34s">
+        AI Talent Match Pro scans real LinkedIn<br />
+        profiles, ranks candidates by fit, and shows<br />
+        hiring teams the best matches in minutes.
+      </p>
+
+      <div class="hero__ctas" data-reveal style="--d:.42s">
+        <a class="btn btn--primary btn--lg" href="#demo">
+          <span>Book a Demo</span>
+          <svg class="i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5"/></svg>
+        </a>
+        <a class="btn btn--ghost btn--lg" href="#how">
+          <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9.2"/><path d="M10.2 8.6 15.6 12l-5.4 3.4V8.6Z" fill="currentColor" stroke="none"/>
+          </svg>
+          <span>See How It Works</span>
+        </a>
+      </div>
+
+      <div class="hero__stat" data-reveal style="--d:.5s">
+        <svg class="i-users" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="9" cy="8" r="3.2"/><path d="M3.2 19.2a5.8 5.8 0 0 1 11.6 0"/>
+          <circle cx="17.2" cy="8.8" r="2.5"/><path d="M15.6 13.9a4.8 4.8 0 0 1 5.4 4.6"/>
+        </svg>
+        <b class="count" data-count="43365">43,365</b>
+        <span>candidates analyzed this week</span>
+      </div>
+    </div>
+
+    <!-- ---------- flow graph ---------- -->
+    <div class="graph" data-reveal style="--d:.34s">
+      <svg class="graph__wires" aria-hidden="true">
+        <defs>
+          <filter id="wireGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="3.4" result="b"/>
+            <feMerge>
+              <feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="b"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <radialGradient id="dotG">
+            <stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#7fd4ff"/><stop offset="1" stop-color="#2b9bff"/>
+          </radialGradient>
+        </defs>
+        <g class="wires-solid" filter="url(#wireGlow)"></g>
+        <g class="wires-dotted"></g>
+        <g class="wires-dots"></g>
+      </svg>
+
+      <!-- target role -->
+      <article class="ncard ncard--role" data-node="role">
+        <p class="ncard__eyebrow">Target Role</p>
+        <h2 class="ncard__title">Senior ML Engineer</h2>
+        <ul class="ncard__specs">
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z"/><circle cx="12" cy="10.2" r="2.6"/></svg>
+            San Francisco
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="6.8" width="17.6" height="13.4" rx="2.2"/><path d="M8.6 6.8V4.9a1.6 1.6 0 0 1 1.6-1.6h3.6a1.6 1.6 0 0 1 1.6 1.6v1.9M3.2 12.4h17.6"/><path d="M12 10.4v2.4l1.6 1"/></svg>
+            7+ years
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="6.8" width="17.6" height="13.4" rx="2.2"/><path d="M8.6 6.8V4.9a1.6 1.6 0 0 1 1.6-1.6h3.6a1.6 1.6 0 0 1 1.6 1.6v1.9M3.2 12.4h17.6"/></svg>
+            Production ML
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.4" y="4.8" width="17.2" height="14.4" rx="2.4"/><path d="M7.4 15.4v-3M11.6 15.4V9.6M15.8 15.4v-4.6"/></svg>
+            MLOps
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6 14.4 8l4.8.7-3.5 3.4.8 4.8-4.5-2.4-4.5 2.4.8-4.8L4.8 8.7 9.6 8 12 3.6Z"/><path d="M8 20.4h8"/></svg>
+            Leadership
+          </li>
+        </ul>
+      </article>
+
+      <!-- linkedin + ai search -->
+      <article class="ncard ncard--source" data-node="linkedin">
+        <span class="li-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="#fff" stroke="none">
+            <path d="M6.94 8.75H4.06v9.19h2.88V8.75ZM5.5 4.5a1.67 1.67 0 1 0 0 3.34 1.67 1.67 0 0 0 0-3.34Z"/>
+            <path d="M14.6 8.53c-1.4 0-2.34.77-2.73 1.5h-.04V8.75H9.07v9.19h2.88v-4.55c0-1.2.23-2.36 1.71-2.36 1.46 0 1.48 1.37 1.48 2.44v4.47h2.88v-5.05c0-2.5-.54-4.36-3.42-4.36Z"/>
+          </svg>
+        </span>
+        <p class="li-text">LinkedIn<br />+ AI Search</p>
+      </article>
+
+      <!-- side labels -->
+      <div class="glabel glabel--ai" data-node="lab-ai">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.6"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1.8v3M12 19.2v3M1.8 12h3M19.2 12h3M17.6 6.4 20 4"/></svg>
+        <span>AI Reasoning</span>
+      </div>
+      <div class="glabel glabel--scan" data-node="lab-scan">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.4" cy="7.4" r="3.4"/><path d="M4 19.4a6.4 6.4 0 0 1 8.6-6"/><circle cx="16.4" cy="16.4" r="3.2"/><path d="m18.9 18.9 2.3 2.3"/></svg>
+        <span>Profile Scan</span>
+      </div>
+      <div class="glabel glabel--rank" data-node="lab-rank">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.4 4h9.2v5.2a4.6 4.6 0 1 1-9.2 0V4Z"/><path d="M7.4 5.8H4.6v1.6a3.2 3.2 0 0 0 2.8 3.2M16.6 5.8h2.8v1.6a3.2 3.2 0 0 1-2.8 3.2"/><path d="M12 13.8v3.4M8.6 20.2h6.8l-.8-3h-5.2l-.8 3Z"/></svg>
+        <span>Ranked<br />Shortlist</span>
+      </div>
+
+      <!-- candidate cards -->
+      <div class="matches">
+        <article class="mcard mcard--gold" data-node="c1">
+          <p class="mcard__label">Top Match</p>
+          <p class="mcard__score">96<i>%</i></p>
+          <span class="mcard__avatar">
+            <picture>
+              <source srcset="assets/img/avatar-maya.webp" type="image/webp" />
+              <img src="assets/img/avatar-maya.jpg" alt="Maya Chen" width="640" height="640" decoding="async" />
+            </picture>
+          </span>
+          <h3 class="mcard__name">Maya Chen</h3>
+          <p class="mcard__role">ML Engineering Lead</p>
+          <p class="mcard__org">Stripe</p>
+          <p class="mcard__why">Strong MLOps leadership and production ML scale.</p>
+          <p class="mcard__tier">
+            <svg class="i-tier" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 1.7 20.6 6.6v9.8L12 21.3 3.4 16.4V6.6L12 1.7Z" fill="#2c7fd6" stroke="none"/>
+              <path d="M12 1.7 20.6 6.6v9.8L12 21.3 3.4 16.4V6.6L12 1.7Z" stroke="#7fd3ff" stroke-width="1" fill="none" opacity=".55"/>
+              <path d="m12 6.9 1.6 3.25 3.59.52-2.6 2.53.62 3.57L12 15.08 8.79 16.77l.62-3.57-2.6-2.53 3.59-.52L12 6.9Z" fill="#eaf6ff" stroke="none"/>
+            </svg>
+            Gold Tier
+          </p>
+        </article>
+
+        <article class="mcard mcard--silver is-featured" data-node="c2">
+          <p class="mcard__label">Strong Match</p>
+          <p class="mcard__score">88<i>%</i></p>
+          <span class="mcard__avatar">
+            <picture>
+              <source srcset="assets/img/avatar-arjun.webp" type="image/webp" />
+              <img src="assets/img/avatar-arjun.jpg" alt="Arjun Patel" width="640" height="640" decoding="async" />
+            </picture>
+          </span>
+          <h3 class="mcard__name">Arjun Patel</h3>
+          <p class="mcard__role">Senior ML Engineer</p>
+          <p class="mcard__org">Notion</p>
+          <p class="mcard__why">Deep ML, MLOps and team leadership.</p>
+          <p class="mcard__tier">
+            <svg class="i-tier" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 1.7 20.6 6.6v9.8L12 21.3 3.4 16.4V6.6L12 1.7Z" fill="#2c7fd6" stroke="none"/>
+              <path d="M12 1.7 20.6 6.6v9.8L12 21.3 3.4 16.4V6.6L12 1.7Z" stroke="#7fd3ff" stroke-width="1" fill="none" opacity=".55"/>
+              <path d="m12 6.9 1.6 3.25 3.59.52-2.6 2.53.62 3.57L12 15.08 8.79 16.77l.62-3.57-2.6-2.53 3.59-.52L12 6.9Z" fill="#eaf6ff" stroke="none"/>
+            </svg>
+            Silver Tier
+          </p>
+        </article>
+
+        <article class="mcard mcard--bronze" data-node="c3">
+          <p class="mcard__label">Potential Match</p>
+          <p class="mcard__score">74<i>%</i></p>
+          <span class="mcard__avatar">
+            <picture>
+              <source srcset="assets/img/avatar-sophie.webp" type="image/webp" />
+              <img src="assets/img/avatar-sophie.jpg" alt="Sophie Martin" width="640" height="640" decoding="async" />
+            </picture>
+          </span>
+          <h3 class="mcard__name">Sophie Martin</h3>
+          <p class="mcard__role">Staff ML Engineer</p>
+          <p class="mcard__org">Databricks</p>
+          <p class="mcard__why">Strong technical depth with adjacent experience.</p>
+          <p class="mcard__tier">
+            <svg class="i-tier" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 1.7 20.6 6.6v9.8L12 21.3 3.4 16.4V6.6L12 1.7Z" fill="#2c7fd6" stroke="none"/>
+              <path d="M12 1.7 20.6 6.6v9.8L12 21.3 3.4 16.4V6.6L12 1.7Z" stroke="#7fd3ff" stroke-width="1" fill="none" opacity=".55"/>
+              <path d="m12 6.9 1.6 3.25 3.59.52-2.6 2.53.62 3.57L12 15.08 8.79 16.77l.62-3.57-2.6-2.53 3.59-.52L12 6.9Z" fill="#eaf6ff" stroke="none"/>
+            </svg>
+            Bronze Tier
+          </p>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- trust strip ---------- -->
+  <ul class="trust" data-reveal style="--d:.58s">
+    <li>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 20 6v5.6c0 4.9-3.3 8.6-8 9.6-4.7-1-8-4.7-8-9.6V6l8-3.2Z"/><path d="m8.6 11.9 2.4 2.4 4.4-4.6"/></svg>
+      <span><b>Enterprise Security</b>SOC 2 • GDPR Compliant</span>
+    </li>
+    <li>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.4 2.6 4.6 13.4h6L9.8 21.4l9-11.2h-6.2l.8-7.6Z"/></svg>
+      <span><b>Real-Time Matching</b>Sub-100ms Latency</span>
+    </li>
+    <li>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="5.6" r="2.8"/><circle cx="5.4" cy="16.8" r="2.8"/><circle cx="16.4" cy="16.8" r="3"/><path d="M9.6 7.9 14.6 14M7 14.6l1-4.2M8.4 16.8h5"/></svg>
+      <span><b>AI-Powered Insights</b>Explainable Results</span>
+    </li>
+    <li>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.2" y="10" width="15.6" height="11" rx="2.4"/><path d="M7.8 10V7.4a4.2 4.2 0 0 1 8.4 0V10"/><path d="M12 14.2v2.6"/></svg>
+      <span><b>Private by Design</b>Your Data, Your Control</span>
+    </li>
+  </ul>
+</section>
+
+<!-- ============ 02 · how it works ============ -->
+<section class="s2" id="how" aria-labelledby="s2-title">
+  <div class="s2__inner">
+
+    <div class="s2__head">
+      <p class="eyebrow" data-reveal>How it works</p>
+      <h2 class="s2__title" id="s2-title">
+        <span class="l" data-reveal style="--d:.06s">The full hiring flow,</span>
+        <span class="l" data-reveal style="--d:.13s">automated</span>
+      </h2>
+      <p class="s2__sub" data-reveal style="--d:.2s">
+        From login to CRM update — 8 steps that turn<br />
+        3 days of sourcing into 3 minutes.
+      </p>
+    </div>
+
+    <div class="orb" aria-hidden="true" data-reveal style="--d:.1s">
+      <span class="orb__ring orb__ring--out"></span>
+      <span class="orb__ring orb__ring--in"></span>
+      <span class="orb__sat"></span>
+      <span class="orb__body">
+        <picture>
+          <source srcset="assets/img/orb.webp" type="image/webp" />
+          <img src="assets/img/orb.jpg" alt="" width="720" height="720" loading="lazy" decoding="async" />
+        </picture>
+      </span>
+    </div>
+
+    <ol class="phases">
+
+      <li class="phase" data-reveal style="--d:.06s">
+        <p class="phase__n">Phase 01</p>
+        <h3 class="phase__t">HR sets<br />the target</h3>
+        <span class="phase__badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8.6" r="3.4"/><path d="M5.6 19.6a6.4 6.4 0 0 1 12.8 0"/><path d="M3.6 4.2 6 6.6M20.4 4.2 18 6.6" opacity=".7"/></svg>
+        </span>
+        <ul class="phase__steps">
+          <li>
+            <span class="ibox" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.8" y="5.2" width="18.4" height="13.6" rx="2.6"/><path d="m3.4 6.6 8.6 6.2 8.6-6.2"/></svg></span>
+            <div><b>HR logs in —</b>Sign in with email/password or LinkedIn OAuth, title and company verified.</div>
+          </li>
+          <li>
+            <span class="ibox" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 2.8h7.6L19 8.2v13H6z"/><path d="M13.4 2.8v5.6H19"/><path d="M9 12.4h7M9 15.6h7M9 18.2h4"/></svg></span>
+            <div><b>Create a role —</b>Paste the JD, add location, seniority, years of experience, and must-have skills.</div>
+          </li>
+        </ul>
+      </li>
+
+      <li class="phase" data-reveal style="--d:.14s">
+        <p class="phase__n">Phase 02</p>
+        <h3 class="phase__t">AI builds<br />the search</h3>
+        <span class="phase__badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 4.2a3 3 0 0 0-5.6 1.3A2.9 2.9 0 0 0 4.2 8.3a2.9 2.9 0 0 0 .5 1.6A3 3 0 0 0 5.4 15a3 3 0 0 0 3.4 3.9A2.9 2.9 0 0 0 12 20.4Z"/><path d="M12 4.2a3 3 0 0 1 5.6 1.3 2.9 2.9 0 0 1 2.2 2.8 2.9 2.9 0 0 1-.5 1.6 3 3 0 0 1-.7 5.1 3 3 0 0 1-3.4 3.9A2.9 2.9 0 0 1 12 20.4Z"/><path d="M15.4 8.4h2.2M15 12h2.6M14.6 15.6h1.8M8.6 8.4H6.4M9 12H6.4M9.4 15.6H7.6" opacity=".75"/></svg>
+        </span>
+        <ul class="phase__steps">
+          <li>
+            <span class="ibox" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m11 3.4 2.1 5 5 2.1-5 2.1-2.1 5-2.1-5-5-2.1 5-2.1 2.1-5Z"/><path d="M18.4 3.2v3.4M20.1 4.9h-3.4" opacity=".8"/></svg></span>
+            <div><b>AI reads the role —</b>Extracts requirements, skills, culture signals, and hidden qualities.</div>
+          </li>
+          <li>
+            <span class="ibox ibox--li" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M6.94 8.75H4.06v9.19h2.88V8.75ZM5.5 4.5a1.67 1.67 0 1 0 0 3.34 1.67 1.67 0 0 0 0-3.34Z"/><path d="M14.6 8.53c-1.4 0-2.34.77-2.73 1.5h-.04V8.75H9.07v9.19h2.88v-4.55c0-1.2.23-2.36 1.71-2.36 1.46 0 1.48 1.37 1.48 2.44v4.47h2.88v-5.05c0-2.5-.54-4.36-3.42-4.36Z"/></svg></span>
+            <div><b>LinkedIn profile scan —</b>Searches real LinkedIn profiles and returns the most relevant candidates.</div>
+          </li>
+        </ul>
+      </li>
+
+      <li class="phase" data-reveal style="--d:.22s">
+        <p class="phase__n">Phase 03</p>
+        <h3 class="phase__t">Ranked matches<br />&amp; outreach</h3>
+        <span class="phase__badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M8.4 3.4h7.2v4.2a3.6 3.6 0 1 1-7.2 0V3.4Z"/><path d="M8.4 4.8H6.1v1.3a2.6 2.6 0 0 0 2.3 2.6M15.6 4.8h2.3v1.3a2.6 2.6 0 0 1-2.3 2.6"/><path d="M12 11.4v2.6M9.2 20.6h5.6l-.7-2.6H9.9l-.7 2.6Z"/><path d="m12 14.8.85 1.7 1.9.28-1.37 1.34.32 1.88L12 19.1l-1.7.9.32-1.88-1.37-1.34 1.9-.28.85-1.7Z" fill="currentColor" stroke="none" opacity=".9"/></svg>
+        </span>
+        <ul class="phase__steps">
+          <li>
+            <span class="ibox" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="15.4" r="5"/><path d="m7.6 11.2-3-8.2h5l2.4 5.6M16.4 11.2l3-8.2h-5l-2.4 5.6"/><path d="m12 13 .7 1.5 1.6.24-1.15 1.12.27 1.6L12 16.7l-1.42.76.27-1.6-1.15-1.12 1.6-.24L12 13Z" fill="currentColor" stroke="none"/></svg></span>
+            <div><b>Ranked top 3 —</b>Gold (100%) · Silver (90%) · Bronze (80%) with scores and AI reasoning.</div>
+          </li>
+          <li>
+            <span class="ibox" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 3 10.6 13.4"/><path d="M21 3l-6.6 18-3.8-7.6L3 9.6 21 3Z"/></svg></span>
+            <div><b>AI writes outreach —</b>Personalised LinkedIn message per candidate — warm, human, auto-sent.</div>
+          </li>
+        </ul>
+      </li>
+
+      <li class="phase" data-reveal style="--d:.3s">
+        <p class="phase__n">Phase 04</p>
+        <h3 class="phase__t">Send, reply,<br />sync</h3>
+        <span class="phase__badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M21 3 10.6 13.4"/><path d="M21 3l-6.6 18-3.8-7.6L3 9.6 21 3Z"/></svg>
+        </span>
+        <ul class="phase__steps">
+          <li>
+            <span class="ibox" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.4 16.6 8.6 11l3.4 3.4 4.6-6"/><path d="M16.6 8.4h4v4" /><path d="M3.4 20.6h17.2" opacity=".6"/></svg></span>
+            <div><b>Auto-send &amp; monitor —</b>Messages are sent automatically via LinkedIn. The system waits and tracks the reply.</div>
+          </li>
+          <li>
+            <span class="ibox" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"/><path d="m8.2 12.2 2.6 2.6 5-5.4"/></svg></span>
+            <div><b>Candidate replies YES —</b>Reply detected, notification fires, CRM pipeline updates automatically.</div>
+          </li>
+        </ul>
+      </li>
+    </ol>
+
+    <div class="rule" data-reveal><span>The numbers</span></div>
+
+    <ul class="stats">
+      <li class="stat" data-reveal style="--d:.06s">
+        <span class="stat__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"/><path d="M12 6.9V12l3.4 2"/></svg>
+        </span>
+        <div class="stat__body">
+          <p class="stat__k">Old way</p>
+          <p class="stat__v">3 days</p>
+          <p class="stat__c">to find, contact,<br />and hear back</p>
+        </div>
+      </li>
+
+      <li class="stat" data-reveal style="--d:.13s">
+        <span class="stat__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M13.4 2.6 4.6 13.4h6L9.8 21.4l9-11.2h-6.2l.8-7.6Z"/></svg>
+        </span>
+        <div class="stat__body">
+          <p class="stat__k">New way</p>
+          <p class="stat__v">3 min</p>
+          <p class="stat__c">to find and<br />contact candidates</p>
+        </div>
+      </li>
+
+      <li class="stat" data-reveal style="--d:.2s">
+        <span class="stat__ico stat__ico--ring" aria-hidden="true">
+          <svg viewBox="0 0 80 80">
+            <circle class="ring-bg" cx="40" cy="40" r="33"/>
+            <circle class="ring-fg" cx="40" cy="40" r="33" transform="rotate(-90 40 40)"/>
+            <text x="40" y="45" text-anchor="middle">95%</text>
+          </svg>
+        </span>
+        <div class="stat__body">
+          <p class="stat__k">Time saved</p>
+          <p class="stat__v">95%</p>
+          <p class="stat__c">of HR hours<br />back per hire</p>
+        </div>
+      </li>
+
+      <li class="stat" data-reveal style="--d:.27s">
+        <span class="stat__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="9.2" r="2.8"/><path d="M7.4 17.4a4.7 4.7 0 0 1 9.2 0"/><circle cx="5.2" cy="10.6" r="2"/><path d="M2 16.6a3.4 3.4 0 0 1 3.9-3.3"/><circle cx="18.8" cy="10.6" r="2"/><path d="M22 16.6a3.4 3.4 0 0 0-3.9-3.3"/></svg>
+        </span>
+        <div class="stat__body">
+          <p class="stat__k">Network</p>
+          <p class="stat__v">1B+</p>
+          <p class="stat__c">professionals<br />on LinkedIn</p>
+        </div>
+      </li>
+    </ul>
+
+  </div>
+</section>
+
+<!-- ============ 03 · human story + tiers ============ -->
+<section class="s3" id="story" aria-labelledby="s3-title">
+
+  <div class="s3__story">
+    <div class="s3__inner">
+      <div class="s3__copy">
+        <p class="eyebrow" data-reveal>Human story</p>
+        <h2 class="s3__title" id="s3-title">
+          <span class="l" data-reveal style="--d:.06s">Beyond keywords —</span>
+          <span class="l" data-reveal style="--d:.13s">into the <em>human</em> story</span>
+        </h2>
+        <p class="s3__lede" data-reveal style="--d:.2s">
+          Your team isn't built on résumés —<br />
+          it's built on people. Our Deep-Thinking<br />
+          Engine studies adaptability, growth<br />
+          patterns, and how candidates think<br />
+          in real situations.
+        </p>
+      </div>
+    </div>
+
+    <div class="s3__art" data-reveal style="--d:.1s">
+      <picture>
+        <source type="image/webp"
+                srcset="assets/img/human-1000.webp 1000w, assets/img/human.webp 1800w"
+                sizes="(max-width:1080px) 92vw, 61vw" />
+        <img src="assets/img/human.jpg"
+             srcset="assets/img/human-1000.jpg 1000w, assets/img/human.jpg 1800w"
+             sizes="(max-width:1080px) 92vw, 61vw"
+             alt="" width="1800" height="1800" loading="lazy" decoding="async" />
+      </picture>
+
+      <svg class="s3__leads" viewBox="0 0 848 530" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M176 88 Q214 118 272 128" />
+        <path d="M688 196 Q640 244 612 268" />
+        <path d="M120 341 Q168 392 222 400" />
+        <path d="M668 409 Q612 452 556 452" />
+      </svg>
+
+      <span class="pill pill--adapt">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.4" r="3.2"/><path d="M5.8 19.4a6.2 6.2 0 0 1 12.4 0"/></svg>
+        Adaptability
+      </span>
+      <span class="pill pill--growth">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.4 16.8 9 10.6l3.6 3.4 6-6.6"/><path d="M15.4 7.4h5.2v5.2"/></svg>
+        Growth Patterns
+      </span>
+      <span class="pill pill--problem">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.6 3.4h4.8v2.4a1.9 1.9 0 1 0 3.8 0V3.4h2.4v4.8h-2.4a1.9 1.9 0 1 0 0 3.8h2.4v4.8h-4.8v-2.4a1.9 1.9 0 1 0-3.8 0v2.4H9.6v-2.4a1.9 1.9 0 1 0-3.8 0v2.4H3.4V9.6h2.4a1.9 1.9 0 1 0 0-3.8H3.4"/></svg>
+        Problem Solving
+      </span>
+      <span class="pill pill--culture">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.4S3.6 15.2 3.6 9.6a4.4 4.4 0 0 1 8.4-1.8 4.4 4.4 0 0 1 8.4 1.8c0 5.6-8.4 10.8-8.4 10.8Z"/></svg>
+        Culture Fit
+      </span>
+      <span class="s3__dots" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <div class="s3__inner">
+    <div class="s3__tierhead">
+      <p class="eyebrow" data-reveal>Deep-thinking match tiers</p>
+      <h2 class="s3__h2" data-reveal style="--d:.06s">How we rank your candidates</h2>
+      <p class="s3__sub" data-reveal style="--d:.12s">Every AI search surfaces exactly three tiers — so you always know who to call first.</p>
+    </div>
+
+    <ul class="tiers">
+      <li class="tier tier--pro" data-reveal style="--d:.06s">
+        <span class="tier__ico" aria-hidden="true">
+          <svg class="tier__ring" viewBox="0 0 88 88"><circle cx="44" cy="44" r="41"/></svg>
+          <svg class="tier__gly" viewBox="0 0 24 24"><path d="M3.4 7.6 7.8 12l4.2-6 4.2 6 4.4-4.4-1.8 10.4H5.2L3.4 7.6Z"/><circle cx="12" cy="4.4" r="1.2" fill="currentColor" stroke="none"/></svg>
+        </span>
+        <div class="tier__body">
+          <h3 class="tier__t"><b>100%</b> Match —<br />The Perfect Soul</h3>
+          <p class="tier__c">Exact experience and cultural alignment. These are candidates that usually take weeks to source manually.</p>
+          <p class="tier__tag tier__tag--pro">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.6 2.6 5.3 5.8.85-4.2 4.1 1 5.75L12 16.9l-5.2 2.7 1-5.75-4.2-4.1 5.8-.85L12 3.6Z"/></svg>
+            Pro only
+          </p>
+        </div>
+      </li>
+
+      <li class="tier" data-reveal style="--d:.13s">
+        <span class="tier__ico" aria-hidden="true">
+          <svg class="tier__ring" viewBox="0 0 88 88"><circle cx="44" cy="44" r="41"/></svg>
+          <svg class="tier__gly tier__gly--solid" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="17" fill="none" stroke="currentColor" stroke-width="2.4"/>
+            <circle cx="24" cy="24" r="10" fill="none" stroke="currentColor" stroke-width="2.4"/>
+            <circle cx="24" cy="24" r="4.6" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
+        <div class="tier__body">
+          <h3 class="tier__t"><b>90%</b> Match —<br />The Mirror</h3>
+          <p class="tier__c">Similar qualities and high-level experience in your industry. Strong signal, available in free search.</p>
+          <p class="tier__tag">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.4 12.2 2.5 2.5 4.7-5.2"/></svg>
+            Included in free search
+          </p>
+        </div>
+      </li>
+
+      <li class="tier" data-reveal style="--d:.2s">
+        <span class="tier__ico" aria-hidden="true">
+          <svg class="tier__ring" viewBox="0 0 88 88"><circle cx="44" cy="44" r="41"/></svg>
+          <svg class="tier__gly tier__gly--solid" viewBox="0 0 48 48">
+            <circle cx="17.5" cy="17.5" r="4.6" fill="currentColor" stroke="none"/>
+            <circle cx="30.5" cy="17.5" r="4.6" fill="currentColor" stroke="none"/>
+            <circle cx="24" cy="31" r="4.6" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
+        <div class="tier__body">
+          <h3 class="tier__t"><b>80%</b> Match —<br />The Adjacent</h3>
+          <p class="tier__c">Professionals working in similar roles around your target position. Where competitive edge lives.</p>
+          <p class="tier__tag">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.4 12.2 2.5 2.5 4.7-5.2"/></svg>
+            Included in free search
+          </p>
+        </div>
+      </li>
+    </ul>
+
+    <p class="s3__foot" data-reveal style="--d:.26s">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.4a2.9 2.9 0 0 0-5.4 1.2A2.8 2.8 0 0 0 4.5 8.4a2.8 2.8 0 0 0 .5 1.6 2.9 2.9 0 0 0 .7 4.9 2.9 2.9 0 0 0 3.2 3.7A2.8 2.8 0 0 0 12 20.1Z"/><path d="M12 4.4a2.9 2.9 0 0 1 5.4 1.2 2.8 2.8 0 0 1 2.1 2.8 2.8 2.8 0 0 1-.5 1.6 2.9 2.9 0 0 1-.7 4.9 2.9 2.9 0 0 1-3.2 3.7A2.8 2.8 0 0 1 12 20.1Z"/><path d="M15.2 8.6h2M14.9 12h2.4M14.5 15.4h1.7M8.8 8.6h-2M9.1 12H6.7M9.5 15.4H7.8" opacity=".75"/></svg>
+      Our AI goes deeper than keywords to find the adaptability your team needs.
+    </p>
+  </div>
+</section>
+
+<!-- ============ 04 · api + live demo ============ -->
+<section class="s4" id="api" aria-labelledby="s4-title">
+  <div class="s4__inner">
+
+    <!-- ---------- enterprise api ---------- -->
+    <div class="s4__row s4__row--api">
+      <div class="s4__copy">
+        <p class="eyebrow" data-reveal>Enterprise API</p>
+        <h2 class="s4__title" id="s4-title">
+          <span class="l" data-reveal style="--d:.06s">One call.</span>
+          <span class="l" data-reveal style="--d:.13s">Full intelligence.</span>
+        </h2>
+        <p class="s4__lede" data-reveal style="--d:.2s">
+          Send a job description and candidate profile.<br />
+          Get back a multi-dimensional score, natural-language<br />
+          justification, and tier classification — in under 100ms.
+        </p>
+        <ul class="chips" data-reveal style="--d:.26s">
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 18.4a4 4 0 0 1-.5-7.97 5.4 5.4 0 0 1 10.5-1.2 3.9 3.9 0 0 1 .8 7.72"/><path d="M12 12.4v7.2M9.4 17l2.6 2.6L14.6 17"/></svg>
+            REST API
+          </li>
+          <li><b class="brace">{ }</b> JSON</li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.6 3.4h6.2L21.4 19H15l-4.1-6.6h3.5L9.6 3.4Z" fill="currentColor" stroke="none" opacity=".85"/><path d="M8.6 5.4 2.6 19.6l6.3-.6 5-14.6" fill="currentColor" stroke="none" opacity=".5"/></svg>
+            Azure OpenAI
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.4 2.6 4.6 13.4h6L9.8 21.4l9-11.2h-6.2l.8-7.6Z"/></svg>
+            &lt;100ms
+          </li>
+        </ul>
+      </div>
+
+      <div class="codepanel" data-reveal style="--d:.14s">
+        <div class="codepanel__head">
+          <span class="verb">POST</span>
+          <span class="route">/api/grade</span>
+          <a class="respond" href="#response">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5"/></svg>
+            response
+          </a>
+        </div>
+        <div class="codepanel__code">
+          <div class="ln">1</div><div class="lc"><span class="p">{</span></div>
+          <div class="ln">2</div><div class="lc">  <span class="k">"ok"</span><span class="p">:</span> <span class="b">true</span><span class="p">,</span></div>
+          <div class="ln">3</div><div class="lc">  <span class="k">"score"</span><span class="p">:</span> <span class="n">94</span><span class="p">,</span></div>
+          <div class="ln">4</div><div class="lc">  <span class="k">"tier"</span><span class="p">:</span> <span class="s">"gold"</span><span class="p">,</span></div>
+          <div class="ln">5</div><div class="lc">  <span class="k">"tier_label"</span><span class="p">:</span> <span class="s">"The Perfect Soul"</span><span class="p">,</span></div>
+          <div class="ln">6</div><div class="lc">  <span class="k">"adaptability"</span><span class="p">:</span> <span class="n">91</span><span class="p">,</span></div>
+          <div class="ln">7</div><div class="lc">  <span class="k">"focus_penalty"</span><span class="p">:</span> <span class="n">-4</span><span class="p">,</span></div>
+          <div class="ln">8</div><div class="lc">  <span class="k">"silent_skill"</span><span class="p">:</span> <span class="s">"Systems thinking"</span><span class="p">,</span></div>
+          <div class="ln">9</div><div class="lc">  <span class="k">"ai_analysis"</span><span class="p">:</span> <span class="s">"Trajectory from research to</span></div>
+          <div class="ln">10</div><div class="lc"><span class="s">production ML is rare..."</span><span class="p">,</span></div>
+          <div class="ln">11</div><div class="lc">  <span class="k">"latency_ms"</span><span class="p">:</span> <span class="n">97</span></div>
+          <div class="ln">13</div><div class="lc"><span class="p">}</span></div>
+        </div>
+        <div class="codepanel__foot">
+          <span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 19.6 6v5.4c0 4.7-3.2 8.2-7.6 9.2-4.4-1-7.6-4.5-7.6-9.2V6L12 2.8Z"/><path d="m8.8 11.8 2.3 2.3 4.2-4.4"/></svg>
+            Signed • Encrypted • SOC 2 • GDPR Compliant
+          </span>
+          <b>Avg latency: 97ms</b>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- live demo ---------- -->
+    <div class="s4__row s4__row--demo">
+      <div class="s4__copy">
+        <p class="eyebrow" data-reveal>Live demo</p>
+        <h2 class="s4__title s4__title--sm">
+          <span class="l" data-reveal style="--d:.06s">Three candidates.</span>
+          <span class="l" data-reveal style="--d:.13s">One search.</span>
+        </h2>
+        <p class="s4__lede s4__lede--sm" data-reveal style="--d:.2s">
+          After HR clicks &ldquo;Search with AI&rdquo;, the workspace fills with<br />
+          Gold, Silver, and Bronze cards — each with score, tier,<br />
+          LinkedIn profile, and 3–4 lines of AI reasoning. One click<br />
+          drafts the LinkedIn message; a YES reply updates<br />
+          your CRM instantly.
+        </p>
+
+        <div class="metrics" data-reveal style="--d:.26s">
+          <div>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.2 19.2a5.8 5.8 0 0 1 11.6 0"/><circle cx="17.2" cy="8.8" r="2.5"/><path d="M15.6 13.9a4.8 4.8 0 0 1 5.4 4.6"/></svg>
+            <p><b class="count" data-count="43365">43,365</b><span>candidates analyzed<br />this week</span></p>
+          </div>
+          <div>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.4 2.6 4.6 13.4h6L9.8 21.4l9-11.2h-6.2l.8-7.6Z"/></svg>
+            <p><b>97ms</b><span>average response<br />time</span></p>
+          </div>
+        </div>
+
+        <a class="btn btn--primary watch" href="#demo-video" data-reveal style="--d:.32s">
+          <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9.2"/><path d="M10.2 8.6 15.6 12l-5.4 3.4V8.6Z" fill="currentColor" stroke="none"/>
+          </svg>
+          <span>Watch Demo</span>
+        </a>
+      </div>
+
+      <ul class="cands">
+      <li class="cand cand--gold" data-reveal style="--d:.06s">
+        <span class="cand__badge" aria-hidden="true">
+          <svg viewBox="0 0 34 38">
+            <path d="M17 1.6 32.4 8.4v13.4c0 8-6.4 13-15.4 14.6C8 34.8 1.6 29.8 1.6 21.8V8.4L17 1.6Z"/>
+            <path d="m17 11.4 2.35 4.76 5.25.77-3.8 3.7.9 5.23L17 23.4l-4.7 2.46.9-5.23-3.8-3.7 5.25-.77L17 11.4Z" class="star"/>
+          </svg>
+        </span>
+
+        <div class="cand__head">
+          <span class="cand__avatar">
+            <picture>
+              <source srcset="assets/img/daniela.webp" type="image/webp" />
+              <img src="assets/img/daniela.jpg" alt="Daniela Voss" width="480" height="480" loading="lazy" decoding="async" />
+            </picture>
+          </span>
+          <div class="cand__id">
+            <h3 class="cand__name">Daniela Voss</h3>
+            <p class="cand__role">Senior ML Engineer</p>
+          </div>
+          <div class="cand__score">
+            <p class="cand__pct">100%</p>
+            <p class="cand__tier">Perfect Soul</p>
+          </div>
+        </div>
+
+        <p class="cand__co">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.4"/><path d="M12 2.6c2.6 2.5 4 5.8 4 9.4s-1.4 6.9-4 9.4c-2.6-2.5-4-5.8-4-9.4s1.4-6.9 4-9.4Z"/><path d="M2.9 9.6h18.2M2.9 14.4h18.2"/></svg>
+          Helix AI
+        </p>
+        <p class="cand__loc">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.4s6.6-5.8 6.6-10.4a6.6 6.6 0 1 0-13.2 0c0 4.6 6.6 10.4 6.6 10.4Z"/><circle cx="12" cy="10.4" r="2.5"/></svg>
+          San Francisco, CA
+        </p>
+
+        <p class="cand__k">Silent skill</p>
+        <p class="cand__skill">Production research-to-deployment trajectory</p>
+
+        <p class="cand__k">AI notes</p>
+        <p class="cand__notes">Exact 7-year ML research + production mix. Led a team of 5 on a model that cut inference cost by 40%. Culture fit: startup-to-scale-up operator.</p>
+
+        <div class="cand__act">
+          <a class="cbtn cbtn--ghost" href="#profile">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M6.94 8.75H4.06v9.19h2.88V8.75ZM5.5 4.5a1.67 1.67 0 1 0 0 3.34 1.67 1.67 0 0 0 0-3.34Z"/><path d="M14.6 8.53c-1.4 0-2.34.77-2.73 1.5h-.04V8.75H9.07v9.19h2.88v-4.55c0-1.2.23-2.36 1.71-2.36 1.46 0 1.48 1.37 1.48 2.44v4.47h2.88v-5.05c0-2.5-.54-4.36-3.42-4.36Z"/></svg>
+            Profile
+          </a>
+          <a class="cbtn cbtn--solid" href="#message">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 10.6 13.4"/><path d="M21 3l-6.6 18-3.8-7.6L3 9.6 21 3Z"/></svg>
+            Message
+          </a>
+        </div>
+      </li>
+      <li class="cand cand--silver" data-reveal style="--d:.13s">
+        <span class="cand__badge" aria-hidden="true">
+          <svg viewBox="0 0 34 38">
+            <path d="M17 1.6 32.4 8.4v13.4c0 8-6.4 13-15.4 14.6C8 34.8 1.6 29.8 1.6 21.8V8.4L17 1.6Z"/>
+            <path d="m17 11.4 2.35 4.76 5.25.77-3.8 3.7.9 5.23L17 23.4l-4.7 2.46.9-5.23-3.8-3.7 5.25-.77L17 11.4Z" class="star"/>
+          </svg>
+        </span>
+
+        <div class="cand__head">
+          <span class="cand__avatar">
+            <picture>
+              <source srcset="assets/img/marcus.webp" type="image/webp" />
+              <img src="assets/img/marcus.jpg" alt="Marcus Chen" width="480" height="480" loading="lazy" decoding="async" />
+            </picture>
+          </span>
+          <div class="cand__id">
+            <h3 class="cand__name">Marcus Chen</h3>
+            <p class="cand__role">Staff ML Engineer</p>
+          </div>
+          <div class="cand__score">
+            <p class="cand__pct">90%</p>
+            <p class="cand__tier">Mirror</p>
+          </div>
+        </div>
+
+        <p class="cand__co">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.4"/><path d="M12 2.6c2.6 2.5 4 5.8 4 9.4s-1.4 6.9-4 9.4c-2.6-2.5-4-5.8-4-9.4s1.4-6.9 4-9.4Z"/><path d="M2.9 9.6h18.2M2.9 14.4h18.2"/></svg>
+          Northwind
+        </p>
+        <p class="cand__loc">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.4s6.6-5.8 6.6-10.4a6.6 6.6 0 1 0-13.2 0c0 4.6 6.6 10.4 6.6 10.4Z"/><circle cx="12" cy="10.4" r="2.5"/></svg>
+          New York, NY
+        </p>
+
+        <p class="cand__k">Silent skill</p>
+        <p class="cand__skill">Cross-functional influence without authority</p>
+
+        <p class="cand__k">AI notes</p>
+        <p class="cand__notes">Strong distributed systems + MLOps overlap. Built internal platforms used by 200+ engineers. Slightly lighter on people management scope.</p>
+
+        <div class="cand__act">
+          <a class="cbtn cbtn--ghost" href="#profile">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M6.94 8.75H4.06v9.19h2.88V8.75ZM5.5 4.5a1.67 1.67 0 1 0 0 3.34 1.67 1.67 0 0 0 0-3.34Z"/><path d="M14.6 8.53c-1.4 0-2.34.77-2.73 1.5h-.04V8.75H9.07v9.19h2.88v-4.55c0-1.2.23-2.36 1.71-2.36 1.46 0 1.48 1.37 1.48 2.44v4.47h2.88v-5.05c0-2.5-.54-4.36-3.42-4.36Z"/></svg>
+            Profile
+          </a>
+          <a class="cbtn cbtn--solid" href="#message">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 10.6 13.4"/><path d="M21 3l-6.6 18-3.8-7.6L3 9.6 21 3Z"/></svg>
+            Message
+          </a>
+        </div>
+      </li>
+      <li class="cand cand--bronze" data-reveal style="--d:.20s">
+        <span class="cand__badge" aria-hidden="true">
+          <svg viewBox="0 0 34 38">
+            <path d="M17 1.6 32.4 8.4v13.4c0 8-6.4 13-15.4 14.6C8 34.8 1.6 29.8 1.6 21.8V8.4L17 1.6Z"/>
+            <path d="m17 11.4 2.35 4.76 5.25.77-3.8 3.7.9 5.23L17 23.4l-4.7 2.46.9-5.23-3.8-3.7 5.25-.77L17 11.4Z" class="star"/>
+          </svg>
+        </span>
+
+        <div class="cand__head">
+          <span class="cand__avatar">
+            <picture>
+              <source srcset="assets/img/priya.webp" type="image/webp" />
+              <img src="assets/img/priya.jpg" alt="Priya Raman" width="480" height="480" loading="lazy" decoding="async" />
+            </picture>
+          </span>
+          <div class="cand__id">
+            <h3 class="cand__name">Priya Raman</h3>
+            <p class="cand__role">ML Platform Lead</p>
+          </div>
+          <div class="cand__score">
+            <p class="cand__pct">80%</p>
+            <p class="cand__tier">Adjacent</p>
+          </div>
+        </div>
+
+        <p class="cand__co">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.4"/><path d="M12 2.6c2.6 2.5 4 5.8 4 9.4s-1.4 6.9-4 9.4c-2.6-2.5-4-5.8-4-9.4s1.4-6.9 4-9.4Z"/><path d="M2.9 9.6h18.2M2.9 14.4h18.2"/></svg>
+          Lumen Health
+        </p>
+        <p class="cand__loc">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.4s6.6-5.8 6.6-10.4a6.6 6.6 0 1 0-13.2 0c0 4.6 6.6 10.4 6.6 10.4Z"/><circle cx="12" cy="10.4" r="2.5"/></svg>
+          Austin, TX
+        </p>
+
+        <p class="cand__k">Silent skill</p>
+        <p class="cand__skill">Domain transfer from regulated healthcare</p>
+
+        <p class="cand__k">AI notes</p>
+        <p class="cand__notes">Deep platform engineering, less pure ML research. Location and comp band align perfectly. Brings rigorous compliance mindset the role needs.</p>
+
+        <div class="cand__act">
+          <a class="cbtn cbtn--ghost" href="#profile">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M6.94 8.75H4.06v9.19h2.88V8.75ZM5.5 4.5a1.67 1.67 0 1 0 0 3.34 1.67 1.67 0 0 0 0-3.34Z"/><path d="M14.6 8.53c-1.4 0-2.34.77-2.73 1.5h-.04V8.75H9.07v9.19h2.88v-4.55c0-1.2.23-2.36 1.71-2.36 1.46 0 1.48 1.37 1.48 2.44v4.47h2.88v-5.05c0-2.5-.54-4.36-3.42-4.36Z"/></svg>
+            Profile
+          </a>
+          <a class="cbtn cbtn--solid" href="#message">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 10.6 13.4"/><path d="M21 3l-6.6 18-3.8-7.6L3 9.6 21 3Z"/></svg>
+            Message
+          </a>
+        </div>
+      </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 · compare + pricing ============ -->
+<section class="s5" id="pricing" aria-labelledby="s5-title">
+
+  <div class="s5__compare">
+    <div class="s5__inner s5__inner--cmp">
+      <div class="s5__copy">
+        <p class="eyebrow" data-reveal>How it compares</p>
+        <h2 class="s5__title" id="s5-title">
+          <span class="l" data-reveal style="--d:.06s">The same hire,</span>
+          <span class="l" data-reveal style="--d:.13s"><em>weeks</em> earlier.</span>
+        </h2>
+        <p class="s5__lede" data-reveal style="--d:.2s">
+          What a traditional sourcing cycle costs you —<br />
+          and what the engine replaces it with.
+        </p>
+      </div>
+
+      <div class="ctab" role="table" aria-label="Traditional recruiting compared with AI Talent Match Pro">
+        <div class="ctab__h" role="row">
+          <div role="columnheader"><span class="sr">Metric</span></div>
+          <div class="ctab__ht" role="columnheader">Traditional recruiting</div>
+          <div class="ctab__hp" role="columnheader">
+            <span class="ctab__mark" aria-hidden="true">
+              <picture>
+                <source srcset="assets/img/logo-mark.webp" type="image/webp" />
+                <img src="assets/img/logo-mark.png" alt="" width="264" height="300" loading="lazy" decoding="async" />
+              </picture>
+            </span>
+            AI Talent Match&middot;Pro
+          </div>
+        </div>
+        <div class="ctab__body">
+        <div class="ctab__r" role="row" data-reveal style="--d:.04s">
+          <div class="ctab__l" role="rowheader">
+            <span class="ctab__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.2 1.9"/></svg></span>
+            <span>Time to a shortlist</span>
+          </div>
+          <div class="ctab__t" role="cell">3–5 weeks of sourcing</div>
+          <div class="ctab__p" role="cell">Under 4 minutes</div>
+        </div>
+        <div class="ctab__r" role="row" data-reveal style="--d:.07s">
+          <div class="ctab__l" role="rowheader">
+            <span class="ctab__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.4" cy="9.4" r="3.4"/><path d="M4.6 19.4a6.2 6.2 0 0 1 8.2-5.9"/><circle cx="16.6" cy="15.6" r="3.2"/><path d="m19.1 18.1 2.3 2.3"/></svg></span>
+            <span>Profiles reviewed<br />per role</span>
+          </div>
+          <div class="ctab__t" role="cell">60–100, by hand</div>
+          <div class="ctab__p" role="cell">Thousands, scored<br />on LinkedIn</div>
+        </div>
+        <div class="ctab__r" role="row" data-reveal style="--d:.10s">
+          <div class="ctab__l" role="rowheader">
+            <span class="ctab__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.4v9.2M14.4 9.6a2.6 2.6 0 0 0-2.4-1.4c-1.5 0-2.6.9-2.6 2.1 0 2.9 5.2 1.5 5.2 4.2 0 1.3-1.2 2.2-2.6 2.2a2.7 2.7 0 0 1-2.5-1.5"/></svg></span>
+            <span>Cost per role</span>
+          </div>
+          <div class="ctab__t" role="cell">15–25% of salary<br />(agency)</div>
+          <div class="ctab__p" role="cell">From $99/month,<br />unlimited roles</div>
+        </div>
+        <div class="ctab__r" role="row" data-reveal style="--d:.13s">
+          <div class="ctab__l" role="rowheader">
+            <span class="ctab__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.6" y="4.6" width="16.8" height="14.8" rx="2.4"/><path d="M7.8 15.4v-3.2M11.8 15.4V9.4M15.8 15.4v-4.8"/></svg></span>
+            <span>What&rsquo;s measured</span>
+          </div>
+          <div class="ctab__t" role="cell">Keywords on a CV</div>
+          <div class="ctab__p" role="cell">Trajectory, adaptability,<br />silent skills</div>
+        </div>
+        <div class="ctab__r" role="row" data-reveal style="--d:.16s">
+          <div class="ctab__l" role="rowheader">
+            <span class="ctab__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 3 10.6 13.4"/><path d="M21 3l-6.6 18-3.8-7.6L3 9.6 21 3Z"/></svg></span>
+            <span>First outreach</span>
+          </div>
+          <div class="ctab__t" role="cell">Manual, days later</div>
+          <div class="ctab__p" role="cell">Written and sent<br />automatically</div>
+        </div>
+        <div class="ctab__r" role="row" data-reveal style="--d:.19s">
+          <div class="ctab__l" role="rowheader">
+            <span class="ctab__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 8.2v7.6M13.9 9.8a2.2 2.2 0 0 0-1.9-1c-1.2 0-2.1.7-2.1 1.7 0 2.3 4.2 1.2 4.2 3.4 0 1-1 1.8-2.1 1.8a2.2 2.2 0 0 1-2-1.2"/><path d="M17.4 4.4 20 6.4l-2 2.6" stroke-width="1.3"/></svg></span>
+            <span>CRM updated</span>
+          </div>
+          <div class="ctab__t" role="cell">Someone remembers to</div>
+          <div class="ctab__p" role="cell">Auto-synced on<br />a YES reply.</div>
+        </div>
+        </div>
+        <span class="ctab__hl" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <div class="s5__planet" aria-hidden="true">
+      <span class="s5__globe">
+        <picture>
+          <source srcset="assets/img/orb.webp" type="image/webp" />
+          <img src="assets/img/orb.jpg" alt="" width="720" height="720" loading="lazy" decoding="async" />
+        </picture>
+      </span>
+      <span class="s5__beam"></span>
+    </div>
+  </div>
+
+  <div class="s5__pricing">
+    <div class="s5__inner s5__inner--price">
+      <div class="s5__copy">
+        <p class="eyebrow" data-reveal>Pricing</p>
+        <h2 class="s5__title s5__title--sm" data-reveal style="--d:.06s">Pricing Plans</h2>
+        <p class="s5__sub" data-reveal style="--d:.12s">Flexible plans that grow with your team</p>
+        <p class="s5__pow" data-reveal style="--d:.18s">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.4 2.6 4.6 13.4h6L9.8 21.4l9-11.2h-6.2l.8-7.6Z"/></svg>
+          Sub-100ms scoring powered by GPT-4o on Azure
+        </p>
+        <div class="cycle" data-reveal style="--d:.24s" role="group" aria-label="Billing cycle">
+          <button type="button" class="cycle__b" aria-pressed="false">Monthly</button>
+          <button type="button" class="cycle__b is-on" aria-pressed="true">Annual &minus;10%</button>
+        </div>
+      </div>
+
+      <ul class="plans">
+      <li class="plan" data-reveal style="--d:.04s">
+        <p class="plan__name">Free Trial</p>
+        <p class="plan__sub">7-day access</p>
+        <p class="plan__price"><i class="cur">$</i><b>0</b><i class="per">for 7 days</i></p>
+        <p class="plan__note is-cyan">No credit card required</p>
+        <ul class="plan__feats">
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>1 user</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>1 candidate / search</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>Basic AI</li>
+        </ul>
+        <a class="pbtn" href="#signup">Start Trial
+          <svg class="i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5"/></svg>
+        </a>
+      </li>
+      <li class="plan plan--hot" data-reveal style="--d:.10s"><span class="plan__pop">Most popular</span>
+        <p class="plan__name">Business</p>
+        
+        <p class="plan__price"><i class="cur">$</i><b>89</b><i class="per">/mo</i></p>
+        <p class="plan__note ">Billed annually — save 10%</p>
+        <ul class="plan__feats">
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>5 users</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>2 candidates / search</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>Full AI</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>Team collab</li>
+        </ul>
+        <a class="pbtn pbtn--solid" href="#signup">Upgrade
+          <svg class="i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5"/></svg>
+        </a>
+      </li>
+      <li class="plan" data-reveal style="--d:.16s">
+        <p class="plan__name">Corporate</p>
+        
+        <p class="plan__price"><i class="cur">$</i><b>269</b><i class="per">/mo</i></p>
+        <p class="plan__note ">Billed annually — save 10%</p>
+        <ul class="plan__feats">
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>20 users</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>3 candidates / search</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>Advanced AI</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>Analytics</li>
+        </ul>
+        <a class="pbtn" href="#signup">Upgrade
+          <svg class="i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5"/></svg>
+        </a>
+      </li>
+      <li class="plan" data-reveal style="--d:.22s">
+        <p class="plan__name">Enterprise</p>
+        
+        <p class="plan__price plan__price--word"><b>Custom</b></p>
+        <p class="plan__note is-plain">Tailored to your team</p>
+        <ul class="plan__feats">
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>Unlimited users</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>50 candidates / search</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>Custom AI</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>SLA &amp; Support</li>
+        </ul>
+        <a class="pbtn" href="#signup">Contact Us
+          <svg class="i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5"/></svg>
+        </a>
+      </li>
+      </ul>
+    </div>
+  </div>
+
+  <ul class="assure">
+    <li>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6 20 5.9v5.7c0 5-3.4 8.7-8 9.8-4.6-1.1-8-4.8-8-9.8V5.9l8-3.3Z"/><path d="m8.6 11.9 2.4 2.4 4.4-4.7"/></svg>
+      <span><b>Enterprise-Grade Security</b>SOC 2 &bull; GDPR Compliant</span>
+    </li>
+    <li>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.4 2.6 4.6 13.4h6L9.8 21.4l9-11.2h-6.2l.8-7.6Z"/></svg>
+      <span><b>Real-Time Matching</b>Sub-100ms latency</span>
+    </li>
+    <li>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="13.6" cy="5.6" r="2.8"/><circle cx="5.4" cy="17.4" r="2.8"/><circle cx="16.6" cy="17.4" r="2.8"/><path d="M11.6 7.8 7.2 14.9M8.2 17.4h5.6"/></svg>
+      <span><b>AI-Powered Insights</b>Explainable results</span>
+    </li>
+    <li>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.4" y="10" width="15.2" height="10.8" rx="2.4"/><path d="M8 10V7.4a4 4 0 0 1 8 0V10"/><path d="M12 13.4v3.4M10.6 15.2 12 13.4l1.4 1.8"/></svg>
+      <span><b>Your Data, Your Control</b>Private by design</span>
+    </li>
+  </ul>
+</section>
+
+<!-- ============ 06 · testimonials + mobile ============ -->
+<section class="s6" id="stories" aria-labelledby="s6-title">
+
+  <div class="s6__voices">
+    <div class="s6__inner">
+      <div class="s6__head">
+        <p class="eyebrow" data-reveal>Trusted by hiring teams</p>
+        <h2 class="s6__title" id="s6-title" data-reveal style="--d:.06s">Built with <em>recruiters,</em> not for them.</h2>
+        <p class="s6__sub" data-reveal style="--d:.12s">
+          Real teams using AI Talent Match Pro to ship hires faster &mdash;<br />
+          without losing the human read.
+        </p>
+      </div>
+
+      <div class="carousel">
+        <p class="ghost ghost--l1" aria-hidden="true"><b>David Chen</b>Head of TA, Stripe</p>
+        <p class="ghost ghost--l2" aria-hidden="true"><b>Aisha Khan</b>Director of People,<br />ScaleWave</p>
+        <p class="ghost ghost--r1" aria-hidden="true"><b>Jake Morrison</b>Head of People, Nova</p>
+        <p class="ghost ghost--r2" aria-hidden="true"><b>Elena Petrova</b>Talent Partner,<br />Cloudship</p>
+
+        <button class="carousel__nav carousel__nav--prev" type="button" aria-label="Previous testimonial">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5m0 0 5.5-5.5M5 12l5.5 5.5"/></svg>
+        </button>
+
+        <ul class="quotes" aria-live="polite">
+        <li class="quote" data-reveal style="--d:.06s">
+          <span class="quote__mark" aria-hidden="true">
+            <svg viewBox="0 0 32 24"><path d="M13.4 0C6.2 2.6 1.6 8.5 1.6 15.6c0 5 2.9 8.4 7.2 8.4 3.7 0 6.4-2.7 6.4-6.3 0-3.5-2.4-6-5.7-6-.5 0-1 0-1.5.2C8.8 8.6 11 5.4 14.7 3.2L13.4 0Zm16.4 0c-7.2 2.6-11.8 8.5-11.8 15.6 0 5 2.9 8.4 7.2 8.4 3.7 0 6.4-2.7 6.4-6.3 0-3.5-2.4-6-5.7-6-.5 0-1 0-1.5.2 .8-3.3 3-6.5 6.7-8.7L29.8 0Z"/></svg>
+          </span>
+          <p class="quote__t">We cut our screening time from three weeks to four days. The match scores are the closest thing to a senior recruiter&rsquo;s gut I&rsquo;ve seen.&thinsp;&rdquo;</p>
+          <div class="quote__who">
+            <span class="quote__av">
+              <picture>
+                <source srcset="assets/img/sarah.webp" type="image/webp" />
+                <img src="assets/img/sarah.jpg" alt="Sarah Linde" width="480" height="480" loading="lazy" decoding="async" />
+              </picture>
+            </span>
+            <div>
+              <p class="quote__n">Sarah Linde</p>
+              <p class="quote__r">Head of Talent, Northwind</p>
+            </div>
+          </div>
+        </li>
+        <li class="quote quote--hot" data-reveal style="--d:.13s">
+          <span class="quote__mark" aria-hidden="true">
+            <svg viewBox="0 0 32 24"><path d="M13.4 0C6.2 2.6 1.6 8.5 1.6 15.6c0 5 2.9 8.4 7.2 8.4 3.7 0 6.4-2.7 6.4-6.3 0-3.5-2.4-6-5.7-6-.5 0-1 0-1.5.2C8.8 8.6 11 5.4 14.7 3.2L13.4 0Zm16.4 0c-7.2 2.6-11.8 8.5-11.8 15.6 0 5 2.9 8.4 7.2 8.4 3.7 0 6.4-2.7 6.4-6.3 0-3.5-2.4-6-5.7-6-.5 0-1 0-1.5.2 .8-3.3 3-6.5 6.7-8.7L29.8 0Z"/></svg>
+          </span><span class="quote__stars" aria-label="5 out of 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.4 2.7 5.5 6 .87-4.35 4.24 1.03 5.99L12 17.15 6.62 20l1.03-5.99L3.3 9.77l6-.87L12 3.4Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.4 2.7 5.5 6 .87-4.35 4.24 1.03 5.99L12 17.15 6.62 20l1.03-5.99L3.3 9.77l6-.87L12 3.4Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.4 2.7 5.5 6 .87-4.35 4.24 1.03 5.99L12 17.15 6.62 20l1.03-5.99L3.3 9.77l6-.87L12 3.4Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.4 2.7 5.5 6 .87-4.35 4.24 1.03 5.99L12 17.15 6.62 20l1.03-5.99L3.3 9.77l6-.87L12 3.4Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.4 2.7 5.5 6 .87-4.35 4.24 1.03 5.99L12 17.15 6.62 20l1.03-5.99L3.3 9.77l6-.87L12 3.4Z"/></svg></span>
+          <p class="quote__t">It&rsquo;s the first tool that doesn&rsquo;t just keyword-match. Our hiring managers actually trust the shortlist now &mdash; that&rsquo;s the real unlock.&thinsp;&rdquo;</p>
+          <div class="quote__who">
+            <span class="quote__av">
+              <picture>
+                <source srcset="assets/img/okafor.webp" type="image/webp" />
+                <img src="assets/img/okafor.jpg" alt="Marcus Okafor" width="480" height="480" loading="lazy" decoding="async" />
+              </picture>
+            </span>
+            <div>
+              <p class="quote__n">Marcus Okafor</p>
+              <p class="quote__r">VP People, Lumen Health</p>
+            </div>
+          </div>
+        </li>
+        <li class="quote" data-reveal style="--d:.20s">
+          <span class="quote__mark" aria-hidden="true">
+            <svg viewBox="0 0 32 24"><path d="M13.4 0C6.2 2.6 1.6 8.5 1.6 15.6c0 5 2.9 8.4 7.2 8.4 3.7 0 6.4-2.7 6.4-6.3 0-3.5-2.4-6-5.7-6-.5 0-1 0-1.5.2C8.8 8.6 11 5.4 14.7 3.2L13.4 0Zm16.4 0c-7.2 2.6-11.8 8.5-11.8 15.6 0 5 2.9 8.4 7.2 8.4 3.7 0 6.4-2.7 6.4-6.3 0-3.5-2.4-6-5.7-6-.5 0-1 0-1.5.2 .8-3.3 3-6.5 6.7-8.7L29.8 0Z"/></svg>
+          </span>
+          <p class="quote__t">Sub-second scoring across 4,000 applicants per role. We went from drowning in CVs to interviewing the right five.&thinsp;&rdquo;</p>
+          <div class="quote__who">
+            <span class="quote__av">
+              <picture>
+                <source srcset="assets/img/priya.webp" type="image/webp" />
+                <img src="assets/img/priya.jpg" alt="Priya Raman" width="480" height="480" loading="lazy" decoding="async" />
+              </picture>
+            </span>
+            <div>
+              <p class="quote__n">Priya Raman</p>
+              <p class="quote__r">Talent Lead, Foundry Labs</p>
+            </div>
+          </div>
+        </li>
+        </ul>
+
+        <button class="carousel__nav carousel__nav--next" type="button" aria-label="Next testimonial">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5"/></svg>
+        </button>
+
+        <div class="dots" role="tablist" aria-label="Testimonials">
+          <button class="dot" type="button" role="tab" aria-selected="false" aria-label="Testimonial 1"></button>
+          <button class="dot is-on" type="button" role="tab" aria-selected="true" aria-label="Testimonial 2"></button>
+          <button class="dot" type="button" role="tab" aria-selected="false" aria-label="Testimonial 3"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="s6__app">
+    <span class="s6__terrain" aria-hidden="true">
+      <picture>
+        <source srcset="assets/img/terrain.webp" type="image/webp" />
+        <img src="assets/img/terrain.jpg" alt="" width="1600" height="900" loading="lazy" decoding="async" />
+      </picture>
+    </span>
+
+    <div class="s6__inner s6__inner--app">
+      <div class="s6__copy">
+        <p class="eyebrow" data-reveal>Coming soon</p>
+        <h2 class="s6__title2">
+          <span class="l" data-reveal style="--d:.06s">AI Talent Match Pro</span>
+          <span class="l" data-reveal style="--d:.13s">in your <em>pocket</em></span>
+        </h2>
+        <p class="s6__lede" data-reveal style="--d:.2s">
+          Score candidates, review shortlists,<br />
+          and send outreach &mdash; all from your<br />
+          iPhone or Android.
+        </p>
+        <a class="notify" href="#notify" data-reveal style="--d:.26s">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8.4a6 6 0 1 0-12 0c0 6.4-2.4 8.2-2.4 8.2h16.8S18 14.8 18 8.4Z"/><path d="M13.7 20.2a2 2 0 0 1-3.4 0"/></svg>
+          Notify Me
+        </a>
+      </div>
+
+      <div class="phone" aria-hidden="true">
+        <div class="phone__body">
+          <span class="phone__island"></span>
+          <div class="phone__screen">
+            <div class="ph-status"><span>9:41</span><span class="ph-sig"></span></div>
+
+            <div class="ph-top">
+              <span class="ph-logo">
+                <picture>
+                  <source srcset="assets/img/logo-mark.webp" type="image/webp" />
+                  <img src="assets/img/logo-mark.png" alt="" width="264" height="300" loading="lazy" decoding="async" />
+                </picture>
+              </span>
+              <b>AI Talent Match&middot;Pro</b>
+              <span class="ph-burger"></span>
+            </div>
+
+            <div class="ph-card">
+              <p class="ph-k">Target role</p>
+              <p class="ph-role">Senior ML Engineer</p>
+              <div class="ph-meta">
+                <span>&#9679; San Francisco</span><i></i><span>&#9679; 7+ years</span>
+              </div>
+              <div class="ph-meta">
+                <span>&#9679; Production ML</span><i></i><span>&#9679; Leadership</span>
+              </div>
+            </div>
+
+            <div class="ph-card ph-card--stat">
+              <p class="ph-statk">Total Analyzed This Week</p>
+              <p class="ph-statv">43,365</p>
+              <p class="ph-statd">+12.4% vs last week</p>
+              <svg class="ph-spark" viewBox="0 0 120 40" preserveAspectRatio="none">
+                <path d="M2 34 L16 30 L28 32 L40 24 L52 27 L64 18 L76 21 L88 12 L100 14 L118 3"/>
+              </svg>
+            </div>
+
+            <div class="ph-hd"><b>Top Matches</b><span>View All</span></div>
+
+            <div class="ph-match">
+              <span class="ph-av"><img src="assets/img/avatar-maya.jpg" alt="" width="480" height="480" loading="lazy" decoding="async" /></span>
+              <div class="ph-mi"><b>Maya Chen</b><span>ML Engineering Lead @ Stripe</span></div>
+              <div class="ph-ms"><b>96%</b><span>Top Match</span></div>
+            </div>
+            <div class="ph-chips"><span class="ph-chip">ML Leadership</span><span class="ph-chip">Production ML</span><span class="ph-chip">Python</span></div>
+
+            <div class="ph-match">
+              <span class="ph-av"><img src="assets/img/avatar-arjun.jpg" alt="" width="480" height="480" loading="lazy" decoding="async" /></span>
+              <div class="ph-mi"><b>Arjun Patel</b><span>Senior ML Engineer @ Notion</span></div>
+              <div class="ph-ms"><b>88%</b><span>Strong Match</span></div>
+            </div>
+            <div class="ph-chips"><span class="ph-chip">Deep Learning</span><span class="ph-chip">MLOps</span><span class="ph-chip">Leadership</span></div>
+
+            <div class="ph-tabs">
+              <span><svg viewBox="0 0 24 24"><rect x="4" y="3.5" width="16" height="17" rx="2.4"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Shortlist</span>
+              <span class="is-on"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.4 19a5.6 5.6 0 0 1 11.2 0"/><circle cx="17.2" cy="8.8" r="2.4"/><path d="M15.6 13.6a4.6 4.6 0 0 1 5.2 4.4"/></svg>Matches</span>
+              <span><svg viewBox="0 0 24 24"><rect x="3" y="5.4" width="18" height="13.2" rx="2.2"/><path d="m3.6 6.6 8.4 6 8.4-6"/></svg>Outreach</span>
+              <span><svg viewBox="0 0 24 24"><rect x="3.6" y="4.6" width="16.8" height="14.8" rx="2.4"/><path d="M7.8 15.4v-3.2M11.8 15.4V9.4M15.8 15.4v-4.8"/></svg>Insights</span>
+              <span><svg viewBox="0 0 24 24"><circle cx="6" cy="9" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="18" cy="9" r="1.6"/><circle cx="6" cy="15" r="1.6"/><circle cx="12" cy="15" r="1.6"/><circle cx="18" cy="15" r="1.6"/></svg>More</span>
+            </div>
+            <span class="ph-home"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 · why we built it + final CTA + footer ============ -->
+<section class="s7" id="about" aria-labelledby="s7-title">
+
+  <div class="s7__why">
+    <div class="s7__inner s7__inner--why">
+      <div class="s7__copy">
+        <p class="eyebrow eyebrow--line" data-reveal>Why we built this</p>
+        <h2 class="s7__title" id="s7-title">
+          <span class="l" data-reveal style="--d:.06s">Hiring deserves</span>
+          <span class="l" data-reveal style="--d:.13s">depth, not <em>keywords.</em></span>
+        </h2>
+        <p class="s7__lede" data-reveal style="--d:.2s">
+          Every great team is built on people who don&rsquo;t fit<br />
+          perfectly on paper. Our Deep-Thinking Engine<br />
+          finds the adaptability, growth pattern, and human<br />
+          story behind every candidate &mdash; not just the<br />
+          skills on their r&eacute;sum&eacute;.
+        </p>
+        <p class="sig" data-reveal style="--d:.26s">Elinor</p>
+        <p class="sig__by" data-reveal style="--d:.3s"><b>Elinor</b> &mdash; Founder, AI Talent Match&middot;Pro</p>
+      </div>
+
+      <div class="founder" data-reveal style="--d:.12s" aria-hidden="true">
+        <span class="founder__img">
+          <picture>
+            <source type="image/webp"
+                    srcset="assets/img/founder-800.webp 800w, assets/img/founder.webp 1400w"
+                    sizes="(max-width:1080px) 74vw, 43vw" />
+            <img src="assets/img/founder.jpg" alt="" width="1400" height="1400" decoding="async" />
+          </picture>
+        </span>
+        <svg class="founder__ring" viewBox="0 0 600 600">
+          <circle class="r1" cx="300" cy="300" r="272"/>
+          <circle class="r2" cx="300" cy="300" r="250"/>
+          <circle class="r3" cx="300" cy="300" r="288"/>
+          <g class="rd">
+            <circle cx="300" cy="28" r="4"/>
+            <circle cx="42" cy="378" r="4"/>
+            <circle cx="586" cy="352" r="4"/>
+            <circle cx="70" cy="205" r="3"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="s7__cta">
+    <div class="s7__inner">
+      <p class="eyebrow eyebrow--line" data-reveal>Final CTA</p>
+      <h2 class="s7__title s7__title--cta" data-reveal style="--d:.06s">Ready to hire <em>smarter?</em></h2>
+      <p class="s7__lede s7__lede--cta" data-reveal style="--d:.12s">
+        Start your workspace. Your first<br />
+        AI-scored shortlist is one search away.
+      </p>
+      <a class="s7__btn" href="#start" data-reveal style="--d:.18s">
+        Request Your First Shortlist
+        <svg class="i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <footer class="s7__foot">
+    <div class="s7__inner s7__inner--foot">
+      <div class="foot__brand">
+        <a class="foot__logo" href="#top" aria-label="AI Talent Match Pro — home">
+        <span class="foot__mark" aria-hidden="true">
+          <picture>
+            <source srcset="assets/img/logo-mark.webp" type="image/webp" />
+            <img src="assets/img/logo-mark.png" alt="" width="264" height="300" loading="lazy" decoding="async" />
+          </picture>
+        </span>
+        <span class="foot__word">
+          <picture>
+            <source srcset="assets/img/logo-word.webp" type="image/webp" />
+            <img src="assets/img/logo-word.png" alt="AI Talent Match Pro" width="820" height="80" loading="lazy" decoding="async" />
+          </picture>
+        </span>
+        </a>
+        <p class="foot__tag">A cinematic AI workspace for<br />teams who hire with intention.</p>
+      </div>
+
+      <nav class="foot__col" aria-label="Company">
+        <p class="foot__h">Company</p>
+        <ul><li><a href="#about">About</a></li><li><a href="#careers">Careers</a></li><li><a href="#faq">FAQ</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#terms">Terms</a></li><li><a href="#newsroom">Newsroom</a></li><li><a href="#blog">Blog</a></li></ul>
+      </nav>
+
+      <nav class="foot__col" aria-label="Product">
+        <p class="foot__h">Product</p>
+        <ul><li><a href="#workspace">Workspace</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#billing">Billing</a></li><li><a href="#register">Register</a></li><li><a href="#sign-in">Sign In</a></li></ul>
+      </nav>
+
+      <nav class="foot__col foot__col--connect" aria-label="Connect">
+        <p class="foot__h">Connect</p>
+        <ul>
+          <li><a href="#linkedin"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="3.4" fill="#fff"/><path d="M7.6 9.6H5.2v8.2h2.4V9.6ZM6.4 5.6a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8Z" fill="#04070d"/><path d="M14.3 9.4c-1.2 0-2 .66-2.34 1.29h-.03V9.6H9.6v8.2h2.4v-4.06c0-1.07.2-2.1 1.52-2.1 1.3 0 1.32 1.22 1.32 2.17v3.99h2.4v-4.5c0-2.23-.48-3.9-3.06-3.9Z" fill="#04070d"/></svg>LinkedIn</a></li>
+          <li><a href="#x"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M17.2 3h3.3l-7.2 8.2L21.8 21h-6.6l-4.2-5.4L6.1 21H2.8l7.7-8.8L2.5 3h6.8l3.8 5 4.1-5Zm-1.2 16h1.8L8.1 4.9H6.2L16 19Z"/></svg>X (Twitter)</a></li>
+          <li><a href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.8" y="5" width="18.4" height="14" rx="2.4"/><path d="m3.4 6.4 8.6 6.2 8.6-6.2"/></svg>Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="s7__inner foot__bar">
+      <p>&copy; 2026 AI Talent Match&middot;Pro. All rights reserved.</p>
+      <ul>
+        <li><a href="#terms">Terms</a></li>
+        <li><a href="#privacy">Privacy</a></li>
+        <li><a href="#a11y">Accessibility</a></li>
+        <li><a href="#cookies">Cookies</a></li>
+      </ul>
+    </div>
+  </footer>
+</section>
+</main>
+
+<script src="assets/js/hero.js" defer></script>
+</body>
+</html>

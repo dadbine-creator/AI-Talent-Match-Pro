@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#050914">
+  <title>Job | AI Talent Match Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #050914; color: #fff; font-family: 'Inter', -apple-system, sans-serif; }
+    nav { position:fixed;top:0;left:0;width:100%;height:64px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,9,20,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.07);z-index:9999; }
+    .job-hero { padding: 120px 40px 60px; max-width: 860px; margin: 0 auto; }
+    .back-link { display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,0.45);text-decoration:none;font-size:14px;margin-bottom:32px;transition:color 0.2s; }
+    .back-link:hover { color:#fff; }
+    .job-tags { display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap; }
+    .job-tag { padding:4px 12px;background:rgba(37,99,235,0.15);border:1px solid rgba(37,99,235,0.3);border-radius:999px;font-size:12px;color:#4d9fff;font-weight:600; }
+    .job-title { font-size:clamp(32px,5vw,52px);font-weight:800;color:#fff;line-height:1.1;margin-bottom:16px; }
+    .job-meta { display:flex;gap:20px;font-size:14px;color:rgba(255,255,255,0.45);margin-bottom:40px;flex-wrap:wrap; }
+    .apply-box { background:rgba(10,20,50,0.7);border:1px solid rgba(37,99,235,0.25);border-radius:16px;padding:28px;margin-bottom:48px; }
+    .apply-title { font-size:18px;font-weight:700;color:#fff;margin-bottom:8px; }
+    .apply-sub { font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:20px;line-height:1.5; }
+    .apply-btn { display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 0 30px rgba(37,99,235,0.4); }
+    .apply-btn:hover { background:#1d4ed8; }
+    .section { margin-bottom:40px; }
+    .section h2 { font-size:20px;font-weight:700;color:#fff;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.07); }
+    .section p { font-size:15px;color:rgba(255,255,255,0.6);line-height:1.8;margin-bottom:12px; }
+    .section ul { list-style:none;display:flex;flex-direction:column;gap:10px; }
+    .section ul li { display:flex;align-items:flex-start;gap:10px;font-size:15px;color:rgba(255,255,255,0.6);line-height:1.6; }
+    .section ul li::before { content:"→";color:#4d9fff;flex-shrink:0;margin-top:2px; }
+    .job-grid { display:grid;grid-template-columns:2fr 1fr;gap:40px;max-width:860px;margin:0 auto;padding:0 40px 80px; }
+    .sidebar-card { background:rgba(10,20,50,0.7);border:1px solid rgba(37,99,235,0.15);border-radius:14px;padding:24px;margin-bottom:20px; }
+    .sidebar-label { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.35);margin-bottom:10px; }
+    .sidebar-value { font-size:14px;color:#fff;font-weight:600; }
+    @media (max-width:768px) { .job-grid { grid-template-columns:1fr; } nav { padding:0 20px; } }
+  
+    /* scroll padding */
+    html { scroll-padding-top: 80px; }
+
+    /* fade-in for content */
+    #jobContent, #jobSidebar {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: 0.5s cubic-bezier(0.16,1,0.3,1);
+    }
+    #jobContent.loaded, #jobSidebar.loaded {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* shimmer for loading title */
+    .shimmer {
+        background: linear-gradient(90deg, #07111f 0%, #0d1f3a 50%, #07111f 100%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 8px;
+        color: transparent !important;
+        user-select: none;
+    }
+    @keyframes shimmer {
+        0%   { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    /* fade-in-up utility */
+    .fade-in-up { opacity:0; transform:translateY(24px); transition:opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in-up.visible { opacity:1; transform:translateY(0); }
+
+  
+    .sidebar-card {
+        transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .sidebar-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(77,159,255,0.3) !important;
+    }
+
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="prefetch" href="/careers">
+</head>
+<body>
+
+<nav>
+  <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+    <img src="/static/at-hexagon.png" style="width:32px;height:32px;" alt="">
+    <span style="font-size:15px;font-weight:700;color:#fff;">AI Talent Match·Pro</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:28px;">
+    <a href="/careers" style="font-size:14px;color:rgba(255,255,255,0.65);text-decoration:none;">← All Jobs</a>
+    <a href="/register" aria-label="Register for AI Talent Match Pro" style="padding:8px 18px;background:#2563eb;color:#fff;font-size:14px;font-weight:600;border-radius:8px;text-decoration:none;">Register</a>
+  </div>
+</nav>
+
+<div class="job-hero" id="jobHero">
+  <a href="/careers" class="back-link">← Back to Careers</a>
+  <div class="job-tags" id="jobTags"></div>
+  <h1 class="job-title shimmer" id="jobTitle">Loading...</h1>
+  <div class="job-meta" id="jobMeta"></div>
+  <div class="apply-box">
+    <div class="apply-title">Interested in this role?</div>
+    <div class="apply-sub">Send us your CV and a short note about why you'd be great for this. No cover letter templates please — just tell us in your own words.</div>
+    <a id="applyBtn" href="#" class="apply-btn">Apply for this role →</a>
+  </div>
+</div>
+
+<div class="job-grid" role="main">
+  <div id="jobContent"></div>
+  <div id="jobSidebar"></div>
+</div>
+
+<script>
+function escapeHTML(str) {
+  if (!str) return '';
+  return str.replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+}
+
+function locationHTML(loc) {
+  return loc.replace('🌍', '<span aria-label="Remote">🌍</span>');
+}
+
+const jobs = {
+  'senior-ai-engineer': {
+    title: 'Senior AI Engineer',
+    tag: 'Engineering',
+    location: '🌍 Remote',
+    type: 'Full-time',
+    email: 'hello@aitmp.io?subject=' + encodeURIComponent('Application: Senior AI Engineer'),
+    about: "We're looking for an AI engineer who's genuinely excited about what large language models can do for hiring. Not someone who wants to fine-tune a model for the sake of it — someone who wants to build something that actually helps people find jobs they'll love.",
+    role: [
+      "Own the core AI scoring pipeline — prompt engineering, model routing, latency optimization",
+      "Work directly with GPT-4o on Azure to improve the quality and speed of candidate scoring",
+      "Build and improve our Deep-Thinking Engine — the system that scores adaptability, growth patterns, and human story",
+      "Collaborate on the mobile AI path (hot/cold routing, sub-100ms targets)",
+      "Push the boundaries of what's possible with a 43-phase AI architecture"
+    ],
+    looking: [
+      "3+ years working with LLMs in production — not just prototypes",
+      "Strong Python, FastAPI, and async programming",
+      "Experience with Azure OpenAI or similar enterprise AI platforms",
+      "You care about latency — sub-100ms isn't just a goal, it's a constraint you design around",
+      "You've shipped AI features that real people use"
+    ],
+    nice: [
+      "Experience with HR tech, ATS systems, or recruiting workflows",
+      "Knowledge of vector databases, embeddings, or semantic search",
+      "Background in behavioral psychology or organizational design"
+    ]
+  },
+  'product-designer': {
+    title: 'Product Designer',
+    tag: 'Design',
+    location: '🌍 Remote',
+    type: 'Full-time',
+    email: 'hello@aitmp.io?subject=' + encodeURIComponent('Application: Product Designer'),
+    about: "Design at AI Talent Match Pro means making something genuinely hard feel effortless. Our users are HR professionals under time pressure. They need to find the right candidate fast, understand why the AI made a decision, and act on it. Your job is to make that feel obvious.",
+    role: [
+      "Own the end-to-end design of the workspace — from role creation to candidate shortlist",
+      "Design the AI result experience — how we show scores, tiers, and justifications in a way that builds trust",
+      "Work closely with engineering to implement designs in our FastAPI + HTML stack",
+      "Design our mobile apps (iOS + Android) — coming post-launch",
+      "Help define the visual language that will represent us to LinkedIn/Workday/Indeed"
+    ],
+    looking: [
+      "3+ years of product design experience, ideally in B2B SaaS",
+      "Strong eye for dark, cinematic UI — you appreciate depth, not just flat design",
+      "You've shipped designs that deal with complex data in a clean way",
+      "Figma fluency, obviously — but also comfort with HTML/CSS",
+      "You can write. Good design copy is part of the job."
+    ],
+    nice: [
+      "Experience designing for HR, recruiting, or talent platforms",
+      "Motion design or micro-interaction experience",
+      "You've worked on enterprise products that needed to feel premium"
+    ]
+  },
+  'enterprise-sales': {
+    title: 'Enterprise Sales Lead',
+    tag: 'Sales',
+    location: '🌍 Remote',
+    type: 'Full-time',
+    email: 'hello@aitmp.io?subject=' + encodeURIComponent('Application: Enterprise Sales'),
+    about: "This isn't a volume sales role. We're not asking you to send 200 cold emails a day. We're asking you to find the right HR leaders at the right companies, understand their hiring pain deeply, and show them something genuinely better. The product sells itself once people see it.",
+    role: [
+      "Identify and qualify enterprise HR teams who would benefit most from AI Talent Match Pro",
+      "Run product demos that show — not tell — why this is different",
+      "Own the full sales cycle from first conversation to signed contract",
+      "Build relationships with HR directors, VPs of People, and Talent Acquisition leaders",
+      "Feed real customer insights back to product and engineering"
+    ],
+    looking: [
+      "3+ years in enterprise B2B sales, ideally in HR tech or SaaS",
+      "You genuinely understand recruiting — not just as a buyer, but as a craft",
+      "Strong relationship builder — you play a long game, not a short one",
+      "Comfortable selling a technical product to non-technical buyers",
+      "Track record of closing deals above $50k ACV"
+    ],
+    nice: [
+      "Existing relationships in HR tech, talent acquisition, or People ops",
+      "Experience selling to LinkedIn, Workday, or Indeed ecosystem customers",
+      "Background in HR or recruiting yourself"
+    ]
+  },
+  'hr-success-manager': {
+    title: 'HR Success Manager',
+    tag: 'Customer Success',
+    location: '🌍 Remote',
+    type: 'Full-time',
+    email: 'hello@aitmp.io?subject=' + encodeURIComponent('Application: HR Success Manager'),
+    about: "You'll be the person HR teams call when they want to get more out of the platform. That means understanding their hiring goals deeply, helping them interpret AI results, and making sure they're getting real value — not just logging in occasionally.",
+    role: [
+      "Onboard new HR teams and make sure they're scoring candidates within their first week",
+      "Run regular check-ins to understand what's working and what's not",
+      "Translate customer feedback into clear product improvement requests",
+      "Build playbooks for different HR team types — from startup to enterprise",
+      "Be the voice of the customer in every internal conversation"
+    ],
+    looking: [
+      "2+ years in customer success, ideally in HR tech or B2B SaaS",
+      "You've worked in HR or recruiting — you speak the language",
+      "Empathetic, patient, and genuinely curious about people's problems",
+      "Comfortable explaining AI output to non-technical users",
+      "Strong written communication — a lot of this role is async"
+    ],
+    nice: [
+      "Experience with ATS platforms like Greenhouse or Lever",
+      "Background in talent acquisition or people operations",
+      "You've built customer education materials before"
+    ]
+  }
+};
+
+const params = new URLSearchParams(window.location.search);
+const jobId = params.get('job') || window.location.pathname.split('/').pop();
+const job = jobs[jobId];
+if (job) {
+    job.tag      = job.tag      || 'General';
+    job.type     = job.type     || 'Full-time';
+    job.location = job.location || '🌍 Remote';
+    job.stage    = job.stage    || 'Pre-acquisition';
+}
+
+if (!job) {
+  // Try to get from URL hash as fallback
+  const hash = window.location.hash.replace('#','');
+  const jobFromHash = jobs[hash];
+  if (jobFromHash) {
+    window.location.href = '/job?job=' + hash;
+  } else {
+    document.getElementById('jobTitle').textContent = 'Job not found';
+    document.getElementById('jobContent').innerHTML = '<div style="padding:20px;color:rgba(255,255,255,0.5);font-size:15px;">Please go back to <a href="/careers" style="color:#4d9fff;">Careers</a> and click on a position.</div>';
+  }
+} else {
+  // Remove shimmer from title
+  const titleEl = document.getElementById('jobTitle');
+  titleEl.classList.remove('shimmer');
+  titleEl.textContent = job.title;
+  document.getElementById('jobTags').innerHTML = `<span class="job-tag">${escapeHTML(job.tag)}</span>`;
+  document.getElementById('jobMeta').innerHTML = `<span>${locationHTML(job.location)}</span><span>${escapeHTML(job.type)}</span>`;
+  document.getElementById('applyBtn').href = `mailto:${job.email}`;
+  document.title = `${job.title} | AI Talent Match Pro`;
+  // Update OG metadata
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  const ogDesc  = document.querySelector('meta[property="og:description"]');
+  if (ogTitle) ogTitle.content = `${job.title} | AI Talent Match Pro`;
+  if (ogDesc)  ogDesc.content  = job.about ? job.about.slice(0, 140) : `Join AI Talent Match Pro as ${job.title}`;
+
+  document.getElementById('jobContent').innerHTML = `
+    <div class="section fade-in-up visible">
+      <h2>About this role</h2>
+      <p>${escapeHTML(job.about)}</p>
+    </div>
+    <div class="section fade-in-up visible">
+      <h2>What you'll do</h2>
+      <ul>${job.role.map(r => `<li>${escapeHTML(r)}</li>`).join('')}</ul>
+    </div>
+    <div class="section fade-in-up visible">
+      <h2>What we're looking for</h2>
+      <ul>${job.looking.map(r => `<li>${escapeHTML(r)}</li>`).join('')}</ul>
+    </div>
+    <div class="section fade-in-up visible">
+      <h2>Nice to have</h2>
+      <ul>${job.nice.map(r => `<li>${escapeHTML(r)}</li>`).join('')}</ul>
+    </div>
+    <div class="section fade-in-up visible">
+      <h2>How to apply</h2>
+      <p>Send your CV and a short note to <a href="mailto:${job.email}" style="color:#4d9fff;">hello@aitmp.io</a>. No templates, no cover letter formulas. Just tell us in your own words why this role makes sense for you right now.</p>
+      <p>We respond to every application. Usually within a week.</p>
+    </div>
+  `;
+
+  document.getElementById('jobSidebar').innerHTML = `
+    <div class="sidebar-card">
+      <div class="sidebar-label">Location</div>
+      <div class="sidebar-value" aria-label="Job location">${locationHTML(job.location)}</div>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-label">Type</div>
+      <div class="sidebar-value" aria-label="Employment type">${escapeHTML(job.type)}</div>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-label">Department</div>
+      <div class="sidebar-value" aria-label="Department">${escapeHTML(job.tag)}</div>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-label">Stage</div>
+      <div class="sidebar-value" aria-label="Company stage">${escapeHTML(job.stage || 'Pre-acquisition')}</div>
+    </div>
+    <div class="sidebar-card" style="background:rgba(37,99,235,0.08);border-color:rgba(37,99,235,0.3);">
+      <div class="sidebar-label">Ready to apply?</div>
+      <a href="mailto:${job.email}" style="display:block;margin-top:12px;padding:12px;background:#2563eb;color:#fff;text-align:center;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;">Send your CV →</a>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}" target="_blank" style="display:block;margin-top:8px;text-align:center;color:#4d9fff;font-size:12px;text-decoration:none;">Share on LinkedIn →</a>
+    </div>
+  `;
+
+  // Fade in content + sidebar
+  setTimeout(() => {
+    document.getElementById('jobContent').classList.add('loaded');
+    document.getElementById('jobSidebar').classList.add('loaded');
+  }, 100);
+}
+</script>
+</body>
+</html>

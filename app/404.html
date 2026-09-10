@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Page not found — AI Talent Match Pro</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #050914;
+      color: rgba(255,255,255,0.7);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .glow {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 40%, rgba(37,99,235,0.14) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .wrap { position: relative; z-index: 1; max-width: 520px; }
+    .code {
+      font-size: 7rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1;
+      background: linear-gradient(135deg, #4d9fff, #2563eb);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    h1 { font-size: 1.6rem; font-weight: 700; color: #fff; margin-bottom: 14px; letter-spacing: -0.02em; }
+    p { font-size: 1rem; line-height: 1.6; color: rgba(255,255,255,0.55); margin-bottom: 32px; }
+    .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 28px; border-radius: 999px; font-size: 15px; font-weight: 600;
+      text-decoration: none; cursor: pointer; transition: all 0.2s; font-family: inherit; border: 1px solid transparent;
+    }
+    .btn-primary { background: #2563eb; color: #fff; box-shadow: 0 0 40px rgba(37,99,235,0.4); }
+    .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+    .btn-ghost { background: transparent; border-color: rgba(255,255,255,0.18); color: rgba(255,255,255,0.7); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.45); color: #fff; }
+    .links { margin-top: 40px; font-size: 13px; color: rgba(255,255,255,0.3); }
+    .links a { color: rgba(255,255,255,0.5); text-decoration: none; margin: 0 8px; }
+    .links a:hover { color: #4d9fff; }
+  </style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="wrap">
+    <div class="code">404</div>
+    <h1>This page took a different role.</h1>
+    <p>The page you're looking for doesn't exist or may have moved. Let's get you back to finding great candidates.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="/">← Back to home</a>
+      <a class="btn btn-ghost" href="/plans">View plans</a>
+    </div>
+    <div class="links">
+      <a href="/api-docs">API docs</a> ·
+      <a href="/login">Sign in</a> ·
+      <a href="mailto:hello@aitmp.io">Contact us</a>
+    </div>
+  </div>
+</body>
+</html>

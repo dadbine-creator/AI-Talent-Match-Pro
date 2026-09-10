@@ -1,0 +1,147 @@
+/* ============================================================
+   app-integration.css
+   Styles for the pieces added when the static landing page was
+   wired into the FastAPI app: FAQ, email capture, cookie banner,
+   toast. Authored in rem against the same fluid root as style.css
+   (hairlines under 2px stay in px, per CLAUDE.md).
+   ============================================================ */
+
+/* ---------------- FAQ ---------------- */
+.s7__faq{position:relative;border-bottom:1px solid rgba(120,170,230,.15);padding:2.75rem 0 3.25rem}
+.s7__inner--faq{max-width:47rem}
+.faqlist{margin-top:1.5rem}
+.faq{
+  border:1px solid var(--line);border-radius:0.875rem;
+  background:rgba(6,12,22,.5);margin-bottom:0.75rem;overflow:hidden;
+  transition:border-color .2s var(--ease),background .2s var(--ease);
+}
+.faq[open],.faq:hover{border-color:rgba(47,155,255,.32);background:rgba(8,16,30,.66)}
+.faq summary{
+  list-style:none;cursor:pointer;padding:1.0625rem 1.25rem;
+  font-size:1rem;font-weight:500;color:var(--ink);
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{
+  content:'';flex:0 0 auto;width:0.75rem;height:0.75rem;
+  border-right:1.5px solid var(--blue-bright);border-bottom:1.5px solid var(--blue-bright);
+  transform:rotate(45deg) translate(-0.125rem,-0.125rem);
+  transition:transform .22s var(--ease);
+}
+.faq[open] summary::after{transform:rotate(-135deg) translate(-0.1875rem,-0.1875rem)}
+.faq summary:hover{color:var(--blue-bright)}
+.faq__a{padding:0 1.25rem 1.125rem;font-size:0.90625rem;line-height:1.68;color:var(--ink-3)}
+.faq__a a{color:var(--blue-bright);text-decoration:none}
+.faq__a a:hover{text-decoration:underline}
+.faq__a strong{color:var(--ink-2);font-weight:600}
+
+/* ---------------- "Notify me" email capture ---------------- */
+.notifyform{display:flex;flex-direction:column;align-items:flex-start;gap:0.75rem}
+.notifyform__in{
+  width:20.5rem;max-width:100%;height:3.25rem;
+  padding:0 1.0625rem;border-radius:0.75rem;
+  border:1px solid rgba(120,170,230,.28);
+  background:rgba(4,9,18,.72);color:var(--ink);
+  font:inherit;font-size:0.9375rem;outline:none;
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease);
+}
+.notifyform__in::placeholder{color:var(--ink-4)}
+.notifyform__in:focus{border-color:rgba(47,155,255,.7);box-shadow:0 0 0 0.1875rem rgba(47,155,255,.18)}
+button.notify{font:inherit;cursor:pointer;-webkit-appearance:none;appearance:none}
+.notify[disabled]{opacity:.6;cursor:default}
+
+/* ---------------- footer newsletter ---------------- */
+.foot__sub{margin-top:1.125rem;max-width:18.75rem}
+.foot__sub-h{display:block;font-size:0.8125rem;font-weight:600;color:var(--ink);margin-bottom:0.5rem}
+.foot__sub-row{
+  display:flex;border-radius:0.5rem;overflow:hidden;
+  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);
+}
+.foot__sub-row input{
+  flex:1;min-width:0;padding:0.6875rem 0.875rem;
+  background:transparent;border:none;color:var(--ink);
+  font:inherit;font-size:0.8125rem;outline:none;
+}
+.foot__sub-row input::placeholder{color:var(--ink-4)}
+.foot__sub-row button{
+  padding:0.6875rem 1rem;border:none;cursor:pointer;white-space:nowrap;
+  background:var(--blue-deep);color:#fff;font:inherit;font-size:0.8125rem;font-weight:600;
+  transition:background .18s var(--ease);
+}
+.foot__sub-row button:hover{background:var(--blue)}
+.foot__sub-row button[disabled]{opacity:.6;cursor:default}
+
+/* ---------------- cookie banner ---------------- */
+.cookieban{
+  position:fixed;left:1.25rem;right:1.25rem;bottom:1.25rem;z-index:9000;
+  display:none;align-items:center;justify-content:space-between;gap:1.25rem;flex-wrap:wrap;
+  padding:1rem 1.25rem;border-radius:0.875rem;
+  border:1px solid rgba(120,170,230,.22);
+  background:rgba(6,12,22,.94);backdrop-filter:blur(0.75rem);
+  box-shadow:0 1.25rem 3rem rgba(0,0,0,.55);
+  max-width:56rem;margin-inline:auto;
+}
+.cookieban.is-on{display:flex}
+.cookieban p{font-size:0.84375rem;line-height:1.6;color:var(--ink-3);margin:0;flex:1 1 20rem}
+.cookieban a{color:var(--blue-bright);text-decoration:none}
+.cookieban__btns{display:flex;gap:0.625rem;flex:0 0 auto}
+.cookieban button{
+  font:inherit;font-size:0.8125rem;font-weight:600;cursor:pointer;
+  padding:0.5625rem 1.125rem;border-radius:0.5rem;
+  transition:background .18s var(--ease),border-color .18s var(--ease);
+}
+.cookieban__no{background:transparent;border:1px solid rgba(255,255,255,.18);color:var(--ink-3)}
+.cookieban__no:hover{border-color:rgba(255,255,255,.34);color:var(--ink)}
+.cookieban__yes{background:var(--blue-deep);border:1px solid var(--blue-deep);color:#fff}
+.cookieban__yes:hover{background:var(--blue);border-color:var(--blue)}
+
+/* ---------------- toast ---------------- */
+.toastx{
+  position:fixed;left:50%;bottom:2rem;transform:translate(-50%,1.5rem);
+  z-index:9500;pointer-events:none;opacity:0;
+  max-width:min(28rem,calc(100vw - 2.5rem));
+  padding:0.8125rem 1.25rem;border-radius:0.75rem;
+  border:1px solid rgba(120,170,230,.26);
+  background:rgba(6,12,22,.96);backdrop-filter:blur(0.5rem);
+  box-shadow:0 1rem 2.5rem rgba(0,0,0,.5);
+  font-size:0.875rem;line-height:1.5;color:var(--ink);text-align:center;
+  transition:opacity .22s var(--ease),transform .22s var(--ease);
+}
+.toastx.is-on{opacity:1;transform:translate(-50%,0)}
+.toastx.is-ok{border-color:rgba(0,214,143,.42)}
+.toastx.is-err{border-color:rgba(255,99,99,.45)}
+
+/* ---------------- live demo result panel ---------------- */
+.demores{
+  display:none;margin-top:1.375rem;max-width:32rem;
+  padding:1.125rem 1.25rem;border-radius:0.875rem;
+  border:1px solid rgba(47,155,255,.3);background:rgba(6,12,22,.66);
+}
+.demores.is-on{display:block}
+.demores__head{display:flex;align-items:center;gap:0.875rem;margin-bottom:0.75rem}
+.demores__score{
+  flex:0 0 auto;width:3.25rem;height:3.25rem;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1875rem;font-weight:700;color:#fff;
+  border:1px solid rgba(47,155,255,.55);background:rgba(14,111,214,.22);
+}
+.demores__tier{font-size:0.9375rem;font-weight:600;color:var(--ink)}
+.demores__eyebrow{
+  font-size:0.6875rem;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--blue-bright);margin-bottom:0.375rem;
+}
+.demores__text{font-size:0.875rem;line-height:1.65;color:var(--ink-3)}
+.demores__dims{display:flex;gap:0.625rem;flex-wrap:wrap;margin-top:0.875rem}
+.demores__dims span{
+  padding:0.375rem 0.6875rem;border-radius:0.5rem;
+  border:1px solid var(--line);background:rgba(255,255,255,.03);
+  font-size:0.75rem;color:var(--ink-2);
+}
+.demores__dims b{color:#fff;font-weight:700}
+
+@media (max-width:560px){
+  .cookieban{left:0.75rem;right:0.75rem;bottom:0.75rem;padding:0.875rem 1rem}
+  .cookieban__btns{width:100%}
+  .cookieban__btns button{flex:1}
+  .notifyform__in{width:100%}
+}

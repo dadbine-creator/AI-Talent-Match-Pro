@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>AI Talent Match Pro · Workspace</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/dashboard.css" />
+<link rel="stylesheet" href="/static/phase14.css" />
+<link rel="stylesheet" href="/static/phase15.css" />
+<link rel="stylesheet" href="/static/phase16.css" />
+<link rel="stylesheet" href="/static/phase17.css" />
+<link rel="stylesheet" href="/static/phase18.css" />
+<link rel="stylesheet" href="/static/phase19.css" />
+<link rel="stylesheet" href="/static/team_dna.css" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #060c1a; color: #fff;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    height: 100vh; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+}
+body::before {
+    content: ''; position: fixed; inset: 0;
+    background:
+        radial-gradient(ellipse at 15% 50%, rgba(29,80,200,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 50%, rgba(29,80,200,0.08) 0%, transparent 55%);
+    pointer-events: none; z-index: 0;
+}
+
+/* ── APP SHELL — full-width header then 3-col body ── */
+.app-shell {
+    display: flex; flex-direction: column;
+    height: calc(100vh - 40px); width: calc(100vw - 40px);
+    max-width: 1400px; border-radius: 16px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 40px 120px rgba(0,0,0,0.6);
+    position: relative; z-index: 1; background: #0a1628;
+}
+
+/* FULL-WIDTH TOP HEADER */
+.top-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0;
+}
+.brand { display: flex; align-items: center; gap: 11px; }
+.brand-logo {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg,#1d6ef5,#8b5cf6);
+    border-radius: 9px; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 13px; color: #fff;
+    box-shadow: 0 0 20px rgba(29,110,245,0.4);
+}
+.brand-logo img { width: 34px; height: 34px; border-radius: 9px; object-fit: contain; }
+.brand-name { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.01em; }
+.upgrade-btn {
+    padding: 9px 20px; background: transparent;
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 10px;
+    color: #fff; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.upgrade-btn:hover { border-color: #4d9fff; color: #4d9fff; }
+
+/* BODY GRID */
+.app-body {
+    flex: 1; display: grid;
+    grid-template-columns: 240px 1fr 300px;
+    min-height: 0;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+    border-right: 1px solid rgba(255,255,255,0.06);
+    display: flex; flex-direction: column; overflow-y: auto;
+}
+.sidebar-avatar-block {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 26px 16px 22px; border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.sidebar-avatar-img {
+    width: 72px; height: 72px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; font-weight: 800; color: #fff;
+    background: radial-gradient(circle at 50% 35%, #2b6fd6, #123a7a);
+    border: 2px solid rgba(77,159,255,0.5);
+    box-shadow: 0 0 26px rgba(29,110,245,0.35); margin-bottom: 12px;
+}
+.sidebar-avatar-name { font-size: 15px; font-weight: 700; color: #fff; }
+
+.sidebar-nav { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.sidebar-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 12px; border-radius: 10px;
+    cursor: pointer; color: rgba(255,255,255,0.5);
+    font-size: 14px; font-weight: 500; transition: all 0.2s; margin-bottom: 3px;
+}
+.sidebar-item svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.8; }
+.sidebar-item:hover { background: rgba(255,255,255,0.04); color: #fff; }
+.sidebar-item.active { background: rgba(29,110,245,0.15); border: 1px solid rgba(29,110,245,0.35); color: #fff; }
+.sidebar-item.locked { opacity: 0.3; cursor: not-allowed; }
+
+.sidebar-roles-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px 6px;
+}
+.sidebar-roles-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.3); }
+.sidebar-roles-sub { font-size: 10px; color: rgba(255,255,255,0.2); }
+.sidebar-add-btn {
+    width: 24px; height: 24px; background: #1d6ef5; border: none;
+    border-radius: 6px; color: #fff; font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+}
+.sidebar-list { flex: 1; padding: 4px 8px; }
+.sidebar-card {
+    padding: 8px 10px; border-radius: 8px; cursor: pointer;
+    margin-bottom: 3px; color: rgba(255,255,255,0.45); font-size: 12px;
+    border: 1px solid transparent; transition: all 0.2s;
+}
+.sidebar-card:hover { background: rgba(29,110,245,0.1); color: #fff; }
+.sidebar-card.active { background: rgba(29,110,245,0.15); border-color: rgba(29,110,245,0.35); color: #fff; }
+
+.sidebar-footer { padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); }
+.sidebar-signout {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; border-radius: 10px;
+    color: rgba(255,255,255,0.45); font-size: 13px; font-weight: 500; cursor: pointer;
+}
+.sidebar-signout:hover { background: rgba(255,255,255,0.04); color: #fff; }
+.sidebar-signout svg { width: 17px; height: 17px; }
+
+/* ── CENTER PANEL ── */
+.center-panel {
+    display: flex; flex-direction: column; overflow-y: auto;
+    background: #0d1628;
+}
+
+/* EMPTY STATE */
+.center-empty {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 40px 32px; position: relative;
+    background: radial-gradient(ellipse at 50% 68%, rgba(29,80,200,0.16) 0%, transparent 62%);
+}
+.center-empty::after {
+    content: ''; position: absolute; bottom: 0; left: 50%;
+    transform: translateX(-50%); width: 400px; height: 200px;
+    background: radial-gradient(ellipse at 50% 100%, rgba(29,110,245,0.35) 0%, transparent 70%);
+    pointer-events: none;
+}
+.sparkle-badge {
+    width: 74px; height: 74px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle, rgba(29,110,245,0.25), rgba(29,110,245,0.05));
+    border: 1px solid rgba(77,159,255,0.4);
+    box-shadow: 0 0 40px rgba(29,110,245,0.5), inset 0 0 20px rgba(29,110,245,0.2);
+    margin-bottom: 26px;
+}
+.sparkle-badge svg { width: 34px; height: 34px; color: #6db3ff; }
+.center-eyebrow {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.22em; color: #4d9fff; margin-bottom: 18px;
+}
+.center-title { font-size: 40px; font-weight: 800; line-height: 1.12; margin-bottom: 18px; }
+.center-title .gradient-text {
+    background: linear-gradient(90deg,#4d9fff,#8b5cf6);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.center-subtitle {
+    font-size: 14px; color: rgba(255,255,255,0.5);
+    max-width: 480px; line-height: 1.6; margin-bottom: 30px;
+}
+
+/* TIER SKELETON CARDS */
+.tier-cards { display: flex; gap: 14px; margin-bottom: 34px; }
+.tier-card {
+    width: 168px; padding: 14px; border-radius: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08); position: relative;
+}
+.tier-card::after { content: ''; position: absolute; top: 12px; right: 12px; width: 6px; height: 6px; border-radius: 50%; }
+.tier-card.gold { border-color: rgba(245,166,35,0.4); }
+.tier-card.silver { border-color: rgba(139,164,192,0.4); }
+.tier-card.bronze { border-color: rgba(205,127,50,0.4); }
+.tier-card.gold::after { background: #f5a623; box-shadow: 0 0 8px #f5a623; }
+.tier-card.silver::after { background: #8ba4c0; box-shadow: 0 0 8px #8ba4c0; }
+.tier-card.bronze::after { background: #cd7f32; box-shadow: 0 0 8px #cd7f32; }
+.tier-skeleton { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; }
+.tier-skeleton .dot { width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.08); flex-shrink: 0; }
+.tier-skeleton .lines { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.tier-skeleton .lines span { height: 5px; border-radius: 4px; background: rgba(255,255,255,0.08); display: block; }
+.tier-skeleton .lines span:first-child { width: 80%; }
+.tier-skeleton .lines span:last-child { width: 55%; }
+.tier-label { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; }
+.tier-card.gold .tier-label { color: #f5a623; }
+.tier-card.silver .tier-label { color: #8ba4c0; }
+.tier-card.bronze .tier-label { color: #cd7f32; }
+
+.primary-button {
+    padding: 14px 34px; background: #1d6ef5; border: none; border-radius: 12px;
+    color: #fff; font-size: 16px; font-weight: 700; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 9px;
+    box-shadow: 0 0 44px rgba(29,110,245,0.55); position: relative; z-index: 1;
+}
+.primary-button:hover { background: #2979ff; transform: translateY(-2px); }
+.primary-button svg { width: 18px; height: 18px; }
+
+/* ── RIGHT PANEL ── */
+.right-panel {
+    border-left: 1px solid rgba(255,255,255,0.05);
+    display: flex; flex-direction: column; overflow-y: auto;
+    padding: 0; gap: 0;
+}
+.welcome-bar {
+    padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.welcome-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 5px; }
+.welcome-sub { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.5; }
+
+.ai-stream { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+.stream-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.3); }
+
+.linkedin-status-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 10px; background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07); border-radius: 8px;
+}
+.linkedin-status-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.25); }
+.linkedin-status-text { font-size: 11px; color: rgba(255,255,255,0.4); margin-left: 6px; }
+.linkedin-connect-btn {
+    font-size: 11px; padding: 4px 10px;
+    background: rgba(29,110,245,0.15); border: 1px solid rgba(29,110,245,0.4);
+    border-radius: 6px; color: #4d9fff; cursor: pointer;
+}
+
+.empty-hint {
+    font-size: 11px; color: rgba(255,255,255,0.25); line-height: 1.6;
+    padding: 10px 12px; background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; text-align: center;
+}
+
+/* OUTREACH TRACKER */
+.outreach-tracker {
+    background: rgba(10,20,50,0.8); border: 1px solid rgba(29,110,245,0.2);
+    border-radius: 12px; padding: 14px;
+}
+.outreach-tracker-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: #4d9fff; margin-bottom: 10px;
+}
+.outreach-candidate-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.outreach-candidate-row:last-child { border-bottom: none; }
+.outreach-candidate-name { font-size: 12px; font-weight: 600; color: #fff; }
+.outreach-status-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+.status-pending { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.1); }
+.status-sending { background: rgba(29,110,245,0.12); color: #4d9fff; border: 1px solid rgba(29,110,245,0.3); }
+.status-sent { background: rgba(0,214,143,0.08); color: #00d68f; border: 1px solid rgba(0,214,143,0.25); }
+.status-replied-yes { background: rgba(245,166,35,0.12); color: #f5a623; border: 1px solid rgba(245,166,35,0.35); }
+.status-replied-no { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.08); }
+
+/* HR NOTIFICATION */
+.hr-notify-panel {
+    display: none; background: linear-gradient(135deg, rgba(245,166,35,0.08), rgba(29,110,245,0.08));
+    border: 1px solid rgba(245,166,35,0.35); border-radius: 12px; padding: 14px;
+}
+.hr-notify-panel.visible { display: block; }
+.hr-notify-title { font-size: 13px; font-weight: 700; color: #f5a623; margin-bottom: 6px; }
+.hr-notify-text { font-size: 12px; color: rgba(255,255,255,0.65); line-height: 1.5; margin-bottom: 10px; }
+.hr-notify-btn {
+    width: 100%; padding: 9px; background: #f5a623; border: none;
+    border-radius: 8px; color: #000; font-size: 12px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+}
+
+/* CRM WIDGET */
+.crm-sidebar-widget {
+    background: rgba(10,20,50,0.8); border: 1px solid rgba(29,110,245,0.2);
+    border-radius: 12px; padding: 14px;
+}
+.crm-sidebar-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: #4d9fff; margin-bottom: 10px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.crm-connect-small {
+    font-size: 10px; padding: 3px 8px; background: rgba(29,110,245,0.15);
+    border: 1px solid rgba(29,110,245,0.3); border-radius: 6px; color: #4d9fff; cursor: pointer;
+}
+.crm-connected-list { display: flex; flex-direction: column; gap: 6px; }
+.crm-connected-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 10px; background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 8px;
+}
+.crm-connected-name { font-size: 12px; color: rgba(255,255,255,0.7); }
+.crm-connected-dot { width: 6px; height: 6px; border-radius: 50%; background: #00d68f; box-shadow: 0 0 6px rgba(0,214,143,0.5); }
+.crm-push-all-btn {
+    width: 100%; margin-top: 10px; padding: 9px;
+    background: rgba(0,214,143,0.1); border: 1px solid rgba(0,214,143,0.25);
+    border-radius: 8px; color: #00d68f; font-size: 12px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+}
+.crm-log { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+.crm-log-item {
+    font-size: 11px; color: rgba(255,255,255,0.4); padding: 4px 6px;
+    border-radius: 4px; background: rgba(255,255,255,0.02);
+    display: flex; align-items: center; gap: 6px;
+}
+.crm-log-dot { width: 4px; height: 4px; border-radius: 50%; background: #00d68f; flex-shrink: 0; }
+
+/* MODAL */
+.modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(6px); display: flex; align-items: center;
+    justify-content: center; z-index: 9999;
+}
+.p17-modal {
+    background: linear-gradient(145deg,#0d1f3a,#080f1e);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+    width: 90%; max-width: 520px; max-height: 90vh; overflow-y: auto;
+    position: relative; padding: 28px; box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+}
+.p17-modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: rgba(255,255,255,0.5); font-size: 20px; cursor: pointer; }
+.modal-inner { display: flex; flex-direction: column; gap: 14px; }
+.modal-title { font-size: 22px; font-weight: 700; color: #fff; }
+.modal-subtitle { font-size: 13px; color: rgba(255,255,255,0.5); }
+.modal-label { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); display: block; }
+.p17-required::after { content: ' *'; color: #f87171; }
+.modal-input, .modal-textarea {
+    width: 100%; padding: 11px 14px; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+    color: #fff; font-size: 13px; outline: none; font-family: inherit;
+}
+.modal-input:focus, .modal-textarea:focus { border-color: #4d9fff; }
+.modal-input::placeholder, .modal-textarea::placeholder { color: rgba(255,255,255,0.25); }
+.modal-textarea { height: 90px; resize: vertical; }
+.p17-advanced-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 14px; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
+    font-size: 13px; font-weight: 600; color: #fff; cursor: pointer;
+}
+.p17-filter-row { display: grid; grid-template-columns: 140px 1fr; align-items: center; gap: 10px; margin-bottom: 10px; }
+.p17-filter-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.55); }
+.p17-filter-input, .p17-filter-select {
+    width: 100%; padding: 8px 12px; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
+    color: #fff; font-size: 12px; outline: none; font-family: inherit;
+}
+.p17-search-btn {
+    width: 100%; padding: 14px; background: #1d6ef5; border: none;
+    border-radius: 10px; color: #fff; font-size: 15px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 8px; box-shadow: 0 4px 20px rgba(29,110,245,0.4);
+}
+.p17-search-btn:hover { background: #2979ff; }
+
+/* OUTREACH MODAL */
+.outreach-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(10px); z-index: 99999;
+    display: none; align-items: center; justify-content: center;
+}
+
+/* CRM MODAL */
+.crm-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(10px); z-index: 99999;
+    display: none; align-items: center; justify-content: center;
+}
+.crm-modal-overlay.open { display: flex; }
+.crm-modal {
+    background: linear-gradient(145deg,#0a1628,#060f1e);
+    border: 1px solid rgba(37,99,235,0.3); border-radius: 24px;
+    padding: 32px; width: 90%; max-width: 560px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.7); max-height: 90vh; overflow-y: auto;
+}
+.crm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.crm-card {
+    padding: 16px; border-radius: 12px; background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08); cursor: pointer; transition: all 0.2s;
+    display: flex; flex-direction: column; gap: 8px; position: relative;
+}
+.crm-card:hover { border-color: rgba(37,99,235,0.4); background: rgba(29,110,245,0.06); transform: translateY(-2px); }
+.crm-card.connected { border-color: rgba(0,214,143,0.35); background: rgba(0,214,143,0.05); }
+.crm-status {
+    position: absolute; top: 10px; right: 10px;
+    font-size: 9px; font-weight: 700; padding: 2px 7px;
+    border-radius: 999px; text-transform: uppercase;
+}
+.crm-status.available { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.35); border: 1px solid rgba(255,255,255,0.1); }
+.crm-status.connected { background: rgba(0,214,143,0.15); color: #00d68f; border: 1px solid rgba(0,214,143,0.3); }
+.crm-logo { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; }
+.crm-name { font-size: 14px; font-weight: 700; color: #fff; }
+.crm-desc { font-size: 11px; color: rgba(255,255,255,0.45); line-height: 1.4; }
+.crm-connect-btn {
+    width: 100%; padding: 13px; background: #1d6ef5; border: none;
+    border-radius: 10px; color: #fff; font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+}
+.crm-field-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.crm-field-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6); }
+.crm-field-input {
+    width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+    color: #fff; font-size: 13px; outline: none; font-family: inherit;
+}
+.crm-field-input:focus { border-color: #4d9fff; }
+.crm-field-input::placeholder { color: rgba(255,255,255,0.25); }
+
+/* AI CHAT OVERLAY */
+.ai-chat-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(8px); z-index: 99999; display: none;
+    align-items: flex-end; justify-content: flex-end; padding: 20px;
+}
+.ai-chat-overlay.open { display: flex; animation: chatSlideIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards; }
+@keyframes chatSlideIn { from { opacity:0; transform:translateX(60px); } to { opacity:1; transform:translateX(0); } }
+.ai-chat-panel {
+    width: 500px; max-height: 88vh; background: #07111f;
+    border: 1px solid rgba(37,99,235,0.3); border-radius: 20px;
+    display: flex; flex-direction: column;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.8), 0 0 60px rgba(37,99,235,0.12); overflow: hidden;
+}
+.ai-chat-header {
+    padding: 16px 20px; background: rgba(5,9,20,0.95);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.ai-chat-header-left { display:flex; align-items:center; gap:10px; }
+.ai-chat-dot { width:8px; height:8px; background:#00d68f; border-radius:50%; animation:blink 2s infinite; }
+.ai-chat-title { font-size:14px; font-weight:700; color:#fff; }
+.ai-chat-sub { font-size:11px; color:rgba(255,255,255,0.4); }
+.ai-chat-close {
+    width:28px; height:28px; background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1); border-radius:50%;
+    color:rgba(255,255,255,0.5); font-size:14px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+}
+.ai-chat-messages { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:16px; }
+.chat-bubble { display:flex; gap:10px; align-items:flex-start; animation:chatBubble 0.4s cubic-bezier(0.16,1,0.3,1) forwards; opacity:0; }
+@keyframes chatBubble { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.chat-bubble-avatar { width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#2563eb,#8b5cf6); display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; margin-top:2px; }
+.chat-bubble-content { flex:1; }
+.chat-bubble-name { font-size:11px; font-weight:700; color:#4d9fff; margin-bottom:5px; text-transform:uppercase; letter-spacing:0.06em; }
+.chat-bubble-text { font-size:13px; color:rgba(255,255,255,0.8); line-height:1.6; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:12px 14px; }
+.chat-thinking { display:flex; align-items:center; gap:8px; padding:12px 14px; background:rgba(37,99,235,0.06); border:1px solid rgba(37,99,235,0.15); border-radius:12px; font-size:13px; color:rgba(255,255,255,0.6); }
+.chat-thinking-dots { display:flex; gap:4px; }
+.chat-thinking-dots span { width:5px; height:5px; border-radius:50%; background:#4d9fff; animation:thinkDot 1.2s infinite; }
+.chat-thinking-dots span:nth-child(2) { animation-delay:0.2s; }
+.chat-thinking-dots span:nth-child(3) { animation-delay:0.4s; }
+@keyframes thinkDot { 0%,80%,100% { opacity:0.2; transform:scale(0.8); } 40% { opacity:1; transform:scale(1.2); } }
+.ai-chat-footer { padding:12px 16px; border-top:1px solid rgba(255,255,255,0.06); display:flex; gap:8px; flex-shrink:0; }
+.ai-chat-input { flex:1; padding:10px 14px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; color:#fff; font-size:13px; font-family:inherit; outline:none; }
+.ai-chat-input:focus { border-color:rgba(37,99,235,0.4); }
+.ai-chat-send { padding:10px 16px; background:#2563eb; border:none; border-radius:10px; color:#fff; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
+
+/* TOAST */
+.ws-toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#0a1628; border:1px solid rgba(29,110,245,0.4); color:#fff; padding:12px 20px; border-radius:10px; font-size:13px; z-index:100000; opacity:0; pointer-events:none; transition:opacity 0.25s; }
+.ws-toast.show { opacity:1; }
+.ws-toast.success { border-color:rgba(0,214,143,0.4); }
+.ws-toast.error { border-color:rgba(248,113,113,0.5); }
+
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+@keyframes p17FadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes sendPulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(29,110,245,0.3); border-radius: 999px; }
+</style>
+</head>
+<body>
+
+<div class="orb cyan"></div>
+<div class="orb blue"></div>
+
+<div class="app-shell">
+
+    <!-- FULL-WIDTH TOP HEADER -->
+    <header class="top-header">
+        <div class="brand">
+            <div class="brand-logo">
+                <img src="/static/at-hexagon.png" alt="AT" onerror="this.parentElement.textContent='AT'">
+            </div>
+            <div class="brand-name">AI Talent Workspace</div>
+        </div>
+        <button class="upgrade-btn" id="upgradeBtn" onclick="window.location='/plans'">Upgrade</button>
+    </header>
+
+    <div class="app-body">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <!-- AVATAR -->
+            <div class="sidebar-avatar-block">
+                <div class="sidebar-avatar-img" id="sidebarAvatar">E</div>
+                <div class="sidebar-avatar-name" id="sidebarUserName">Your Workspace</div>
+            </div>
+
+            <!-- NAV — Shortlists/Team/Settings/Billing ABOVE roles -->
+            <nav class="sidebar-nav">
+                <div class="sidebar-item" onclick="openShortlists()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                    <span>Shortlists</span>
+                </div>
+                <div class="sidebar-item active" onclick="document.getElementById('createRoleModal').style.display='flex'">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                    <span>Your Roles</span>
+                </div>
+                <div class="sidebar-item" onclick="openTeamDNA()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 3c0 6 16 12 16 18"/><path d="M20 3c0 6-16 12-16 18"/><path d="M6.5 7h11M6.5 17h11M9 5h6M9 19h6"/></svg>
+                    <span>Team DNA</span>
+                </div>
+                <div class="sidebar-item" onclick="openTeam()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span>Team</span>
+                </div>
+                <div class="sidebar-item" onclick="openAdmin()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>Admin</span>
+                </div>
+                <div class="sidebar-item" onclick="openSettings()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15H4a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 6 9l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 11 4.6V4a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 2.9 1.11l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 20.4 11H21a2 2 0 1 1 0 4h-.09z"/></svg>
+                    <span>Settings</span>
+                </div>
+                <div class="sidebar-item" onclick="window.location='/plans'">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span>Billing</span>
+                </div>
+            </nav>
+
+            <!-- ROLES LIST — appears below nav after first search -->
+            <div class="sidebar-list" id="sidebarList" style="padding:4px 8px;flex:1;"></div>
+
+            <!-- SIGN OUT -->
+            <div class="sidebar-footer">
+                <div class="sidebar-signout" onclick="window.location='/logout'">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    <span>Sign out</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTER PANEL -->
+        <main class="center-panel">
+
+            <!-- EMPTY STATE -->
+            <div class="center-empty" id="centerEmpty">
+                <div class="sparkle-badge" style="font-size:32px;">
+                    ✨
+                </div>
+                <div class="center-eyebrow">Ready when you are</div>
+                <div class="center-title">Define the role.<br><span class="gradient-text">We'll dissect the market.</span></div>
+                <div class="center-subtitle">
+                    The AI will surface Gold / Silver / Bronze candidates — scored on adaptability, growth pattern, and role fit — with a personalised outreach message drafted for each.
+                </div>
+                <div class="tier-cards">
+                    <div class="tier-card gold"><div class="tier-skeleton"><div class="dot"></div><div class="lines"><span></span><span></span></div></div><div class="tier-label">GOLD</div></div>
+                    <div class="tier-card silver"><div class="tier-skeleton"><div class="dot"></div><div class="lines"><span></span><span></span></div></div><div class="tier-label">SILVER</div></div>
+                    <div class="tier-card bronze"><div class="tier-skeleton"><div class="dot"></div><div class="lines"><span></span><span></span></div></div><div class="tier-label">BRONZE</div></div>
+                </div>
+                <button class="primary-button" onclick="document.getElementById('createRoleModal').style.display='flex'">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Create New Role
+                </button>
+            </div>
+
+            <!-- RESULTS CONTAINER -->
+            <div id="p17ResultsContainer" style="display:none;padding:32px 24px;max-width:700px;margin:0 auto;">
+                <div id="p17ThinkingBox" style="display:none;margin-bottom:28px;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+                        <div style="width:8px;height:8px;border-radius:50%;background:#4d9fff;animation:blink 1.5s infinite;"></div>
+                        <div style="font-size:12px;font-weight:700;color:#4d9fff;text-transform:uppercase;letter-spacing:0.08em;">Deep-Thinking Engine</div>
+                    </div>
+                    <div id="p17ThinkingSteps" style="display:flex;flex-direction:column;gap:8px;"></div>
+                </div>
+            </div>
+
+            <!-- PHASE DASHBOARDS -->
+            <section class="pro-dashboard" id="proDashboard" style="display:none;">
+                <div class="pro-dashboard-row">
+                    <div class="pro-kpi-panel glass"><div class="pro-panel-title">Role Analytics</div><div class="kpi-grid" id="kpiGrid"></div></div>
+                    <div class="pro-score-panel glass"><div class="pro-panel-title">Overall Match Score</div><div class="score-ring-wrapper"><div class="score-ring"><span id="scoreRingValue">0</span></div><div class="score-bar"><div class="score-bar-fill" id="scoreBarFill"></div></div></div><div class="pro-insights" id="insightsBody">Insights will appear here after an AI search.</div></div>
+                </div>
+                <div class="pro-candidates-panel glass"><div class="pro-panel-title">Pro Candidates</div><div class="pro-candidate-grid" id="proCandidateGrid"></div></div>
+                <div class="top3-panel" id="top3Panel" style="display:none;"><div class="top3-panel-title">Top-3 AI Ranked Candidates</div><div class="top3-grid" id="top3Grid"></div></div>
+                <div class="persona-match-panel glass" id="personaMatchPanel" style="display:none;"></div>
+                <div class="persona-match-panel-cards glass" id="personaMatchCards" style="display:none;"></div>
+            </section>
+        </main>
+
+        <!-- RIGHT PANEL -->
+        <aside class="right-panel">
+            <div class="welcome-bar">
+                <div class="welcome-title" id="welcomeTitle">Welcome back</div>
+                <div class="welcome-sub">Your workspace is ready for precision hiring.</div>
+            </div>
+
+            <div class="ai-stream">
+
+                <!-- LinkedIn Status -->
+                <div class="linkedin-status-bar" id="linkedinStatusBar">
+                    <div style="display:flex;align-items:center;">
+                        <div class="linkedin-status-dot" id="linkedinDot"></div>
+                        <div class="linkedin-status-text" id="linkedinText" style="margin-left:6px;">Not connected to LinkedIn</div>
+                    </div>
+                    <button class="linkedin-connect-btn">Connect LinkedIn</button>
+                </div>
+
+                <!-- Deep-thinking stream -->
+                <div class="stream-label">Deep-thinking stream</div>
+                <div class="empty-hint" id="emptyAIStream">AI output will appear here once you define a role.</div>
+                <div class="ai-lines" id="aiLines"></div>
+
+                <!-- Boolean Strategy -->
+                <div class="stream-label">Boolean Strategy</div>
+                <div class="empty-hint" id="emptyBoolean">Boolean strategy will appear once the AI analyzes your role.</div>
+                <div id="booleanBox" style="display:none;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:10px;font-size:12px;color:rgba(255,255,255,0.5);">
+                    <span style="font-size:10px;text-transform:uppercase;color:#4d9fff;display:block;margin-bottom:4px;">Deep boolean strategy</span>
+                    <div id="booleanText"></div>
+                </div>
+
+                <!-- Outreach Tracker -->
+                <div class="stream-label">AI Outreach Tracker</div>
+                <div class="empty-hint" id="emptyOutreach">Outreach tracker will appear after your first search.</div>
+                <div class="outreach-tracker" id="outreachTracker" style="display:none;">
+                    <div class="outreach-tracker-title">Outreach messages</div>
+                    <div id="outreachRows"></div>
+                    <button onclick="sendAllViaLinkedIn()" style="width:100%;margin-top:10px;padding:10px;background:linear-gradient(135deg,#0a66c2,#0077b5);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(10,102,194,0.4);" id="autoSendBtn">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        Message all 3 on LinkedIn
+                    </button>
+                    <div style="font-size:10px;color:rgba(255,255,255,0.25);text-align:center;margin-top:5px;">Copy each message, then open the profile to send</div>
+                </div>
+
+                <!-- HR Notification -->
+                <div class="hr-notify-panel" id="hrNotifyPanel">
+                    <div class="hr-notify-title">🔔 Reply alert (example)</div>
+                    <div class="hr-notify-text" id="hrNotifyText">This is how you'll be notified when a candidate replies YES. Live reply monitoring is coming soon.</div>
+                    <button class="hr-notify-btn" onclick="openCandidateChat()">View Conversation & Connect →</button>
+                </div>
+
+                <!-- CRM Integration -->
+                <div class="stream-label">CRM Integration</div>
+                <div class="crm-sidebar-widget" id="crmSidebarWidget">
+                    <div class="crm-sidebar-title">
+                        Connected CRMs
+                        <button onclick="openCRMModal()" class="crm-connect-small">+ Connect</button>
+                    </div>
+                    <div class="crm-connected-list" id="crmConnectedList">
+                        <div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center;padding:8px 0;">No CRM connected yet</div>
+                    </div>
+                    <button class="crm-push-all-btn" onclick="manualPushAll()">Push all YES candidates to CRM</button>
+                    <div class="crm-log" id="crmActivityLog"></div>
+                </div>
+
+                <!-- Matched Candidates -->
+                <div class="stream-label">Matched Candidates</div>
+                <div class="empty-hint" id="emptyResults">Run a search to surface Gold / Silver / Bronze profiles.</div>
+                <div class="results-grid" id="resultsGrid"></div>
+                <div id="tierCardsContainer" class="tier-cards-scroll"></div>
+
+            </div>
+        </aside>
+    </div>
+</div>
+
+<!-- CREATE ROLE MODAL -->
+<div class="modal-overlay" id="createRoleModal" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
+    <div class="p17-modal">
+        <button class="p17-modal-close" onclick="document.getElementById('createRoleModal').style.display='none'">✕</button>
+        <div class="modal-inner">
+            <div class="modal-title">Create New Role</div>
+            <div class="modal-subtitle">Define the position you want the AI to analyze.</div>
+            <label class="modal-label p17-required">Position Title</label>
+            <input id="newRoleTitle" class="modal-input" type="text" placeholder="Enter position title">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
+                <label class="modal-label p17-required" style="margin-bottom:0;">Job Description</label>
+                <button type="button" onclick="fillExampleJD()" style="font-size:11px;font-weight:600;color:#4d9fff;background:rgba(77,159,255,0.1);border:1px solid rgba(77,159,255,0.25);border-radius:6px;padding:3px 10px;cursor:pointer;font-family:inherit;">Try an example →</button>
+            </div>
+            <textarea id="newRoleDescription" class="modal-textarea" placeholder="Paste your job description here..." oninput="updateJDCounter(this)"></textarea>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div style="font-size:11px;color:rgba(255,255,255,0.3);">Minimum 100 chars for best results</div>
+                <div id="jdCounter" style="font-size:11px;color:rgba(255,255,255,0.3);">0 chars</div>
+            </div>
+            <label class="modal-label p17-required">Candidates to score</label>
+            <textarea id="newRoleCandidates" class="modal-textarea" placeholder="Paste each candidate's résumé or LinkedIn summary here.&#10;&#10;Separate candidates with a blank line — e.g.&#10;&#10;Jane Doe — 8 yrs product at SaaS startups, led 0-1 launches...&#10;&#10;John Smith — junior analyst, 1 yr, mostly reporting..."></textarea>
+            <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:2px;">One block per candidate, separated by a blank line. GPT-4o scores each against your job description.</div>
+            <label class="modal-label p17-required">Location</label>
+            <input id="newRoleLocation" class="modal-input" type="text" placeholder="e.g. New York, Remote, London...">
+            <div class="p17-advanced-toggle" onclick="var f=document.getElementById('advancedFilters');var a=document.getElementById('toggleArrow');if(f.style.display==='none'){f.style.display='block';a.textContent='⌃';}else{f.style.display='none';a.textContent='⌄';}">
+                <span>Advanced LinkedIn Filters</span><span id="toggleArrow">⌄</span>
+            </div>
+            <div id="advancedFilters" style="display:none;">
+                <div class="p17-filter-row"><label class="p17-filter-label">Skills</label><input id="filterSkills" class="p17-filter-input" type="text" placeholder="Enter skills..."></div>
+                <div class="p17-filter-row"><label class="p17-filter-label">Seniority</label>
+                    <select id="filterSeniority" class="p17-filter-select"><option value="">Select level...</option><option>Entry Level</option><option>Mid-Senior</option><option>Senior</option><option>Director</option><option>VP</option><option>Executive</option></select>
+                </div>
+                <div class="p17-filter-row"><label class="p17-filter-label">Industry</label><input id="filterIndustry" class="p17-filter-input" type="text" placeholder="Enter industries..."></div>
+                <div class="p17-filter-row"><label class="p17-filter-label">Years Exp</label>
+                    <select id="filterYearsExp" class="p17-filter-select"><option value="">Select range...</option><option>0–2 years</option><option>2–5 years</option><option>5–10 years</option><option>10+ years</option></select>
+                </div>
+            </div>
+            <button class="p17-search-btn" onclick="p17SearchWithAI()">Search with AI →</button>
+        </div>
+    </div>
+</div>
+
+<!-- OUTREACH MODAL -->
+<div id="outreachModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(10px);z-index:99999;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+    <div style="background:linear-gradient(145deg,#0a1628,#060f1e);border:1px solid rgba(37,99,235,0.3);border-radius:24px;padding:32px;width:90%;max-width:540px;box-shadow:0 40px 80px rgba(0,0,0,0.7);">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;">
+            <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                    <div style="width:8px;height:8px;border-radius:50%;background:#00d68f;animation:blink 2s infinite;"></div>
+                    <div style="font-size:11px;font-weight:700;color:#4d9fff;text-transform:uppercase;letter-spacing:0.1em;">AI Auto-Outreach</div>
+                </div>
+                <div style="font-size:20px;font-weight:700;color:#fff;">Message for <span id="outreachName"></span></div>
+                <div style="font-size:13px;color:rgba(255,255,255,0.45);margin-top:2px;">Role: <span id="outreachRole"></span></div>
+            </div>
+            <button onclick="document.getElementById('outreachModal').style.display='none'" style="width:32px;height:32px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:rgba(255,255,255,0.5);font-size:16px;cursor:pointer;">✕</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;margin-bottom:18px;background:rgba(29,110,245,0.06);border:1px solid rgba(29,110,245,0.18);border-radius:10px;font-size:12px;color:rgba(200,220,255,0.7);line-height:1.5;">
+            <span style="font-size:18px;flex-shrink:0;">🤖</span>
+            <span>AI generated this message. After LinkedIn Partner API approval, this sends automatically — no HR action needed.</span>
+        </div>
+        <textarea id="outreachMsg" style="width:100%;height:180px;background:rgba(255,255,255,0.04);border:1px solid rgba(37,99,235,0.2);border-radius:12px;color:#fff;font-size:13px;font-family:inherit;padding:14px;resize:none;outline:none;line-height:1.7;"></textarea>
+        <div style="display:flex;gap:10px;margin-top:14px;">
+            <button onclick="copyOutreachMsg(this)" style="flex:1;padding:12px;background:rgba(37,99,235,0.15);border:1px solid rgba(37,99,235,0.3);border-radius:10px;color:#4d9fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Copy Message</button>
+            <button onclick="sendOnLinkedIn()" style="flex:1.4;padding:12px;background:linear-gradient(135deg,#0a66c2,#0077b5);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                Send on LinkedIn
+            </button>
+        </div>
+        <div style="margin-top:14px;padding:10px 14px;background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.15);border-radius:8px;font-size:11px;color:rgba(245,166,35,0.8);">
+            ⚡ <strong>Full automation after LinkedIn Partner API approval</strong> — system sends, monitors replies, notifies HR when candidate says yes.
+        </div>
+    </div>
+</div>
+
+<!-- CRM MODAL -->
+<div class="crm-modal-overlay" id="crmModal" onclick="if(event.target===this)closeCRMModal()">
+    <div class="crm-modal">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+            <div>
+                <div style="font-size:11px;font-weight:700;color:#4d9fff;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">CRM Integration</div>
+                <div style="font-size:20px;font-weight:700;color:#fff;">Connect your CRM</div>
+                <div style="font-size:13px;color:rgba(255,255,255,0.45);margin-top:2px;">Candidates who say YES are added automatically</div>
+            </div>
+            <button onclick="closeCRMModal()" style="width:32px;height:32px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:rgba(255,255,255,0.5);font-size:16px;cursor:pointer;">✕</button>
+        </div>
+        <div id="crmStep1">
+            <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:12px;">Select your CRM:</div>
+            <div class="crm-grid">
+                <div class="crm-card" id="crm-salesforce" onclick="selectCRM('salesforce')"><div class="crm-status available" id="status-salesforce">Available</div><div class="crm-logo" style="background:rgba(0,161,224,0.15);color:#00a1e0;">SF</div><div class="crm-name">Salesforce</div><div class="crm-desc">Enterprise CRM — Fortune 500 favorite</div></div>
+                <div class="crm-card" id="crm-hubspot" onclick="selectCRM('hubspot')"><div class="crm-status available" id="status-hubspot">Available</div><div class="crm-logo" style="background:rgba(255,122,0,0.15);color:#ff7a00;">HS</div><div class="crm-name">HubSpot</div><div class="crm-desc">Mid-market CRM with great pipeline</div></div>
+                <div class="crm-card" id="crm-workday" onclick="selectCRM('workday')"><div class="crm-status available" id="status-workday">Available</div><div class="crm-logo" style="background:rgba(249,85,37,0.15);color:#f95525;">WD</div><div class="crm-name">Workday</div><div class="crm-desc">Enterprise HR platform with ATS</div></div>
+                <div class="crm-card" id="crm-greenhouse" onclick="selectCRM('greenhouse')"><div class="crm-status available" id="status-greenhouse">Available</div><div class="crm-logo" style="background:rgba(37,183,93,0.15);color:#25b75d;">GH</div><div class="crm-name">Greenhouse</div><div class="crm-desc">Best ATS for tech companies</div></div>
+                <div class="crm-card" id="crm-lever" onclick="selectCRM('lever')"><div class="crm-status available" id="status-lever">Available</div><div class="crm-logo" style="background:rgba(99,102,241,0.15);color:#6366f1;">LV</div><div class="crm-name">Lever</div><div class="crm-desc">Startup favorite ATS</div></div>
+                <div class="crm-card" id="crm-bamboo" onclick="selectCRM('bamboo')"><div class="crm-status available" id="status-bamboo">Available</div><div class="crm-logo" style="background:rgba(115,199,0,0.15);color:#73c700;">BB</div><div class="crm-name">BambooHR</div><div class="crm-desc">HR platform for SMB teams</div></div>
+            </div>
+        </div>
+        <div id="crmStep2" style="display:none;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+                <button onclick="showCRMStep(1)" style="width:28px;height:28px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;">←</button>
+                <div style="font-size:16px;font-weight:700;color:#fff;" id="crmStep2Title">Connect Salesforce</div>
+            </div>
+            <div class="crm-field-row"><label class="crm-field-label" id="crmField1Label">Instance URL</label><input class="crm-field-input" id="crmField1" placeholder="https://yourcompany.salesforce.com"></div>
+            <div class="crm-field-row"><label class="crm-field-label" id="crmField2Label">API Key / Access Token</label><input class="crm-field-input" id="crmField2" type="password" placeholder="Enter your API key..."></div>
+            <div style="padding:10px 14px;background:rgba(29,110,245,0.06);border:1px solid rgba(29,110,245,0.18);border-radius:10px;font-size:12px;color:rgba(200,220,255,0.7);line-height:1.5;margin-bottom:20px;">
+                When connected: candidate records created automatically, outreach history logged, pipeline assigned, follow-up set — zero manual entry.
+            </div>
+            <button class="crm-connect-btn" onclick="connectCRM()">Save connection →</button>
+        </div>
+        <div id="crmStep3" style="display:none;text-align:center;padding:20px 0;">
+            <div style="font-size:48px;margin-bottom:16px;">✅</div>
+            <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;" id="crmSuccessTitle">Setup saved</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:24px;">Once the CRM integration is live, YES candidates will sync to your pipeline automatically — coming soon.</div>
+            <button class="crm-connect-btn" onclick="closeCRMModal()">Done →</button>
+        </div>
+    </div>
+</div>
+
+<!-- GENERIC INFO MODAL (Settings / Team / Shortlists) -->
+<style>
+.ws-info-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(8px);z-index:99998;align-items:center;justify-content:center;padding:24px;}
+.ws-info-overlay.open{display:flex;}
+.ws-info-modal{background:linear-gradient(145deg,#0a1628,#060f1e);border:1px solid rgba(37,99,235,0.28);border-radius:20px;width:100%;max-width:480px;max-height:82vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 40px 80px rgba(0,0,0,0.7);}
+.ws-info-head{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.ws-info-title{font-size:17px;font-weight:700;color:#fff;}
+.ws-info-close{width:30px;height:30px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:rgba(255,255,255,0.55);font-size:15px;cursor:pointer;}
+.ws-info-body{padding:16px 22px 22px;overflow-y:auto;}
+.ws-info-meta{font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:12px;font-family:'SFMono-Regular',ui-monospace,monospace;}
+.ws-info-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+.ws-info-row .k{font-size:12px;color:rgba(255,255,255,0.45);text-align:right;}
+.ws-info-row .v{font-size:14px;color:#fff;font-weight:600;}
+.ws-info-row .mono{font-family:ui-monospace,monospace;font-variant-numeric:tabular-nums;}
+.ws-info-empty{font-size:13px;color:rgba(255,255,255,0.45);text-align:center;padding:24px 0;line-height:1.6;}
+.ws-info-btn{flex:1;min-width:120px;padding:10px 14px;border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.8);}
+.ws-info-btn.primary{background:#2563eb;border-color:#2563eb;color:#fff;}
+.ws-info-btn.danger{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#fca5a5;}
+</style>
+<div class="ws-info-overlay" id="wsInfoModal" onclick="if(event.target===this)closeWsInfo()">
+    <div class="ws-info-modal">
+        <div class="ws-info-head">
+            <div class="ws-info-title" id="wsInfoTitle">Settings</div>
+            <button class="ws-info-close" onclick="closeWsInfo()">✕</button>
+        </div>
+        <div class="ws-info-body" id="wsInfoBody"></div>
+    </div>
+</div>
+
+<!-- AI CHAT PANEL -->
+<div class="ai-chat-overlay" id="aiChatOverlay">
+    <div class="ai-chat-panel">
+        <div class="ai-chat-header">
+            <div class="ai-chat-header-left">
+                <div class="ai-chat-dot"></div>
+                <div>
+                    <div class="ai-chat-title">AI Talent Match Pro</div>
+                    <div class="ai-chat-sub">Deep-Thinking Engine · Auto-Outreach Ready</div>
+                </div>
+            </div>
+            <button class="ai-chat-close" onclick="closeAIChat()">✕</button>
+        </div>
+        <div class="ai-chat-messages" id="aiChatMessages"></div>
+        <div class="ai-chat-footer">
+            <input class="ai-chat-input" id="aiChatInput" placeholder="Ask about these candidates..." onkeydown="if(event.key==='Enter')sendChatMessage()">
+            <button class="ai-chat-send" onclick="sendChatMessage()">→</button>
+        </div>
+    </div>
+</div>
+
+<div class="ws-toast" id="wsToast"></div>
+
+<!-- PHASE SCRIPTS -->
+<!-- ══ TEAM DNA PANEL (additive) ═══════════════════════════════ -->
+<div class="tdna-overlay" id="tdnaOverlay" onclick="if(event.target===this)closeTeamDNA()">
+  <div class="tdna-modal" role="dialog" aria-label="Team DNA">
+    <div class="tdna-head">
+      <div class="tdna-spark" aria-hidden="true">🧬</div>
+      <div>
+        <h2>Team DNA</h2>
+        <p>Score candidates against your own best people — not a job ad.<br />
+           Add 2–5 team members who are great at this role, and the engine learns the pattern.</p>
+      </div>
+      <button class="tdna-close" onclick="closeTeamDNA()" aria-label="Close">✕</button>
+    </div>
+
+    <div class="tdna-rolebar" style="padding:16px 24px 0;">
+      <select id="tdnaRole" onchange="tdnaRoleChanged(this.value)" aria-label="Role"></select>
+      <button class="tdna-btn tdna-btn--ghost" onclick="tdnaCreateRole()">+ New role</button>
+    </div>
+
+    <div class="tdna-body" id="tdnaBody"></div>
+  </div>
+</div>
+
+<input type="file" id="tdnaExemplarInput" multiple accept=".pdf,.docx,.txt"
+       style="display:none" onchange="tdnaExemplarFiles(this)" />
+<input type="file" id="tdnaBulkInput" multiple accept=".pdf,.docx,.txt"
+       style="display:none" onchange="tdnaBulkFiles(this)" />
+
+<script src="/static/dashboard.js"></script>
+<script src="/static/phase14.js"></script>
+<script src="/static/phase15.js"></script>
+<script src="/static/phase16.js"></script>
+<script src="/static/phase17.js"></script>
+<script src="/static/phase18.js"></script>
+<script src="/static/phase19.js"></script>
+<script src="/static/phase33.js"></script>
+<script src="/static/phase34.js"></script>
+<script src="/static/phase35.js"></script>
+<script src="/static/phase36.js"></script>
+<script src="/static/phase37.js"></script>
+<script src="/static/phase38.js"></script>
+<script src="/static/phase39.js"></script>
+<script src="/static/phase40.js"></script>
+<script src="/static/phase41.js"></script>
+<script src="/static/phase42.js"></script>
+<script src="/static/phase43.js"></script>
+<script src="/static/team_dna.js"></script>
+
+<script>
+/* ═══ SAFE GLOBAL ASSIGNMENTS — prevents conflicts with phase scripts ═══ */
+window.currentCandidates = window.currentCandidates || [];
+window.currentRole = window.currentRole || '';
+window.currentOutreachLinkedInUrl = window.currentOutreachLinkedInUrl || 'https://linkedin.com';
+window.outreachStatuses = window.outreachStatuses || {};
+window.connectedCRMs = window.connectedCRMs || [];
+window.selectedCRM = window.selectedCRM || null;
+window.aiChatCandidates = window.aiChatCandidates || [];
+window.aiChatRole = window.aiChatRole || '';
+
+var currentCandidates = window.currentCandidates;
+var currentRole = window.currentRole;
+var connectedCRMs = window.connectedCRMs;
+var selectedCRM = window.selectedCRM;
+var aiChatCandidates = window.aiChatCandidates;
+var aiChatRole = window.aiChatRole;
+
+/* ══ TOAST ══════════════════════════════════════════ */
+function wsToast(msg, type = '') {
+    const t = document.getElementById('wsToast');
+    if (!t) return;
+    t.textContent = msg;
+    t.className = `ws-toast ${type} show`;
+    setTimeout(() => { t.className = `ws-toast ${type}`; }, 3000);
+}
+
+/* ══ SCROLL + ESC HANDLERS ══════════════════════════ */
+function lockScroll()   { document.body.style.overflow = 'hidden'; }
+function unlockScroll() { document.body.style.overflow = ''; }
+function closeAIChat() {
+    const o = document.getElementById('aiChatOverlay');
+    if (o) o.classList.remove('open');
+}
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.getElementById('createRoleModal').style.display = 'none';
+        document.getElementById('outreachModal').style.display = 'none';
+        closeCRMModal();
+        closeAIChat();
+        unlockScroll();
+    }
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        document.getElementById('createRoleModal').style.display = 'flex';
+        setTimeout(() => document.getElementById('newRoleTitle')?.focus(), 100);
+    }
+});
+
+/* ══ OUTREACH TRACKER ═══════════════════════════════ */
+function showOutreachTracker(candidates) {
+    const tracker = document.getElementById('outreachTracker');
+    const rows = document.getElementById('outreachRows');
+    const empty = document.getElementById('emptyOutreach');
+    if (empty) empty.style.display = 'none';
+    tracker.style.display = 'block';
+    window.outreachStatuses = {};
+    rows.innerHTML = candidates.map(c => {
+        window.outreachStatuses[c.name] = 'pending';
+        return `<div class="outreach-candidate-row" id="row-${c.name.replace(/\s/g,'_')}">
+            <div><div class="outreach-candidate-name">${c.medal} ${c.name}</div><div style="font-size:10px;color:rgba(255,255,255,0.3);">${c.role}</div></div>
+            <div class="outreach-status-badge status-pending" id="status-${c.name.replace(/\s/g,'_')}">Pending</div>
+        </div>`;
+    }).join('');
+}
+
+/* ══ AUTO SEND ══════════════════════════════════════ */
+/*
+   LINKEDIN PARTNER API — plug in here after approval:
+   await fetch('https://api.linkedin.com/v2/messages', {
+       method: 'POST',
+       headers: { 'Authorization': `Bearer ${LINKEDIN_TOKEN}` },
+       body: JSON.stringify({ recipients: [{person:{id: candidateId}}], body: message })
+   });
+*/
+/* Real outreach: build a personalised message per candidate, let the recruiter copy each
+   and open that candidate's LinkedIn to send. (True auto-send needs LinkedIn Partner API.) */
+function sendAllViaLinkedIn() {
+    var cands = window.currentCandidates || [];
+    if (!cands.length) { wsToast('Run a search first to get candidates.', 'error'); return; }
+    window._outreachBundle = cands.map(function(c){
+        return { name: c.name, role: c.role || '', url: c.linkedin_url || 'https://linkedin.com/messaging',
+                 msg: generateOutreachMessage(c.name, c.role) };
+    });
+    var html = '<div class="ws-info-meta">A personalised message for each match — copy it, then open their LinkedIn to send.</div>' +
+        window._outreachBundle.map(function(o, i){
+            return '<div style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);">' +
+                '<div class="v" style="font-size:14px;color:#fff;font-weight:600;margin-bottom:8px;">' + wsEsc(o.name) +
+                '<span style="font-size:11px;color:rgba(255,255,255,0.4);font-weight:400;"> · ' + wsEsc(o.role) + '</span></div>' +
+                '<div style="font-size:12.5px;color:rgba(200,220,255,0.72);line-height:1.55;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px;white-space:pre-wrap;">' + wsEsc(o.msg) + '</div>' +
+                '<div style="display:flex;gap:8px;margin-top:8px;">' +
+                '<button class="ws-info-btn" onclick="copyOutreachIdx(' + i + ')">Copy message</button>' +
+                '<a class="ws-info-btn primary" style="text-align:center;text-decoration:none;line-height:1.4;" href="' + wsEsc(o.url) + '" target="_blank" rel="noopener">Open LinkedIn ↗</a>' +
+                '</div></div>';
+        }).join('');
+    openWsInfo('Message your 3 matches', html);
+    // reflect status on the tracker rows
+    cands.forEach(function(c){
+        var statusEl = document.getElementById('status-' + c.name.replace(/\s/g,'_'));
+        if (statusEl) { statusEl.textContent = 'Ready ✓'; statusEl.className = 'outreach-status-badge status-sent'; }
+    });
+}
+function copyOutreachIdx(i) {
+    var o = (window._outreachBundle || [])[i]; if (!o) return;
+    navigator.clipboard.writeText(o.msg).then(function(){ wsToast('Message for ' + o.name.split(' ')[0] + ' copied', 'success'); })
+        .catch(function(){ wsToast('Copy failed — select the text manually.', 'error'); });
+}
+
+/* Reply-monitoring is not built yet (needs LinkedIn Partner API / inbox integration),
+   so there is no simulated "candidate replied" here — removed to avoid faking activity. */
+
+/* ══ HR NOTIFY — IIFE PATCH ═════════════════════════ */
+(function() {
+    var originalNotify = window.hrNotify;
+    window.hrNotify = function(candidate) {
+        if (typeof originalNotify === 'function') {
+            originalNotify(candidate);
+        } else {
+            var panel = document.getElementById('hrNotifyPanel');
+            var text = document.getElementById('hrNotifyText');
+            if (panel) panel.classList.add('visible');
+            if (text) text.innerHTML = `<strong style="color:#fff;">Example alert:</strong> this is how you'll be notified when a candidate replies YES. Live reply monitoring is on the roadmap.`;
+            wsToast(`Preview — you'll be alerted the moment a candidate says YES`, 'success');
+        }
+        if (window.connectedCRMs && window.connectedCRMs.length > 0) {
+            setTimeout(() => pushCandidateToCRM(candidate, candidate.role || window.currentRole), 500);
+        }
+    };
+})();
+
+function openCandidateChat() {
+    if (window.currentCandidates.length > 0) {
+        window.open(window.currentCandidates[0].linkedin_url || 'https://linkedin.com/messaging', '_blank');
+    }
+}
+
+/* ══ SEARCH WITH AI ═════════════════════════════════ */
+async function p17SearchWithAI() {
+    const title = document.getElementById('newRoleTitle')?.value?.trim();
+    const jd    = document.getElementById('newRoleDescription')?.value?.trim();
+    const rawCandidates = document.getElementById('newRoleCandidates')?.value?.trim();
+    if (!title) { wsToast('Please enter a position title', 'error'); return; }
+    if (!jd)    { wsToast('Please enter a job description', 'error'); return; }
+    // Split pasted candidates on blank lines — one block per candidate.
+    const resumes = (rawCandidates || '').split(/\n\s*\n+/).map(s => s.trim()).filter(Boolean);
+    if (resumes.length === 0) { wsToast('Paste at least one candidate to score', 'error'); return; }
+
+    document.getElementById('createRoleModal').style.display = 'none';
+    unlockScroll();
+    window.currentRole = title;
+    const container = document.getElementById('p17ResultsContainer');
+    container.style.display = 'block';
+    const thinkingBox = document.getElementById('p17ThinkingBox');
+    const thinkingSteps = document.getElementById('p17ThinkingSteps');
+    thinkingBox.style.display = 'block';
+    thinkingSteps.innerHTML = '';
+    const steps = [
+        { icon:'📋', text:`Reading ${resumes.length} candidate${resumes.length>1?'s':''} for "${title}"...` },
+        { icon:'🧠', text:'Scoring each candidate with GPT-4o...' },
+        { icon:'⚡', text:'Assessing adaptability + focus...' },
+        { icon:'🎯', text:'Ranking by tier...' },
+    ];
+    for (let i = 0; i < steps.length; i++) {
+        await new Promise(r => setTimeout(r, 350));
+        const step = document.createElement('div');
+        step.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(29,110,245,0.06);border:1px solid rgba(29,110,245,0.15);border-radius:8px;font-size:13px;color:rgba(200,220,255,0.8);';
+        step.innerHTML = `<span style="font-size:16px;">${steps[i].icon}</span><span>${steps[i].text}</span>`;
+        thinkingSteps.appendChild(step);
+    }
+    try {
+        const res = await fetch('/api/candidates/score', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ role_title:title, job_description:jd, resumes })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok) {
+            p17ShowScoringError((data && (data.detail || data.error)) || 'Scoring is temporarily unavailable. Please try again.');
+            return;
+        }
+        const results = data.results || [];
+        if (results.length === 0) { p17ShowScoringError('No candidates could be scored from that input.'); return; }
+        const finalStep = document.createElement('div');
+        finalStep.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(0,214,143,0.08);border:1px solid rgba(0,214,143,0.25);border-radius:8px;font-size:13px;font-weight:600;color:#00d68f;';
+        finalStep.innerHTML = `<span>✅</span><span>Scored ${results.length} candidate${results.length>1?'s':''}.</span>`;
+        thinkingSteps.appendChild(finalStep);
+        await new Promise(r => setTimeout(r, 400));
+        p17ShowResultsInChat(data, title);
+    } catch(e) {
+        p17ShowScoringError('Connection error — please try again.');
+    }
+}
+
+function p17ShowScoringError(msg) {
+    const thinkingSteps = document.getElementById('p17ThinkingSteps');
+    if (thinkingSteps) {
+        const err = document.createElement('div');
+        err.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:8px;font-size:13px;font-weight:600;color:#f87171;';
+        const icon = document.createElement('span'); icon.textContent = '⚠️';
+        const text = document.createElement('span'); text.textContent = msg;
+        err.appendChild(icon); err.appendChild(text);
+        thinkingSteps.appendChild(err);
+    }
+    wsToast(msg, 'error');
+}
+
+/* ══ OUTREACH MODAL ═════════════════════════════════ */
+function generateOutreachMessage(name, role) {
+    const firstName = name.split(' ')[0];
+    return `Hi ${firstName},\n\nI came across your profile and was genuinely impressed by your background in ${role}.\n\nOur AI engine ranked you as a top candidate for a ${role} role we're currently filling. Based on your career trajectory, I believe this could be a strong fit.\n\nWould you be open to a quick 15-minute call this week?\n\nBest regards`;
+}
+
+function p17OutreachCandidate(name, role, linkedinUrl) {
+    window.currentOutreachLinkedInUrl = linkedinUrl || 'https://linkedin.com';
+    const modal = document.getElementById('outreachModal');
+    if (modal) {
+        document.getElementById('outreachName').textContent = name;
+        document.getElementById('outreachRole').textContent = role || 'this role';
+        document.getElementById('outreachMsg').value = generateOutreachMessage(name, role);
+        modal.style.display = 'flex';
+    }
+}
+
+function copyOutreachMsg(btn) {
+    const msg = document.getElementById('outreachMsg').value;
+    navigator.clipboard.writeText(msg).then(() => {
+        btn.textContent = '✓ Copied!';
+        btn.style.background = 'rgba(0,214,143,0.2)'; btn.style.color = '#00d68f';
+        setTimeout(() => { btn.textContent = 'Copy Message'; btn.style.background = 'rgba(37,99,235,0.15)'; btn.style.color = '#4d9fff'; }, 2000);
+        wsToast('Message copied — paste it into LinkedIn!', 'success');
+    });
+}
+
+function sendOnLinkedIn() {
+    const msg = document.getElementById('outreachMsg').value;
+    navigator.clipboard.writeText(msg).then(() => wsToast('Message copied — opening LinkedIn...', 'success'));
+    setTimeout(() => window.open(window.currentOutreachLinkedInUrl, '_blank'), 300);
+}
+
+/* ══ CRM ════════════════════════════════════════════ */
+var crmConfig = {
+    salesforce: { name:'Salesforce', field1:'Instance URL', field2:'Access Token', p1:'https://yourcompany.salesforce.com', p2:'Enter Salesforce access token...' },
+    hubspot:    { name:'HubSpot',    field1:'Portal ID',    field2:'Private App Token', p1:'Your HubSpot portal ID', p2:'pat-na1-...' },
+    workday:    { name:'Workday',    field1:'Tenant URL',   field2:'API Token', p1:'https://wd2.myworkday.com/yourcompany', p2:'Enter Workday API token...' },
+    greenhouse: { name:'Greenhouse', field1:'Subdomain',    field2:'API Key', p1:'yourcompany', p2:'Enter Greenhouse API key...' },
+    lever:      { name:'Lever',      field1:'Account ID',   field2:'API Key', p1:'Your Lever account ID', p2:'Enter Lever API key...' },
+    bamboo:     { name:'BambooHR',   field1:'Company Domain', field2:'API Key', p1:'yourcompany', p2:'Enter BambooHR API key...' },
+};
+
+function openCRMModal() { document.getElementById('crmModal').classList.add('open'); showCRMStep(1); }
+function closeCRMModal() { document.getElementById('crmModal').classList.remove('open'); updateCRMSidebarWidget(); }
+function selectCRM(crm) {
+    window.selectedCRM = crm;
+    var cfg = crmConfig[crm];
+    document.getElementById('crmStep2Title').textContent = `Connect ${cfg.name}`;
+    document.getElementById('crmField1Label').textContent = cfg.field1;
+    document.getElementById('crmField2Label').textContent = cfg.field2;
+    document.getElementById('crmField1').placeholder = cfg.p1;
+    document.getElementById('crmField2').placeholder = cfg.p2;
+    document.getElementById('crmField1').value = '';
+    document.getElementById('crmField2').value = '';
+    showCRMStep(2);
+}
+function showCRMStep(n) {
+    document.getElementById('crmStep1').style.display = n===1 ? 'block' : 'none';
+    document.getElementById('crmStep2').style.display = n===2 ? 'block' : 'none';
+    document.getElementById('crmStep3').style.display = n===3 ? 'block' : 'none';
+}
+function connectCRM() {
+    if (!window.selectedCRM) return;
+    var cfg = crmConfig[window.selectedCRM];
+    /* INTEGRATION POINT — replace with real API call per CRM */
+    if (!window.connectedCRMs.includes(window.selectedCRM)) window.connectedCRMs.push(window.selectedCRM);
+    saveConnectedCRMs();
+    var card = document.getElementById(`crm-${window.selectedCRM}`);
+    var status = document.getElementById(`status-${window.selectedCRM}`);
+    if (card) card.classList.add('connected');
+    if (status) { status.textContent = 'Connected'; status.className = 'crm-status connected'; }
+    document.getElementById('crmSuccessTitle').textContent = `${cfg.name} connected!`;
+    showCRMStep(3);
+    updateCRMSidebarWidget();
+    wsToast('CRM connected successfully!', 'success');
+}
+
+/* Persist the CRM selection (which CRMs are connected) across reloads.
+   API keys are NOT stored client-side — only the selection, per spec. */
+function saveConnectedCRMs() {
+    try { localStorage.setItem('aitmp_connected_crms', JSON.stringify(window.connectedCRMs || [])); } catch(e) {}
+}
+function restoreConnectedCRMs() {
+    try {
+        var saved = JSON.parse(localStorage.getItem('aitmp_connected_crms') || '[]');
+        if (Array.isArray(saved)) {
+            window.connectedCRMs.length = 0;
+            saved.forEach(function(crm){ if (crmConfig[crm]) window.connectedCRMs.push(crm); });
+            window.connectedCRMs.forEach(function(crm){
+                var card = document.getElementById('crm-' + crm);
+                var status = document.getElementById('status-' + crm);
+                if (card) card.classList.add('connected');
+                if (status) { status.textContent = 'Connected'; status.className = 'crm-status connected'; }
+            });
+        }
+    } catch(e) {}
+    updateCRMSidebarWidget();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', restoreConnectedCRMs);
+else restoreConnectedCRMs();
+
+async function pushCandidateToCRM(candidate, role) {
+    if (!window.connectedCRMs || window.connectedCRMs.length === 0) return;
+    for (var crm of window.connectedCRMs) {
+        /* INTEGRATION POINT — replace with real API call per CRM */
+        addCRMLog(`${candidate.name.split(' ')[0]} → ${crmConfig[crm].name}`);
+        wsToast(`${candidate.name.split(' ')[0]} added to ${crmConfig[crm].name}!`, 'success');
+    }
+}
+
+function updateCRMSidebarWidget() {
+    var list = document.getElementById('crmConnectedList');
+    if (!list) return;
+    if (!window.connectedCRMs || window.connectedCRMs.length === 0) {
+        list.innerHTML = '<div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center;padding:8px 0;">No CRM connected yet</div>';
+    } else {
+        list.innerHTML = window.connectedCRMs.map(crm => `
+            <div class="crm-connected-item">
+                <div class="crm-connected-name">✅ ${crmConfig[crm].name} connected!</div>
+                <div class="crm-connected-dot"></div>
+            </div>`).join('');
+    }
+}
+
+function addCRMLog(text) {
+    var log = document.getElementById('crmActivityLog');
+    if (!log) return;
+    var item = document.createElement('div');
+    item.className = 'crm-log-item';
+    item.innerHTML = `<div class="crm-log-dot"></div><span>${text}</span>`;
+    log.insertBefore(item, log.firstChild);
+    if (log.children.length > 5) log.removeChild(log.lastChild);
+}
+
+function manualPushAll() {
+    if (!window.connectedCRMs || window.connectedCRMs.length === 0) { openCRMModal(); return; }
+    if (!window.currentCandidates || window.currentCandidates.length === 0) { wsToast('Run a search first to get candidates', 'error'); return; }
+    window.currentCandidates.forEach(c => pushCandidateToCRM(c, window.currentRole));
+}
+
+/* ══ SIDEBAR VIEWS — Settings / Team / Admin / Shortlists ══ */
+function wsEsc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function closeWsInfo(){ document.getElementById('wsInfoModal').classList.remove('open'); }
+function openWsInfo(title, html){
+    document.getElementById('wsInfoTitle').textContent = title;
+    document.getElementById('wsInfoBody').innerHTML = html;
+    document.getElementById('wsInfoModal').classList.add('open');
+}
+function openSettings(){
+    var u = window.currentUser || {}; var c = u.company || {};
+    var html =
+        `<div class="ws-info-row"><span class="k">Name</span><span class="v">${wsEsc(u.name||'—')}</span></div>` +
+        `<div class="ws-info-row"><span class="k">Email</span><span class="v">${wsEsc(u.email||'—')}</span></div>` +
+        `<div class="ws-info-row"><span class="k">Role</span><span class="v">${wsEsc(u.role||'—')}</span></div>` +
+        `<div class="ws-info-row"><span class="k">Company</span><span class="v">${wsEsc(c.name||'—')}</span></div>` +
+        `<div class="ws-info-row"><span class="k">Plan</span><span class="v">${wsEsc(c.plan_name||c.plan||'Free')}</span></div>` +
+        `<div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;">` +
+        `<button class="ws-info-btn" onclick="sendPasswordReset()">Reset password by email</button>` +
+        `<button class="ws-info-btn primary" onclick="window.location='/plans'">Manage plan</button>` +
+        `<button class="ws-info-btn danger" onclick="window.location='/logout'">Sign out</button></div>`;
+    openWsInfo('Settings', html);
+}
+async function sendPasswordReset(){
+    var u = window.currentUser || {};
+    if(!u.email){ wsToast('No email on file.', 'error'); return; }
+    try{
+        await fetch('/api/auth/forgot-password', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:u.email})});
+        wsToast('Password reset link sent to ' + u.email, 'success');
+    }catch(e){ wsToast('Could not send reset email — try again.', 'error'); }
+}
+function openAdmin(){
+    var u = window.currentUser || {};
+    if(u.role === 'admin'){ window.location = '/admin'; }
+    else { wsToast('Admin tools are available to workspace admins.', 'info'); }
+}
+async function openTeam(){
+    openWsInfo('Team', '<div class="ws-info-empty">Loading…</div>');
+    try{
+        var res = await fetch('/api/team');
+        if(res.status === 403 || res.status === 401){
+            document.getElementById('wsInfoBody').innerHTML = '<div class="ws-info-empty">Only workspace admins can view and manage the team.</div>'; return;
+        }
+        var d = await res.json();
+        if(!d.ok){ document.getElementById('wsInfoBody').innerHTML = '<div class="ws-info-empty">Couldn\'t load your team.</div>'; return; }
+        var meta = `<div class="ws-info-meta">${d.seat_used||0} of ${d.seat_limit||0} seats used</div>`;
+        var rows = (d.members||[]).map(function(m){
+            return `<div class="ws-info-row"><span class="v">${wsEsc(m.name||m.email)}<div style="font-size:11px;color:rgba(255,255,255,0.4);font-weight:400;">${wsEsc(m.email)}</div></span><span class="k">${wsEsc(m.role)}${m.is_active?'':' · inactive'}</span></div>`;
+        }).join('');
+        document.getElementById('wsInfoBody').innerHTML = meta + (rows || '<div class="ws-info-empty">No team members yet.</div>');
+    }catch(e){ document.getElementById('wsInfoBody').innerHTML = '<div class="ws-info-empty">Couldn\'t load your team.</div>'; }
+}
+async function openShortlists(){
+    openWsInfo('Shortlisted candidates', '<div class="ws-info-empty">Loading…</div>');
+    try{
+        var res = await fetch('/api/candidates');
+        var d = await res.json();
+        var list = (d.candidates||[]).filter(function(c){ return c.shortlisted; });
+        if(!list.length){ document.getElementById('wsInfoBody').innerHTML = '<div class="ws-info-empty">No shortlisted candidates yet.<br>Save a candidate from your results to keep them here.</div>'; return; }
+        var rows = list.map(function(c){
+            return `<div class="ws-info-row"><span class="v">${wsEsc(c.name)}<div style="font-size:11px;color:rgba(255,255,255,0.4);font-weight:400;">${wsEsc(c.role||'')}</div></span><span class="k mono">${c.match_score||0} · ${wsEsc(c.tier||'')}</span></div>`;
+        }).join('');
+        document.getElementById('wsInfoBody').innerHTML = rows;
+    }catch(e){ document.getElementById('wsInfoBody').innerHTML = '<div class="ws-info-empty">Couldn\'t load shortlists.</div>'; }
+}
+
+/* ══ CHAT ENGINE ════════════════════════════════════ */
+function openAIChat(candidates, roleTitle) {
+    window.aiChatCandidates = candidates;
+    window.aiChatRole = roleTitle;
+    window.currentCandidates = candidates;
+    var overlay = document.getElementById('aiChatOverlay');
+    var messages = document.getElementById('aiChatMessages');
+    messages.innerHTML = ''; overlay.classList.add('open');
+    addChatBubble(`I've analyzed <strong>${roleTitle}</strong> and found your top 3 matches, ranked by our Deep-Thinking Engine:`, 0);
+    candidates.forEach((c, i) => setTimeout(() => addCandidateCard(c, i), 800 + i*600));
+    setTimeout(() => {
+        addChatBubble(`<strong>#1 is your strongest match.</strong> Personalised LinkedIn messages are ready for all 3. Click <strong>Send to All 3 via LinkedIn</strong> in the right panel.`, 800 + candidates.length*600 + 400);
+        showOutreachTracker(candidates);
+        // Add Find More + Refine Search buttons
+        setTimeout(() => {
+            var messages = document.getElementById('aiChatMessages');
+            var btns = document.createElement('div');
+            btns.style.cssText = 'display:flex;gap:8px;margin-top:4px;';
+            btns.innerHTML = `
+                <button onclick="refineSearch()" style="flex:1;padding:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">✏️ Refine Search</button>`;
+            messages.appendChild(btns);
+            messages.scrollTop = messages.scrollHeight;
+        }, 800 + candidates.length*600 + 800);
+    }, 800 + candidates.length*600 + 400);
+}
+
+function addChatBubble(text, delay=0) {
+    var messages = document.getElementById('aiChatMessages');
+    var thinking = document.createElement('div');
+    thinking.className = 'chat-bubble';
+    thinking.innerHTML = `<div class="chat-bubble-avatar">🤖</div><div class="chat-bubble-content"><div class="chat-thinking"><div class="chat-thinking-dots"><span></span><span></span><span></span></div><span>Thinking...</span></div></div>`;
+    messages.appendChild(thinking); messages.scrollTop = messages.scrollHeight;
+    setTimeout(() => {
+        thinking.remove();
+        var b = document.createElement('div'); b.className = 'chat-bubble';
+        b.innerHTML = `<div class="chat-bubble-avatar">🤖</div><div class="chat-bubble-content"><div class="chat-bubble-name">AI Talent Match Pro</div><div class="chat-bubble-text">${text}</div></div>`;
+        messages.appendChild(b); messages.scrollTop = messages.scrollHeight;
+    }, delay + 800);
+}
+
+function addCandidateCard(c, i) {
+    var messages = document.getElementById('aiChatMessages');
+    var rankLabels = ['#1 Best Match', '#2 Strong Match', '#3 Good Match'];
+    var rankLabel = rankLabels[i] || ('#' + (i+1) + ' Match');
+    var esc = s => String(s||'').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    var w = document.createElement('div');
+    w.innerHTML = `
+        <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;margin:8px 0 6px;">${rankLabel}</div>
+        <div style="padding:16px;background:rgba(10,20,50,0.7);border:1px solid ${esc(c.color)}33;border-radius:14px;transition:all 0.25s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                <div style="font-size:26px;">${c.medal}</div>
+                <div style="flex:1;">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                        <span style="font-size:15px;font-weight:700;color:#fff;">${esc(c.name)}</span>
+                        <span style="font-size:10px;padding:2px 8px;border-radius:999px;background:${esc(c.color)}18;color:${esc(c.color)};border:1px solid ${esc(c.color)}40;font-weight:700;">${esc(c.tier_label)}</span>
+                    </div>
+                    <div style="font-size:12px;color:rgba(255,255,255,0.5);">${esc(c.role)}</div>
+                </div>
+                <div style="font-size:20px;font-weight:800;color:${esc(c.color)};">${c.score}</div>
+            </div>
+            <div style="height:3px;background:rgba(255,255,255,0.07);border-radius:999px;overflow:hidden;margin-bottom:10px;"><div style="height:100%;width:${c.score}%;background:${esc(c.color)};border-radius:999px;"></div></div>
+            <div style="font-size:12px;color:rgba(200,220,255,0.65);line-height:1.55;margin-bottom:12px;padding:8px 10px;background:${esc(c.color)}08;border-radius:8px;border:1px solid ${esc(c.color)}15;">${esc(c.reason1)} ${esc(c.reason2)}</div>
+            <div style="display:flex;gap:8px;margin-bottom:6px;">
+                <button onclick="p17OutreachCandidate('${esc(c.name)}','${esc(c.role)}','${esc(c.linkedin_url||'https://linkedin.com')}')" style="flex:1;padding:8px;background:rgba(10,102,194,0.15);border:1px solid rgba(10,102,194,0.3);border-radius:8px;color:#4d9fff;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">View Message</button>
+                <button onclick="p17SaveCandidate('${esc(c.name)}','${esc(c.tier)}',${c.score},this)" style="flex:1;padding:8px;background:rgba(0,214,143,0.08);border:1px solid rgba(0,214,143,0.2);border-radius:8px;color:#00d68f;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">Save</button>
+                <a href="${esc(c.linkedin_url||'https://linkedin.com')}" target="_blank" style="flex:1;padding:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center;">Profile</a>
+            </div>
+            <button onclick="this.closest('div[style]').remove();wsToast('Removed from this shortlist.','');" style="width:100%;padding:7px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px;color:rgba(239,68,68,0.7);font-size:10px;font-weight:600;cursor:pointer;font-family:inherit;">✕ Not a fit — remove</button>
+        </div>`;
+    messages.appendChild(w); messages.scrollTop = messages.scrollHeight;
+}
+
+async function sendChatMessage() {
+    var input = document.getElementById('aiChatInput');
+    var msg = input.value.trim(); if (!msg) return; input.value = '';
+    var esc = s => String(s==null?'':s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    var messages = document.getElementById('aiChatMessages');
+    // user bubble
+    var u = document.createElement('div'); u.className = 'chat-bubble'; u.style.flexDirection = 'row-reverse';
+    u.innerHTML = `<div class="chat-bubble-avatar" style="background:linear-gradient(135deg,#059669,#0891b2);">👤</div><div class="chat-bubble-content" style="text-align:right;"><div class="chat-bubble-text" style="background:rgba(37,99,235,0.15);">${esc(msg)}</div></div>`;
+    messages.appendChild(u); messages.scrollTop = messages.scrollHeight;
+    // thinking indicator
+    var thinking = document.createElement('div'); thinking.className = 'chat-bubble';
+    thinking.innerHTML = `<div class="chat-bubble-avatar">🤖</div><div class="chat-bubble-content"><div class="chat-thinking"><div class="chat-thinking-dots"><span></span><span></span><span></span></div><span>Thinking...</span></div></div>`;
+    messages.appendChild(thinking); messages.scrollTop = messages.scrollHeight;
+    function renderBubble(html) {
+        var b = document.createElement('div'); b.className = 'chat-bubble';
+        b.innerHTML = `<div class="chat-bubble-avatar">🤖</div><div class="chat-bubble-content"><div class="chat-bubble-name">AI Talent Match Pro</div><div class="chat-bubble-text">${html}</div></div>`;
+        messages.appendChild(b); messages.scrollTop = messages.scrollHeight;
+    }
+    try {
+        // Real recruiter copilot — GPT-4o backed. No canned/random replies.
+        var res = await fetch('/api/copilot/run', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ prompt: msg, role_title: window.aiChatRole || '', session_type: 'next_best_action' })
+        });
+        var data = await res.json();
+        thinking.remove();
+        if (!res.ok || !data || !data.ok || !data.response) {
+            renderBubble("I couldn't reach the AI just now — please try again in a moment.");
+            return;
+        }
+        var html = esc(data.response).replace(/\n/g, '<br>');
+        if (Array.isArray(data.recommendations) && data.recommendations.length) {
+            html += '<ul style="margin:8px 0 0;padding-left:18px;">' + data.recommendations.map(function(r){
+                var t = (typeof r === 'string') ? r : (r.text || r.title || r.action || '');
+                return t ? `<li>${esc(t)}</li>` : '';
+            }).join('') + '</ul>';
+        }
+        renderBubble(html);
+    } catch (e) {
+        thinking.remove();
+        renderBubble("I couldn't reach the AI just now — please try again in a moment.");
+    }
+}
+
+/* ══ RESULTS (real GPT-4o scores) ══════════════════ */
+function p17ShowResultsInChat(data, roleTitle) {
+    var meta = {
+        gold:   { medal:'🥇', color:'#f5a623', label:'The Perfect Soul' },
+        silver: { medal:'🥈', color:'#8ba4c0', label:'The Mirror' },
+        bronze: { medal:'🥉', color:'#cd7f32', label:'The Adjacent' },
+    };
+    var candidates = (data.results || []).map(function(r) {
+        var m = meta[r.tier] || meta.bronze;
+        var ev = r.evidence || {};
+        var reason1 = r.ai_analysis || ev.role_fit || 'Scored against your job description.';
+        var reason2 = r.silent_skill ? ('Silent skill: ' + r.silent_skill + '.') : (ev.adaptability || '');
+        return {
+            tier: r.tier, medal: m.medal, color: m.color, tier_label: m.label,
+            name: r.name, role: roleTitle, score: r.match_score,
+            reason1: reason1, reason2: reason2, linkedin_url: r.linkedin_url || ''
+        };
+    });
+    if (candidates.length === 0) { p17ShowScoringError('No candidates could be scored.'); return; }
+    setTimeout(() => openAIChat(candidates, roleTitle), 150);
+}
+
+function findMoreCandidates() {
+    // No fabricated candidates — reopen the modal to paste more to score.
+    var overlay = document.getElementById('aiChatOverlay');
+    if (overlay) overlay.classList.remove('open');
+    document.getElementById('createRoleModal').style.display = 'flex';
+    var box = document.getElementById('newRoleCandidates');
+    if (box) { box.value = ''; setTimeout(() => box.focus(), 250); }
+    wsToast('Paste more candidates to score', '');
+}
+
+function refineSearch() {
+    document.getElementById('aiChatOverlay').classList.remove('open');
+    document.getElementById('createRoleModal').style.display = 'flex';
+    setTimeout(() => {
+        const jd = document.getElementById('newRoleDescription');
+        if (jd) jd.focus();
+        wsToast('Edit your job description and search again', '');
+    }, 300);
+}
+
+function p17SaveCandidate(name, tier, score, btn) {
+    if (btn) { btn.textContent = '✓ Saved!'; btn.style.background = 'rgba(0,214,143,0.2)'; setTimeout(() => { btn.textContent = 'Save'; btn.style.background = 'rgba(0,214,143,0.08)'; }, 2000); }
+    wsToast(`${name.split(' ')[0]} saved to shortlist`, 'success');
+}
+
+/* ══ EXAMPLE JD ═════════════════════════════════════ */
+function fillExampleJD() {
+    var ta = document.getElementById('newRoleDescription');
+    ta.value = `Senior Machine Learning Engineer\n\nWe're looking for a Senior ML Engineer to join our AI platform team. You'll build production ML systems powering real-time candidate intelligence.\n\nRequirements:\n- 5+ years of Python and ML engineering\n- Strong background in NLP, LLMs, or recommendation systems\n- Experience deploying models to Azure, AWS, or GCP\n- Proficiency with PyTorch or TensorFlow\n\nWe value adaptability and growth mindset over perfect keyword matches.`;
+    updateJDCounter(ta); ta.focus();
+    if (!document.getElementById('newRoleTitle').value) document.getElementById('newRoleTitle').value = 'Senior ML Engineer';
+    if (!document.getElementById('newRoleLocation').value) document.getElementById('newRoleLocation').value = 'Remote';
+}
+
+function updateJDCounter(el) {
+    var c = el.value.length, counter = document.getElementById('jdCounter'); if (!counter) return;
+    counter.textContent = `${c} chars`;
+    counter.style.color = c < 100 ? 'rgba(239,68,68,0.7)' : c < 300 ? 'rgba(251,191,36,0.7)' : 'rgba(0,214,143,0.7)';
+}
+
+/* ══ LOAD USER PROFILE ══════════════════════════════ */
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        // Company user first (real workspace identity); fall back to legacy /api/me.
+        var res = await fetch('/api/company/me');
+        var ct = res.headers.get('content-type') || '';
+        if (!res.ok || !ct.includes('application/json')) { res = await fetch('/api/me'); ct = res.headers.get('content-type') || ''; }
+        if (!res.ok || !ct.includes('application/json')) return;
+        var data = await res.json();
+        if (!data.ok) return;
+        window.currentUser = data;
+        var nameEl = document.getElementById('sidebarUserName');
+        if (nameEl && data.name) nameEl.textContent = data.name;
+        var avatarEl = document.getElementById('sidebarAvatar');
+        if (avatarEl && data.name) {
+            var initials = data.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+            avatarEl.textContent = initials;
+        }
+        var welcomeEl = document.getElementById('welcomeTitle');
+        if (welcomeEl && data.name) welcomeEl.textContent = `Welcome back, ${data.name.split(' ')[0]}`;
+    } catch(e) { /* profile load skipped */ }
+});
+</script>
+</body>
+</html>

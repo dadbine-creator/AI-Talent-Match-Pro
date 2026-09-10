@@ -1,0 +1,110 @@
+/*/* ============================================================
+   PHASE 14 — TOP-3 RANKING ENGINE + TIER CARDS
+   Uses your existing dashboard CSS variables — no new colors.
+   ============================================================ */
+
+/* ---------------------------------------------------------
+   TIER CARDS — VERTICAL SCROLL CONTAINER
+--------------------------------------------------------- */
+.tier-cards-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+    overflow-y: auto;
+    max-height: 100%;
+    padding-right: var(--space-4);
+}
+
+.tier-cards-scroll::-webkit-scrollbar { width: 4px; }
+.tier-cards-scroll::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 10px;
+}
+
+.ctc {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: var(--space-24) var(--space-20) var(--space-20);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    backdrop-filter: blur(14px);
+    transition: transform var(--motion-medium), box-shadow var(--motion-medium), border-color var(--motion-fast);
+}
+
+.ctc:hover { transform: translateY(-4px); box-shadow: var(--shadow-cine-lg); }
+
+.ctc-gold   { border-color: rgba(250,204,21,0.35); }
+.ctc-silver { border-color: rgba(148,163,184,0.35); }
+.ctc-bronze { border-color: rgba(180,120,60,0.35); }
+.ctc-gold:hover   { border-color: rgba(250,204,21,0.7);  box-shadow: 0 14px 42px rgba(250,204,21,0.10); }
+.ctc-silver:hover { border-color: rgba(148,163,184,0.7); box-shadow: 0 14px 42px rgba(148,163,184,0.08); }
+.ctc-bronze:hover { border-color: rgba(180,120,60,0.7);  box-shadow: 0 14px 42px rgba(180,120,60,0.08); }
+
+.ctc-photo-wrap { position: relative; width: 110px; height: 110px; margin-bottom: var(--space-16); }
+.ctc-photo { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); display: block; background: var(--panel-soft); }
+.ctc-trophy { position: absolute; bottom: 0; right: -6px; font-size: 28px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+
+.ctc-tier-row { display: flex; align-items: center; gap: var(--space-8); width: 100%; margin-bottom: var(--space-16); }
+.ctc-tier-line { flex: 1; height: 1px; background: var(--border); }
+.ctc-tier-text { font-size: var(--type-sm); font-weight: var(--type-weight-bold); color: var(--text); white-space: nowrap; letter-spacing: 0.03em; }
+
+.ctc-pct-gold   { color: #facc15; }
+.ctc-pct-silver { color: #cbd5e1; }
+.ctc-pct-bronze { color: #d4956a; }
+
+.ctc-name { font-size: var(--type-md); font-weight: var(--type-weight-bold); color: var(--text); width: 100%; margin-bottom: var(--space-4); }
+.ctc-role { font-size: var(--type-xs); color: var(--text-soft); width: 100%; margin-bottom: var(--space-16); }
+.ctc-divider { width: 100%; height: 1px; background: var(--border); margin-bottom: var(--space-12); }
+
+.ctc-qualities { width: 100%; display: flex; flex-direction: column; gap: var(--space-8); margin-bottom: var(--space-12); }
+.ctc-q { display: flex; align-items: flex-start; gap: var(--space-8); font-size: var(--type-sm); color: var(--text); }
+.ctc-q.hidden { display: none; }
+.ctc-check { color: #4ade80; font-size: var(--type-sm); flex-shrink: 0; margin-top: 1px; font-weight: var(--type-weight-bold); }
+
+.ctc-read-more, .ctc-linkedin { background: none; border: none; color: var(--brand-tq); font-size: var(--type-xs); cursor: pointer; padding: 0; text-decoration: underline; text-underline-offset: 3px; text-align: left; width: 100%; display: block; transition: opacity var(--motion-fast); }
+.ctc-linkedin { margin-top: var(--space-8); text-decoration: none; }
+.ctc-read-more:hover, .ctc-linkedin:hover { opacity: var(--feedback-hover-opacity); }
+
+.top3-panel { margin-top: var(--space-20); background: rgba(0,0,0,0.22); border-radius: 18px; border: 1px solid rgba(255,255,255,0.12); box-shadow: var(--shadow-cine-md); backdrop-filter: blur(18px); padding: var(--space-20); }
+.top3-panel-title { font-size: var(--type-sm); font-weight: var(--type-weight-medium); text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-soft); margin-bottom: var(--space-16); }
+.top3-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-16); }
+
+.top3-card { background: rgba(0,0,0,0.45); border-radius: 16px; border: 1px solid rgba(255,255,255,0.10); padding: var(--space-20); display: flex; flex-direction: column; gap: var(--space-12); box-shadow: var(--shadow-cine-sm); transition: transform var(--motion-medium), box-shadow var(--motion-medium), border-color var(--motion-fast); opacity: 0; transform: translateY(16px); animation: top3CardEnter 0.55s cubic-bezier(0.22,0.61,0.36,1) forwards; }
+
+@keyframes top3CardEnter { 0% { opacity: 0; transform: translateY(16px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+
+.top3-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-cine-lg); }
+.top3-rank-1 { border-color: rgba(250,204,21,0.45); box-shadow: 0 0 28px rgba(250,204,21,0.12); }
+.top3-rank-2 { border-color: rgba(148,163,184,0.45); }
+.top3-rank-3 { border-color: rgba(180,120,60,0.45); }
+
+.top3-card-header { display: flex; align-items: center; justify-content: space-between; }
+.top3-rank-badge { font-size: var(--type-sm); font-weight: var(--type-weight-bold); letter-spacing: 0.04em; }
+.top3-delta { font-size: var(--type-xs); padding: 3px 10px; border-radius: 999px; background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.35); font-weight: var(--type-weight-medium); }
+.top3-delta-leader { background: rgba(34,197,94,0.15); color: #86efac; border-color: rgba(34,197,94,0.35); }
+
+.top3-candidate-name { font-size: var(--type-md); font-weight: var(--type-weight-bold); color: var(--text); }
+.top3-candidate-role { font-size: var(--type-xs); color: var(--brand-tq); font-weight: var(--type-weight-medium); }
+.top3-candidate-meta { display: flex; gap: var(--space-12); font-size: var(--type-xs); color: var(--text-soft); flex-wrap: wrap; }
+
+.top3-composite-row { display: flex; align-items: baseline; gap: var(--space-8); }
+.top3-composite-score { font-size: 36px; font-weight: var(--type-weight-bold); color: var(--text); line-height: 1; }
+.top3-composite-label { font-size: var(--type-xs); color: var(--text-soft); }
+
+.top3-breakdown { display: flex; flex-direction: column; gap: var(--space-8); margin-top: var(--space-4); }
+.top3-breakdown-row { display: flex; align-items: center; gap: var(--space-8); }
+.top3-breakdown-label { font-size: var(--type-xs); color: var(--text-soft); min-width: 72px; }
+.top3-breakdown-bar { flex: 1; height: 6px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.top3-breakdown-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--brand-tq), #7EC9FF); box-shadow: 0 0 8px rgba(0,183,199,0.4); transition: width 0.6s cubic-bezier(0.22,0.61,0.36,1); }
+.top3-rank-1 .top3-breakdown-fill { background: linear-gradient(90deg, #facc15, #fde68a); box-shadow: 0 0 8px rgba(250,204,21,0.35); }
+.top3-rank-2 .top3-breakdown-fill { background: linear-gradient(90deg, #94a3b8, #cbd5e1); }
+.top3-rank-3 .top3-breakdown-fill { background: linear-gradient(90deg, #b4783c, #d4a06a); }
+.top3-breakdown-val { font-size: var(--type-xs); color: var(--text-soft); width: 28px; text-align: right; }
+
+.top3-explanation { font-size: var(--type-xs); color: var(--text-soft); line-height: var(--line-normal); padding: var(--space-12); background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); }
+.top3-linkedin-btn { display: inline-block; margin-top: var(--space-4); font-size: var(--type-xs); color: var(--brand-tq); text-decoration: none; font-weight: var(--type-weight-medium); transition: opacity var(--motion-fast); }
+.top3-linkedin-btn:hover { opacity: var(--feedback-hover-opacity); }
+
+@media (max-width: 1200px) { .top3-grid { grid-template-columns: 1fr; } }

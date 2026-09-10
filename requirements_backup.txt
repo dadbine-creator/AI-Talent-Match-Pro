@@ -1,0 +1,336 @@
+/* ----------------------------------------------------------- */
+/* 0. LIQUID UI PHYSICS (MAGNETIC & GLOW)                      */
+/* ----------------------------------------------------------- */
+
+// Magnetic Button Physics
+document.querySelectorAll('.magnetic').forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+    });
+    btn.addEventListener('mouseleave', () => {
+        btn.style.transform = `translate(0px, 0px)`;
+    });
+});
+
+// Cosmic Glow Follower
+document.addEventListener("mousemove", (e) => {
+    const glow = document.querySelector(".glow-follower");
+    if (glow) {
+        glow.style.transform = `translate(${e.clientX - 200}px, ${e.clientY - 200}px)`;
+    }
+});
+
+/* ----------------------------------------------------------- */
+/* 1. PHASE 8 — COGNITIVE LOAD HUD & UI HELPERS                */
+/* ----------------------------------------------------------- */
+const aiHud = document.getElementById("aiHud");
+const aiHudFill = document.getElementById("aiHudFill");
+
+function showHud() {
+    if (!aiHud || !aiHudFill) return;
+    aiHud.classList.add("visible");
+    aiHudFill.style.width = "0%";
+    setTimeout(() => { aiHudFill.style.width = "100%"; }, 150);
+}
+
+function hideHud() {
+    if (!aiHud || !aiHudFill) return;
+    aiHud.classList.remove("visible");
+    aiHudFill.style.width = "0%";
+}
+
+function applyElitePulse(scoreElement, score) {
+    if (score >= 95) scoreElement.classList.add("elite-score");
+}
+
+function pulseScoreBar(fillElement) {
+    fillElement.classList.add("pulse");
+    setTimeout(() => fillElement.classList.remove("pulse"), 1500);
+}
+
+function injectBreadcrumb(card, reason) {
+    const tag = document.createElement("div");
+    tag.className = "match-breadcrumb";
+    tag.textContent = reason || "Strategic Fit";
+    card.prepend(tag);
+}
+
+function enableBooleanCopy(button, text) {
+    button.addEventListener("click", () => {
+        navigator.clipboard.writeText(text);
+        const originalText = button.textContent;
+        button.textContent = "Copied!";
+        setTimeout(() => { button.textContent = originalText; }, 1200);
+    });
+}
+
+/* ----------------------------------------------------------- */
+/* 2. CORE RENDERING ENGINE (THINKING & TYPEWRITER)            */
+/* ----------------------------------------------------------- */
+
+function showThinkingStream(lines) {
+    const feed = document.getElementById("ai-feed");
+    if (!feed) return;
+    feed.classList.remove("hidden");
+    feed.innerHTML = ""; 
+
+    lines.forEach((line, index) => {
+        setTimeout(() => {
+            const p = document.createElement("p");
+            p.className = line.toLowerCase().includes("boolean") ? "boolean-strategy" : "ai-message";
+            // FIXED: Correct template literal usage [cite: 76]
+            p.textContent = `→ ${line}`;
+            feed.appendChild(p);
+            feed.scrollTop = feed.scrollHeight;
+        }, index * 450);
+    });
+}
+
+function typeEffect(element, text, speed = 15) {
+    if (!element || !text) return;
+    element.textContent = "";
+    let i = 0;
+    function typing() {
+        if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+            setTimeout(() => requestAnimationFrame(typing), speed);
+        }
+    }
+    typing();
+}
+
+function applyTierGlow(card, score) {
+    const glow = card.querySelector(".tier-glow");
+    if (!glow) return;
+    if (score >= 90) glow.classList.add("gold-glow");
+    else if (score >= 80) glow.classList.add("silver-glow");
+    else glow.classList.add("bronze-glow");
+}
+
+/* ----------------------------------------------------------- */
+/* 3. MAIN DASHBOARD ORCHESTRATOR                              */
+/* ----------------------------------------------------------- */
+
+document.addEventListener("DOMContentLoaded", () => {
+    const modalOverlay = document.getElementById("modalOverlay");
+    const openModalBtn = document.getElementById("openModal");
+    const createRoleBtn = document.getElementById("createRoleBtn");
+    const roleTextarea = document.getElementById("role-textarea");
+    const aiFeed = document.getElementById("ai-feed");
+    const emptyState = document.getElementById("emptyState");
+    const positionsContainer = document.getElementById("positions-container");
+    
+    const charCount = document.getElementById("charCount");
+    const promptStrength = document.getElementById("promptStrength");
+
+    const userTier = "free"; 
+
+    // --- SESSION RESILIENCE: AUTO-SAVE ---
+    const savedDraft = localStorage.getItem("role_draft");
+    if (savedDraft && roleTextarea) {
+        roleTextarea.value = savedDraft;
+        roleTextarea.dispatchEvent(new Event('input'));
+    }
+
+    // SMART MODAL: ESCAPE KEY TO CLOSE
+    document.addEventListener('keydown', (e) => {
+        if (e.key === "Escape" && !modalOverlay.classList.contains("hidden")) {
+            modalOverlay.classList.add("hidden");
+        }
+    });
+
+    // PROMPT GUIDANCE LOGIC
+    if (roleTextarea && charCount && promptStrength) {
+        roleTextarea.addEventListener("input", () => {
+            const length = roleTextarea.value.length;
+            charCount.textContent = length;
+            localStorage.setItem("role_draft", roleTextarea.value);
+
+            if (length < 80) {
+                promptStrength.textContent = "Add more human context for better synthesis";
+                promptStrength.className = "prompt-strength strength-low";
+            } else if (length < 200) {
+                promptStrength.textContent = "Good — keep going, synthesis improving";
+                promptStrength.className = "prompt-strength strength-medium";
+            } else {
+                promptStrength.textContent = "Excellent — deep synthesis enabled";
+                promptStrength.className = "prompt-strength strength-high";
+            }
+        });
+    }
+
+    openModalBtn.addEventListener("click", () => {
+        modalOverlay.classList.remove("hidden");
+        roleTextarea.focus();
+    });
+
+    modalOverlay.addEventListener("click", (e) => {
+        if (e.target === modalOverlay) modalOverlay.classList.add("hidden");
+    });
+
+    createRoleBtn.addEventListener("click", async () => {
+        const text = roleTextarea.value.trim();
+        if (!text) return;
+
+        localStorage.removeItem("role_draft");
+        modalOverlay.classList.add("hidden");
+        if (emptyState) emptyState.style.display = "none";
+        if (positionsContainer) positionsContainer.innerHTML = ""; 
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        showHud();
+        aiFeed.classList.remove("hidden");
+        aiFeed.innerHTML = `<div class="ai-status">Synthesizing Intent...</div>`;
+
+        const lines = ["Extracting role intent...", "Mapping adaptability markers...", "Constructing deep-search boolean...", "Scanning LinkedIn ecosystem...", "Analyzing trajectory patterns...", "Identifying Silent Skill..."];
+        showThinkingStream(lines);
+
+        const safetyTimer = setTimeout(() => {
+            const p = document.createElement("p");
+            p.className = "ai-message";
+            p.style.fontStyle = "italic";
+            p.textContent = "→ Synthesis is deep. Mapping non-linear trajectory markers...";
+            aiFeed.appendChild(p);
+        }, 6000);
+
+        try {
+            const res = await fetch("/results", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ role_title: text.split(".")[0].substring(0, 30), human_story: text })
+            });
+            const data = await res.json();
+            
+            clearTimeout(safetyTimer);
+
+            if (data.ok) {
+                if (data.search_strategy && data.search_strategy.boolean) {
+                    setTimeout(() => {
+                        const p = document.createElement("p");
+                        p.className = "boolean-strategy";
+                        // FIXED: Backticks for boolean strategy string [cite: 184]
+                        p.textContent = `✔ Strategy: ${data.search_strategy.boolean}`;
+                        
+                        const copyBtn = document.createElement("button");
+                        copyBtn.className = "copy-boolean-btn";
+                        copyBtn.textContent = "Copy";
+                        enableBooleanCopy(copyBtn, data.search_strategy.boolean);
+                        p.appendChild(copyBtn);
+                        aiFeed.appendChild(p);
+                    }, 2800);
+                }
+                setTimeout(() => {
+                    aiFeed.innerHTML = "";
+                    renderCandidatesStaggered(data.results, userTier);
+                    hideHud();
+                }, 3500);
+                loadSidebarHistory(); 
+            }
+        } catch (err) {
+            console.error("Search error:", err);
+            clearTimeout(safetyTimer);
+            hideHud();
+        }
+    });
+
+    loadSidebarHistory();
+});
+
+/* ----------------------------------------------------------- */
+/* 4. RENDERING ENGINE                                         */
+/* ----------------------------------------------------------- */
+
+function renderCandidatesStaggered(candidates, userTier) {
+    const container = document.getElementById("positions-container");
+    container.innerHTML = ""; 
+    candidates.forEach((candidate, index) => {
+        setTimeout(() => { renderSingleCandidate(candidate, userTier); }, index * 900); 
+    });
+}
+
+function renderSingleCandidate(candidate, userTier) {
+    const container = document.getElementById("positions-container");
+    const template = document.getElementById("candidate-card-template");
+    const clone = template.content.cloneNode(true);
+    const card = clone.querySelector(".candidate-card");
+
+    const nameEl = card.querySelector(".candidate-name");
+    nameEl.textContent = candidate.name;
+    card.querySelector(".linkedin-link").href = candidate.linkedin_url || "#";
+    
+    card.querySelector(".skill-name").textContent = candidate.silent_skill || "Strategic Fit";
+    card.querySelector(".skill-tooltip").textContent = candidate.skill_explanation || "Adaptive career trajectory.";
+    injectBreadcrumb(card, candidate.match_reason);
+
+    const synthesisEl = card.querySelector(".synthesis-tag");
+    if (synthesisEl) {
+        // FIXED: Logical OR fallback [cite: 228, 229]
+        synthesisEl.textContent = candidate.synthesis_label || "Strategic Growth Match"; 
+    }
+
+    applyTierGlow(card, candidate.match_score);
+    applyElitePulse(nameEl, candidate.match_score);
+
+    if (userTier === "free" && candidate.match_score >= 90) {
+        card.classList.add("blurred-candidate");
+        const lock = document.createElement("div");
+        lock.className = "pro-lock-overlay";
+        lock.innerHTML = "<span>UNLOCK GOLD RESULTS WITH PRO</span>";
+        card.appendChild(lock);
+    }
+
+    const scoreFill = card.querySelector(".score-fill");
+    setTimeout(() => {
+        // FIXED: Backticks for scoreFill width string [cite: 240]
+        scoreFill.style.width = `${candidate.match_score}%`;
+        pulseScoreBar(scoreFill);
+    }, 100);
+
+    const analysisEl = card.querySelector(".ai-analysis");
+    typeEffect(analysisEl, candidate.ai_analysis);
+    container.appendChild(clone);
+}
+
+/* ----------------------------------------------------------- */
+/* 5. SIDEBAR & HISTORY                                        */
+/* ----------------------------------------------------------- */
+async function loadSidebarHistory() {
+    const list = document.getElementById("history-list");
+    if (!list) return;
+    try {
+        const res = await fetch("/history");
+        const data = await res.json();
+        if (data.ok) {
+            list.innerHTML = "";
+            data.history.forEach((item, index) => {
+                const div = document.createElement("div");
+                div.className = "sidebar-item magnetic"; 
+                div.style.opacity = "0";
+                div.style.transform = "translateX(-10px)";
+                div.textContent = item.role_title;
+                div.onclick = () => loadPastConversation(item.id);
+                list.appendChild(div);
+                
+                setTimeout(() => {
+                    div.style.transition = "all 0.4s ease";
+                    div.style.opacity = "1";
+                    div.style.transform = "translateX(0)";
+                }, index * 100);
+            });
+        }
+    } catch (err) { console.error("History fail", err); }
+}
+
+async function loadPastConversation(id) {
+    if (document.getElementById("emptyState")) document.getElementById("emptyState").style.display = "none";
+    try {
+        // FIXED: Backticks for conversation fetch URL [cite: 281]
+        const res = await fetch(`/conversation/${id}`);
+        const data = await res.json();
+        if (data.ok) renderCandidatesStaggered(data.results, "free");
+    } catch (err) { console.error("Load fail", err); }
+}
