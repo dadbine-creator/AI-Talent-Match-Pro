@@ -632,7 +632,7 @@ body::before {
                     <div id="outreachRows"></div>
                     <button onclick="sendAllViaLinkedIn()" style="width:100%;margin-top:10px;padding:10px;background:linear-gradient(135deg,#0a66c2,#0077b5);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(10,102,194,0.4);" id="autoSendBtn">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                        Message all 3 on LinkedIn
+                        Copy messages for all 3
                     </button>
                     <div style="font-size:10px;color:rgba(255,255,255,0.25);text-align:center;margin-top:5px;">Copy each message, then open the profile to send</div>
                 </div>
@@ -693,7 +693,7 @@ body::before {
             <label class="modal-label p17-required">Location</label>
             <input id="newRoleLocation" class="modal-input" type="text" placeholder="e.g. New York, Remote, London...">
             <div class="p17-advanced-toggle" onclick="var f=document.getElementById('advancedFilters');var a=document.getElementById('toggleArrow');if(f.style.display==='none'){f.style.display='block';a.textContent='⌃';}else{f.style.display='none';a.textContent='⌄';}">
-                <span>Advanced LinkedIn Filters</span><span id="toggleArrow">⌄</span>
+                <span>Advanced filters</span><span id="toggleArrow">⌄</span>
             </div>
             <div id="advancedFilters" style="display:none;">
                 <div class="p17-filter-row"><label class="p17-filter-label">Skills</label><input id="filterSkills" class="p17-filter-input" type="text" placeholder="Enter skills..."></div>
@@ -726,7 +726,7 @@ body::before {
         </div>
         <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;margin-bottom:18px;background:rgba(29,110,245,0.06);border:1px solid rgba(29,110,245,0.18);border-radius:10px;font-size:12px;color:rgba(200,220,255,0.7);line-height:1.5;">
             <span style="font-size:18px;flex-shrink:0;">🤖</span>
-            <span>AI generated this message. After LinkedIn Partner API approval, this sends automatically — no HR action needed.</span>
+            <span>AI generated this message. Copy it and send it yourself — we don&rsquo;t send anything on your behalf.</span>
         </div>
         <textarea id="outreachMsg" style="width:100%;height:180px;background:rgba(255,255,255,0.04);border:1px solid rgba(37,99,235,0.2);border-radius:12px;color:#fff;font-size:13px;font-family:inherit;padding:14px;resize:none;outline:none;line-height:1.7;"></textarea>
         <div style="display:flex;gap:10px;margin-top:14px;">
@@ -737,7 +737,7 @@ body::before {
             </button>
         </div>
         <div style="margin-top:14px;padding:10px 14px;background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.15);border-radius:8px;font-size:11px;color:rgba(245,166,35,0.8);">
-            ⚡ <strong>Full automation after LinkedIn Partner API approval</strong> — system sends, monitors replies, notifies HR when candidate says yes.
+            ✍️ <strong>You send these yourself.</strong> We draft the message; sending, replies and follow-up stay in your own account.
         </div>
     </div>
 </div>
@@ -953,7 +953,7 @@ function showOutreachTracker(candidates) {
 
 /* ══ AUTO SEND ══════════════════════════════════════ */
 /*
-   LINKEDIN PARTNER API — plug in here after approval:
+   NOTE: we do not send messages on a user's behalf. Drafts are copied by hand.
    await fetch('https://api.linkedin.com/v2/messages', {
        method: 'POST',
        headers: { 'Authorization': `Bearer ${LINKEDIN_TOKEN}` },
@@ -961,7 +961,7 @@ function showOutreachTracker(candidates) {
    });
 */
 /* Real outreach: build a personalised message per candidate, let the recruiter copy each
-   and open that candidate's LinkedIn to send. (True auto-send needs LinkedIn Partner API.) */
+   and open that candidate's LinkedIn to send. We never send on the user's behalf. */
 function sendAllViaLinkedIn() {
     var cands = window.currentCandidates || [];
     if (!cands.length) { wsToast('Run a search first to get candidates.', 'error'); return; }
@@ -1307,7 +1307,7 @@ function openAIChat(candidates, roleTitle) {
     addChatBubble(`I've analyzed <strong>${roleTitle}</strong> and found your top 3 matches, ranked by our Deep-Thinking Engine:`, 0);
     candidates.forEach((c, i) => setTimeout(() => addCandidateCard(c, i), 800 + i*600));
     setTimeout(() => {
-        addChatBubble(`<strong>#1 is your strongest match.</strong> Personalised LinkedIn messages are ready for all 3. Click <strong>Send to All 3 via LinkedIn</strong> in the right panel.`, 800 + candidates.length*600 + 400);
+        addChatBubble(`<strong>#1 is your strongest match.</strong> A personalised message is drafted for each one. Copy them from the right panel and send from your own account.`, 800 + candidates.length*600 + 400);
         showOutreachTracker(candidates);
         // Add Find More + Refine Search buttons
         setTimeout(() => {

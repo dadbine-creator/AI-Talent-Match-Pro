@@ -160,6 +160,10 @@ app.include_router(team_dna_router)
 from app.outcomes_routes import router as outcomes_router
 app.include_router(outcomes_router)
 
+# ── Roles: active-role accounting + archiving (additive) ─────
+from app.roles_routes import router as roles_router
+app.include_router(roles_router)
+
 # ============================================================
 # GLOBAL EXCEPTION HANDLER
 # ============================================================
@@ -293,12 +297,68 @@ def _get_or_create_cost_optimizer(db, company_id, plan):
 # ============================================================
 # PLAN CONFIGURATION
 # ============================================================
+# Pricing is per ACTIVE ROLE, not per seat and not per candidate.
+#   active role = a role with Team DNA exemplars or scored candidates attached.
+#   Archiving a role frees the slot and keeps the data.
+#
+# There are no per-candidate caps on paid plans. Free is capped at
+# FREE_CANDIDATES_PER_MONTH, which is the upgrade trigger.
+#
+# Legacy keys (business / corporate / enterprise) are kept below so existing
+# subscribers on the old Stripe prices keep working exactly as they are. They
+# are not offered to new customers — NEW_PLAN_KEYS is what the pricing page shows.
+UNLIMITED = 999_999
+FREE_CANDIDATES_PER_MONTH = 100
+FREE_BULK_BATCH_LIMIT = 50
+
 PLANS = {
-    "free":       {"name":"Free",      "price_monthly":0,   "price_annual":0,    "seat_limit":1,   "candidates_per_search":1,  "ai_calls_per_month":10,    "features":["1 user","1 candidate/search","Basic AI scoring"]},
-    "business":   {"name":"Business",  "price_monthly":89,  "price_annual":890,  "seat_limit":5,   "candidates_per_search":2,  "ai_calls_per_month":200,   "features":["5 users","2 candidates/search","Full AI scoring","Team collaboration"]},
-    "corporate":  {"name":"Corporate", "price_monthly":299, "price_annual":2990, "seat_limit":20,  "candidates_per_search":3,  "ai_calls_per_month":1000,  "features":["20 users","3 candidates/search","Advanced AI scoring","Analytics","Priority support"]},
-    "enterprise": {"name":"Enterprise","price_monthly":999, "price_annual":9990, "seat_limit":999, "candidates_per_search":50, "ai_calls_per_month":99999, "features":["Unlimited users","50 candidates/search","Custom AI models","Dedicated support","SLA"]}
+    "free":       {"name": "Free",       "price_monthly": 0,   "price_annual": 0,
+                   "seat_limit": 1,         "active_roles": 1,         "ai_calls_per_month": UNLIMITED,
+                   "candidates_per_month": FREE_CANDIDATES_PER_MONTH, "bulk_batch_limit": FREE_BULK_BATCH_LIMIT,
+                   "shared_team_dna": False,
+                   "features": ["1 active role", "100 candidates scored / month",
+                                "Full Team DNA", "Full scoring with reasoning", "1 user"]},
+    "single":     {"name": "Single",     "price_monthly": 39,  "price_annual": 390,
+                   "seat_limit": UNLIMITED, "active_roles": 1,         "ai_calls_per_month": UNLIMITED,
+                   "candidates_per_month": UNLIMITED, "bulk_batch_limit": 200,
+                   "shared_team_dna": False,
+                   "features": ["1 active role", "Unlimited candidates",
+                                "Full Team DNA", "Unlimited users"]},
+    "team":       {"name": "Team",       "price_monthly": 149, "price_annual": 1490,
+                   "seat_limit": UNLIMITED, "active_roles": 5,         "ai_calls_per_month": UNLIMITED,
+                   "candidates_per_month": UNLIMITED, "bulk_batch_limit": 200,
+                   "shared_team_dna": True,
+                   "features": ["5 active roles", "Unlimited candidates",
+                                "Team DNA shared across the company", "Unlimited users"]},
+    "agency":     {"name": "Agency",     "price_monthly": 399, "price_annual": 3990,
+                   "seat_limit": UNLIMITED, "active_roles": UNLIMITED, "ai_calls_per_month": UNLIMITED,
+                   "candidates_per_month": UNLIMITED, "bulk_batch_limit": 200,
+                   "shared_team_dna": True,
+                   "features": ["Unlimited active roles", "Unlimited candidates",
+                                "Team DNA shared across the company", "Unlimited users"]},
+
+    # ── Legacy plans — existing subscribers only, not sold to new customers ──
+    "business":   {"name": "Business (legacy)",   "price_monthly": 89,  "price_annual": 890,
+                   "seat_limit": UNLIMITED, "active_roles": 5,         "ai_calls_per_month": UNLIMITED,
+                   "candidates_per_month": UNLIMITED, "bulk_batch_limit": 200,
+                   "shared_team_dna": True, "legacy": True,
+                   "features": ["5 active roles", "Unlimited candidates", "Unlimited users"]},
+    "corporate":  {"name": "Corporate (legacy)",  "price_monthly": 299, "price_annual": 2990,
+                   "seat_limit": UNLIMITED, "active_roles": UNLIMITED, "ai_calls_per_month": UNLIMITED,
+                   "candidates_per_month": UNLIMITED, "bulk_batch_limit": 200,
+                   "shared_team_dna": True, "legacy": True,
+                   "features": ["Unlimited active roles", "Unlimited candidates", "Unlimited users"]},
+    "enterprise": {"name": "Enterprise", "price_monthly": 999, "price_annual": 9990,
+                   "seat_limit": UNLIMITED, "active_roles": UNLIMITED, "ai_calls_per_month": UNLIMITED,
+                   "candidates_per_month": UNLIMITED, "bulk_batch_limit": 200,
+                   "shared_team_dna": True,
+                   "features": ["Unlimited active roles", "Unlimited candidates",
+                                "Custom AI models", "Dedicated support", "SLA"]},
 }
+
+# The tiers a new customer is offered.
+NEW_PLAN_KEYS = ["free", "single", "team", "agency"]
+
 
 # ============================================================
 # PASSWORD + AUTH HELPERS
@@ -708,7 +768,12 @@ async def invite_team_member(request: Request, db: Session = Depends(get_db)):
     if role not in ("admin","recruiter","viewer"): raise HTTPException(status_code=400,detail="Invalid role")
     company=db.query(CompanyORM).filter(CompanyORM.id==admin.company_id).first(); plan=PLANS.get(company.plan,PLANS["free"])
     members=db.query(CompanyUserORM).filter(CompanyUserORM.company_id==admin.company_id,CompanyUserORM.is_deleted==False).count()
-    if members>=plan["seat_limit"]: raise HTTPException(status_code=400,detail="Seat limit reached. Upgrade your plan.")
+    if members>=plan["seat_limit"]:
+        # Only Free is seat-limited now; paid plans are unlimited users.
+        raise HTTPException(status_code=402, detail=(
+            f"The {plan['name']} plan includes {plan['seat_limit']} user"
+            f"{'s' if plan['seat_limit'] != 1 else ''}. "
+            f"Single (${PLANS['single']['price_monthly']}/mo) includes unlimited users."))
     token=secrets.token_urlsafe(32); expires_at=datetime.utcnow()+timedelta(days=7)
     invite=TeamInviteORM(id=str(uuid.uuid4()),email=email,role=role,company_id=admin.company_id,invited_by=admin.id,token=token,expires_at=expires_at); db.add(invite); db.commit()
     return JSONResponse({"ok":True,"invite_url":f"https://aitmp.io/accept-invite?token={token}","expires_at":expires_at.isoformat(),"message":f"Invitation sent to {email}"})
@@ -861,10 +926,17 @@ async def score_uploaded_candidates(request: Request, db: Session = Depends(get_
     if not resumes:
         raise HTTPException(status_code=400, detail="No readable résumé text found in upload")
 
-    # Monthly AI-call quota (plan-based)
+    # Per-ROLE plan accounting. Scoring candidates against a role is the second
+    # thing that makes it active, so the limit is checked here — before the AI
+    # call, never part-way through one.
+    import app.roles as roles_engine
+    plan_key = (company.plan or "free")
+    if job_id:
+        roles_engine.check_can_activate(db, user.company_id, plan_key, job_id)
+    # Free-tier monthly candidate cap (paid plans are uncapped).
+    roles_engine.check_candidate_quota(db, user.company_id, plan_key, adding=len(resumes))
+
     cost = _get_or_create_cost_optimizer(db, user.company_id, company.plan)
-    if cost.ai_calls_remaining <= 0:
-        raise HTTPException(status_code=402, detail="Monthly AI search quota reached — upgrade your plan to continue.")
 
     # Two-pass engine: triage all résumés, deep GPT-4o on finalists, top 3 back.
     # Runs in a threadpool so the multi-second AI call doesn't block other requests.
@@ -2026,10 +2098,10 @@ async def paddle_webhook(request: Request, db: Session = Depends(get_db)):
                 company.trial_ends_at = trial_end or (datetime.utcnow() + timedelta(days=7))
                 company.trial_reminder_sent = False
                 db.commit()
-                u = _admin_of(company)
-                if u:
-                    try: email_engine.send_trial_started(u.email, u.name, PLANS.get(plan, {}).get("name", plan), amount_after=_price_str(plan))
-                    except Exception: pass
+                # We no longer sell a card-on-file trial — the free tier is
+                # permanent and needs no card — so there is no trial email.
+                # If Paddle ever reports a trialing subscription, the plan is
+                # still applied above; we simply don't message about a trial.
         # Trial converted / renewal charged → keep plan active + receipt
         elif etype in ("transaction.completed", "transaction.paid", "payment.completed", "subscription.activated"):
             company = _find_company()
@@ -2084,10 +2156,9 @@ def run_trial_reminder_sweep(db) -> int:
         meta = PLANS.get(c.plan, {})
         amount = f"${meta['price_monthly']}/month" if meta.get("price_monthly") else ""
         try:
-            email_engine.send_trial_ending_reminder(u.email, u.name, meta.get("name", c.plan),
-                                                    amount=amount, ends_in="tomorrow")
+            # Trial-ending reminders are retired along with the trial itself.
+            # Marked as sent so the sweep stops revisiting these rows.
             c.trial_reminder_sent = True
-            sent += 1
         except Exception:
             pass
     try:

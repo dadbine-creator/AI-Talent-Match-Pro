@@ -69,6 +69,12 @@ def _current(request: Request, db: Session):
     return user.company_id, user.id
 
 
+def _plan(db: Session, company_id: str) -> str:
+    from app.db import CompanyORM
+    company = db.query(CompanyORM).filter(CompanyORM.id == company_id).first()
+    return (company.plan if company else "free") or "free"
+
+
 def _check_role(db: Session, company_id: str, role_id: str) -> None:
     """Reject a role_id belonging to another tenant.
 
@@ -91,6 +97,30 @@ def _rate_limit(company_id: str, endpoint: str, max_calls: int, window: int = 60
 
 
 # ============================================================
+# 0. EXTRACTOR HEALTH
+# ============================================================
+
+@router.get("/extractors/health")
+async def extractor_health():
+    """Which CV formats this deployment can actually read.
+
+    Unauthenticated on purpose: it returns three booleans about file-format
+    support and nothing else — no versions, no paths, no config. It exists
+    because pdfplumber and python-docx are optional imports, so a deploy that
+    silently failed to install them looks identical to a healthy one from the
+    outside until a customer uploads a PDF and gets an error.
+    """
+    return JSONResponse({
+        "ok": True,
+        "extractors": {
+            "pdf":  cv_extract.pdfplumber is not None,
+            "docx": cv_extract.docx is not None,
+            "txt":  True,          # stdlib only — always available
+        },
+    })
+
+
+# ============================================================
 # 1. PROFILES — upload / list / delete exemplars
 # ============================================================
 
@@ -109,6 +139,12 @@ async def upload_team_dna_profiles(
 
     role_id, incoming = await _read_profile_upload(request)
     _check_role(db, company_id, role_id)
+
+    # Attaching exemplars is one of the two things that make a role "active".
+    # The plan limit is enforced HERE, at activation, so nobody is ever stopped
+    # part-way through a search they already started.
+    import app.roles as roles_engine
+    roles_engine.check_can_activate(db, company_id, _plan(db, company_id), role_id)
 
     if not incoming:
         raise HTTPException(status_code=400, detail="No readable profile text found in upload")
@@ -475,6 +511,16 @@ async def bulk_score_candidates(
     if len(uploads) > MAX_BULK_FILES:
         raise HTTPException(status_code=400,
                             detail=f"Maximum {MAX_BULK_FILES} CVs per bulk upload — you sent {len(uploads)}")
+
+    # Free-tier batch cap. Named tier, named limit — never a silent truncation.
+    from app.main import PLANS
+    plan_key = _plan(db, company_id)
+    batch_cap = PLANS.get(plan_key, PLANS["free"]).get("bulk_batch_limit", MAX_BULK_FILES)
+    if len(uploads) > batch_cap:
+        raise HTTPException(status_code=402, detail=(
+            f"The {PLANS.get(plan_key, PLANS['free'])['name']} plan scores {batch_cap} CVs "
+            f"per batch and you sent {len(uploads)}. "
+            f"Single (${PLANS['single']['price_monthly']}/mo) raises this to {MAX_BULK_FILES}."))
 
     # Model must exist BEFORE we accept the work, so we fail fast rather than
     # after the recruiter has waited on 200 files.

@@ -123,30 +123,38 @@ def send_payment_receipt(to: str, name: str = "", plan: str = "", amount: str = 
 
 
 # ── 3b. Trial lifecycle emails (card-required trial) ────────
-def send_trial_started(to: str, name: str = "", plan: str = "", trial_days: int = 7,
-                       amount_after: str = "") -> dict:
-    """Sent when a card-on-file trial begins."""
-    after = (f" After that it's <strong>{amount_after}</strong>." if amount_after else "")
-    body = (f"Hi {name or 'there'},<br><br>Your <strong>{trial_days}-day free trial</strong> of the "
-            f"<strong>{plan or 'plan'}</strong> plan has started — full access, no charge yet.{after}"
-            f"<br><br>You can cancel any time before day {trial_days} from your workspace and you "
-            f"won't be charged. We'll email you the day before the trial ends as a reminder.")
-    return send_email(to, "Your free trial has started — AI Talent Match Pro",
-                      _wrap(f"Welcome — your {trial_days}-day trial is live", body,
+def send_welcome_free(to: str, name: str = "") -> dict:
+    """Sent when a Free account is created.
+
+    Replaces the old card-on-file trial email. There is no trial, no card and
+    no countdown, so this says none of those things.
+    """
+    body = (f"Hi {name or 'there'},<br><br>Your <strong>Free</strong> account is ready — "
+            f"no card, no expiry.<br><br>It covers <strong>one active role</strong> and "
+            f"<strong>100 candidates scored a month</strong>. To get started, add two to five "
+            f"people already on your team who are great at the role you're hiring for — the "
+            f"engine learns what they have in common and ranks new candidates against it.")
+    return send_email(to, "Your account is ready — AI Talent Match Pro",
+                      _wrap("Welcome to AI Talent Match Pro", body,
                             "Open your workspace", f"{APP_BASE_URL}/workspace"))
 
 
-def send_trial_ending_reminder(to: str, name: str = "", plan: str = "", amount: str = "",
-                               ends_in: str = "tomorrow") -> dict:
-    """Sent shortly before the trial converts to a paid charge."""
-    body = (f"Hi {name or 'there'},<br><br>Your free trial of the <strong>{plan or 'plan'}</strong> "
-            f"plan ends <strong>{ends_in}</strong>. Unless you cancel before then, the card on file "
-            f"will be charged <strong>{amount or 'the plan price'}</strong> and your subscription "
-            f"continues without interruption.<br><br>Want to stay? You don't need to do anything. "
-            f"Changed your mind? You can cancel from your workspace before the trial ends.")
-    return send_email(to, f"Your trial ends {ends_in} — AI Talent Match Pro",
-                      _wrap("Your trial is ending soon", body,
-                            "Manage your subscription", f"{APP_BASE_URL}/workspace"))
+def send_limit_reached(to: str, name: str = "", limit: str = "", upgrade_to: str = "",
+                       price: str = "") -> dict:
+    """Sent when a Free account hits a limit.
+
+    Names the limit that was hit and the specific tier that removes it — never
+    a vague "upgrade your plan".
+    """
+    upgrade = (f"<br><br><strong>{upgrade_to}</strong> ({price}/mo) removes it."
+               if upgrade_to else "")
+    body = (f"Hi {name or 'there'},<br><br>You've reached the limit on your Free plan: "
+            f"<strong>{limit or 'your monthly allowance'}</strong>.{upgrade}<br><br>"
+            f"Nothing has been deleted and your Team DNA is untouched — you can pick up "
+            f"exactly where you left off.")
+    return send_email(to, "You've hit your Free plan limit — AI Talent Match Pro",
+                      _wrap("You've reached a Free plan limit", body,
+                            "See the plans", f"{APP_BASE_URL}/plans"))
 
 
 # ── 4. "Candidate replied YES" notification to HR ───────────

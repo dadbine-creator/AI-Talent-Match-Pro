@@ -455,76 +455,70 @@
 <div class="plans-section">
     <div class="plans-grid">
 
-        <!-- FREE -->
+
         <div class="plan-card">
-            <div class="plan-name">Free Trial</div>
-            <div class="plan-trial-badge">7-Day Access</div>
+            <div class="plan-name">Free</div>
             <div class="plan-divider"></div>
             <div class="plan-price">
-                <sup>$</sup>0
-                <span> for 7 days</span>
+                <sup>$</sup>0<span> forever</span>
             </div>
-            <div class="plan-price-sub">Card required · then $89/mo</div>
+            <div class="plan-price-sub">No credit card, no expiry</div>
             <ul class="plan-features">
-                <li><span class="check">✓</span> Full Business plan for 7 days</li>
-                <li><span class="check">✓</span> AI candidate scoring</li>
-                <li><span class="check">✓</span> Cancel before day 7 — no charge</li>
+                <li><span class="check">✓</span> 1 active role</li>
+                <li><span class="check">✓</span> 100 candidates scored / month</li>
+                <li><span class="check">✓</span> Full Team DNA</li>
+                <li><span class="check">✓</span> 1 user</li>
             </ul>
-            <button class="plan-btn btn-filled" onclick="startTrial()">Start 7-Day Trial</button>
+            <button class="plan-btn btn-filled" onclick="window.location='/register'">Start Free</button>
         </div>
 
-        <!-- BUSINESS -->
+        <div class="plan-card">
+            <div class="plan-name">Single</div>
+            <div class="plan-divider"></div>
+            <div class="plan-price" id="singlePrice">
+                <sup>$</sup>39<span>/mo</span>
+            </div>
+            <div class="plan-price-sub" id="singleSub">Billed monthly or annually</div>
+            <ul class="plan-features">
+                <li><span class="check">✓</span> 1 active role</li>
+                <li><span class="check">✓</span> Unlimited candidates</li>
+                <li><span class="check">✓</span> Full Team DNA</li>
+                <li><span class="check">✓</span> Unlimited users</li>
+            </ul>
+            <button class="plan-btn btn-filled" onclick="openPaddleCheckout('single')">Choose Single</button>
+        </div>
+
         <div class="plan-card popular">
             <div class="popular-badge">MOST POPULAR</div>
-            <div class="plan-name">Business</div>
+            <div class="plan-name">Team</div>
             <div class="plan-divider"></div>
-            <div class="plan-price" id="businessPrice">
-                <sup>$</sup>89<span>/mo</span>
+            <div class="plan-price" id="teamPrice">
+                <sup>$</sup>149<span>/mo</span>
             </div>
-            <div class="plan-price-sub" id="businessSub">Billed monthly or annually</div>
+            <div class="plan-price-sub" id="teamSub">Billed monthly or annually</div>
             <ul class="plan-features">
-                <li><span class="check">✓</span> 5 users</li>
-                <li><span class="check">✓</span> 2 candidates/search</li>
-                <li><span class="check">✓</span> Full AI</li>
-                <li><span class="check">✓</span> Team collab</li>
-            </ul>
-            <button class="plan-btn btn-filled" onclick="openPaddleCheckout('business')">Upgrade</button>
-        </div>
-
-        <!-- CORPORATE -->
-        <div class="plan-card">
-            <div class="plan-name">Corporate</div>
-            <div class="plan-divider"></div>
-            <div class="plan-price" id="corporatePrice">
-                <sup>$</sup>299<span>/mo</span>
-            </div>
-            <div class="plan-price-sub" id="corporateSub">Billed monthly</div>
-            <ul class="plan-features">
-                <li><span class="check">✓</span> 20 users</li>
-                <li><span class="check">✓</span> 3 candidates/search</li>
-                <li><span class="check">✓</span> Advanced AI</li>
-                <li><span class="check">✓</span> Analytics</li>
-            </ul>
-            <button class="plan-btn btn-filled" onclick="openPaddleCheckout('corporate')">Upgrade</button>
-        </div>
-
-        <!-- ENTERPRISE -->
-        <div class="plan-card">
-            <div class="plan-name">Enterprise</div>
-            <div class="plan-divider"></div>
-            <div class="plan-price" style="font-size:32px;padding-top:8px;">
-                Custom Quote
-            </div>
-            <div class="plan-price-sub">Tailored to your team · billed by invoice (bank transfer)</div>
-            <ul class="plan-features">
+                <li><span class="check">✓</span> 5 active roles</li>
+                <li><span class="check">✓</span> Unlimited candidates</li>
+                <li><span class="check">✓</span> Team DNA shared across the company</li>
                 <li><span class="check">✓</span> Unlimited users</li>
-                <li><span class="check">✓</span> 50 candidates/search</li>
-                <li><span class="check">✓</span> Custom AI</li>
-                <li><span class="check">✓</span> SLA &amp; Support</li>
-                <li><span class="check">✓</span> Pay by bank transfer / invoice</li>
             </ul>
-            <button class="plan-btn btn-outline" onclick="contactSales()">Contact Us</button>
-            <div style="font-size:11px;color:var(--text-muted,#888);text-align:center;margin-top:10px;">We'll send you an onboarding form + invoice.</div>
+            <button class="plan-btn btn-filled" onclick="openPaddleCheckout('team')">Choose Team</button>
+        </div>
+
+        <div class="plan-card">
+            <div class="plan-name">Agency</div>
+            <div class="plan-divider"></div>
+            <div class="plan-price" id="agencyPrice">
+                <sup>$</sup>399<span>/mo</span>
+            </div>
+            <div class="plan-price-sub" id="agencySub">Billed monthly or annually</div>
+            <ul class="plan-features">
+                <li><span class="check">✓</span> Unlimited active roles</li>
+                <li><span class="check">✓</span> Unlimited candidates</li>
+                <li><span class="check">✓</span> Team DNA shared across the company</li>
+                <li><span class="check">✓</span> Unlimited users</li>
+            </ul>
+            <button class="plan-btn btn-filled" onclick="openPaddleCheckout('agency')">Choose Agency</button>
         </div>
 
     </div>
@@ -532,7 +526,7 @@
 
 <!-- FOOTER NOTE -->
 <div class="footer-note">
-    Paid plans start with a 7-day free trial — card required, cancel anytime before day 7 and you won't be charged. 14-day money-back guarantee on any charge, no questions asked. &nbsp;·&nbsp;
+    The Free plan needs no card and never expires. Paid plans are billed monthly or annually and can be cancelled anytime — you keep access to the end of the period you've paid for, then drop back to Free. 14-day money-back guarantee on any charge, no questions asked. &nbsp;·&nbsp;
     <a href="/api-docs">API Documentation</a> &nbsp;·&nbsp;
     <a href="mailto:hello@aitmp.io">Contact Sales</a>
 </div>
@@ -541,30 +535,21 @@
 let billing = 'annual';
 
 const prices = {
-    business:  { monthly: 89,  annual: 89  },
-    corporate: { monthly: 299, annual: 269 }
+    single: { monthly: 39,  annual: 33  },
+    team:   { monthly: 149, annual: 124 },
+    agency: { monthly: 399, annual: 333 }
 };
 
 function setBilling(type) {
-    billing = type;
-    document.getElementById('monthlyBtn').classList.toggle('active', type === 'monthly');
-    document.getElementById('annualBtn').classList.toggle('active',  type === 'annual');
-
-    const b = prices.business[type];
-    const c = prices.corporate[type];
-
-    document.getElementById('businessPrice').innerHTML  = `<sup>$</sup>${b}<span>/mo</span>`;
-    document.getElementById('corporatePrice').innerHTML = `<sup>$</sup>${c}<span>/mo</span>`;
-
-    document.getElementById('businessSub').textContent  = 'Billed monthly or annually';
-    document.getElementById('corporateSub').textContent = type === 'annual' ? 'Billed annually — save 10%' : 'Billed monthly';
+    ['single','team','agency'].forEach(function (plan) {
+        const el = document.getElementById(plan + 'Price');
+        if (el) el.innerHTML = `<sup>$</sup>${prices[plan][type]}<span>/mo</span>`;
+        const sub = document.getElementById(plan + 'Sub');
+        if (sub) sub.textContent = type === 'annual'
+            ? 'Billed annually — two months free' : 'Billed monthly';
+    });
 }
 
-function startTrial() {
-    // Card-required 7-day trial: capture the card via Paddle checkout (Business price
-    // must have a 7-day trial configured in Paddle). openPaddleCheckout is defined in the
-    // Paddle block at the bottom of this page.
-    if (typeof openPaddleCheckout === 'function') { openPaddleCheckout('business'); }
     else { window.location.href = '/register'; }
 }
 

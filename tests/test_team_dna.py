@@ -242,6 +242,35 @@ class TestTenantIsolation:
         assert res.status_code == 401, f"{method.upper()} {path} must require auth"
 
 
+class TestExtractorHealth:
+    """The endpoint exists to catch a deploy where the optional CV parsers
+    silently failed to install."""
+
+    def test_reports_all_three_formats(self, client_factory, tenants):
+        anon = client_factory(None)
+        res = anon.get("/api/extractors/health")
+        assert res.status_code == 200, "must be reachable without auth"
+        ext = res.json()["extractors"]
+        assert set(ext) == {"pdf", "docx", "txt"}
+        assert all(isinstance(v, bool) for v in ext.values())
+        assert ext["txt"] is True, "plain text is stdlib — always available"
+
+    def test_leaks_nothing_beyond_the_booleans(self, client_factory, tenants):
+        anon = client_factory(None)
+        body = res = anon.get("/api/extractors/health").json()
+        assert set(body) == {"ok", "extractors"}
+        blob = str(body).lower()
+        for leak in ("version", "path", "/home", "site-packages", "key", "secret"):
+            assert leak not in blob, f"health payload must not expose {leak}"
+
+    def test_tracks_the_real_import_state(self, client_factory, tenants, monkeypatch):
+        """A missing parser must show as false, not be hardcoded true."""
+        import app.cv_extract as cv_extract
+        monkeypatch.setattr(cv_extract, "pdfplumber", None)
+        anon = client_factory(None)
+        assert anon.get("/api/extractors/health").json()["extractors"]["pdf"] is False
+
+
 # ============================================================
 # 2. TRAIT EXTRACTION — JSON PARSING
 # ============================================================

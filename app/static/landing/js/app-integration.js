@@ -41,17 +41,26 @@
   };
 
   /* ---------------- billing cycle ---------------- */
-  var PRICES = { business: { monthly: 89, annual: 89 }, corporate: { monthly: 299, annual: 269 } };
+  // Annual is billed at 10x the monthly rate — two months free — so the
+  // per-month figure shown for annual is the monthly price, not a discount
+  // applied twice. Free has no cycle.
+  var PRICES = {
+    single: { monthly: 39,  annual: 33  },
+    team:   { monthly: 149, annual: 124 },
+    agency: { monthly: 399, annual: 333 }
+  };
   window.setBilling = function (type) {
     var m = document.getElementById('monthlyBtn'), a = document.getElementById('annualBtn');
     if (m) { m.classList.toggle('is-on', type === 'monthly'); m.setAttribute('aria-pressed', String(type === 'monthly')); }
     if (a) { a.classList.toggle('is-on', type === 'annual');  a.setAttribute('aria-pressed', String(type === 'annual')); }
-    var bp = document.getElementById('businessPrice'), cp = document.getElementById('corporatePrice');
-    if (bp) bp.textContent = PRICES.business[type];
-    if (cp) cp.textContent = PRICES.corporate[type];
-    var bs = document.getElementById('businessSub'), cs = document.getElementById('corporateSub');
-    if (bs) bs.textContent = 'Billed monthly or annually';
-    if (cs) cs.textContent = type === 'annual' ? 'Billed annually — save 10%' : 'Billed monthly';
+    ['single', 'team', 'agency'].forEach(function (plan) {
+      var el = document.getElementById(plan + 'Price');
+      if (el) el.textContent = PRICES[plan][type];
+    });
+    var note = type === 'annual' ? 'Billed annually — two months free' : 'Billed monthly';
+    Array.prototype.forEach.call(document.querySelectorAll('.plan__note'), function (n) {
+      if (!n.classList.contains('is-cyan')) n.textContent = note;   // never touch the Free card
+    });
   };
 
   /* ---------------- email capture ---------------- */

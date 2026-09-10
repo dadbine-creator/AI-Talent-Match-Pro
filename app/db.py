@@ -229,6 +229,9 @@ class CompanyRoleORM(Base):
     skills      = Column(Text)
     boolean     = Column(Text)
     is_active   = Column(Boolean, default=True)
+    # Archiving frees a plan's active-role slot without deleting any data.
+    is_archived = Column(Boolean, default=False, index=True)
+    archived_at = Column(DateTime, nullable=True)
     is_deleted  = Column(Boolean, default=False, index=True)
     deleted_at  = Column(DateTime, nullable=True)
     updated_by  = Column(String(36), nullable=True)
@@ -1101,7 +1104,11 @@ def _run_lightweight_migrations():
              ("company_users", "linkedin_url", "VARCHAR(300)"),
              ("company_users", "job_title", "VARCHAR(120)"),
              ("companies", "trial_ends_at", "DATETIME"),
-             ("companies", "trial_reminder_sent", "BOOLEAN DEFAULT 0")]
+             ("companies", "trial_reminder_sent", "BOOLEAN DEFAULT 0"),
+             # Per-role archiving — company_roles predates this, so create_all()
+             # cannot add these and they must be ALTERed in.
+             ("company_roles", "is_archived", "BOOLEAN DEFAULT 0"),
+             ("company_roles", "archived_at", "DATETIME")]
     try:
         with engine.begin() as conn:
             for table, col, coldef in _adds:
