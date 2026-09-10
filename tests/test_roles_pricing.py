@@ -272,6 +272,45 @@ class TestFreeCandidateCap:
         assert start.day == 28, "clamped so every month is a valid date"
 
 
+class TestAiCallBackstop:
+    """The cost-optimizer allowance must come from PLANS.
+
+    It used to be a hardcoded {"free":10,"business":200,...} map. Any plan not
+    in that map fell through to 10 — so Single, Team and Agency customers would
+    all have been capped at ten AI calls a month, enforced by a limit no page
+    mentions. That is exactly the failure mode this pass was meant to remove.
+    """
+
+    def test_every_new_tier_gets_its_plans_allowance(self, session, db_module):
+        from app.main import _get_or_create_cost_optimizer, PLANS, UNLIMITED
+        import uuid as _u
+        for plan in ("free", "single", "team", "agency"):
+            cid = str(_u.uuid4())
+            session.add(db_module.CompanyORM(
+                id=cid, name="C" + plan, domain=f"{plan}-{_u.uuid4().hex[:6]}.test",
+                api_key=_u.uuid4().hex, plan=plan, is_active=True, is_deleted=False))
+            session.commit()
+            cost = _get_or_create_cost_optimizer(session, cid, plan)
+            assert cost.ai_calls_limit == PLANS[plan]["ai_calls_per_month"], (
+                f"{plan} got {cost.ai_calls_limit}, expected its PLANS allowance")
+            assert cost.ai_calls_limit >= UNLIMITED, (
+                f"{plan} must not be silently capped — candidate volume is "
+                f"governed by check_candidate_quota, not by AI-call count")
+
+    def test_legacy_plans_are_not_capped_at_ten_either(self, session, db_module):
+        from app.main import _get_or_create_cost_optimizer, PLANS
+        import uuid as _u
+        for plan in ("business", "corporate", "enterprise"):
+            cid = str(_u.uuid4())
+            session.add(db_module.CompanyORM(
+                id=cid, name="L" + plan, domain=f"{plan}-{_u.uuid4().hex[:6]}.test",
+                api_key=_u.uuid4().hex, plan=plan, is_active=True, is_deleted=False))
+            session.commit()
+            cost = _get_or_create_cost_optimizer(session, cid, plan)
+            assert cost.ai_calls_limit == PLANS[plan]["ai_calls_per_month"]
+            assert cost.ai_calls_limit > 10
+
+
 class TestUsageSummary:
 
     def test_reports_what_is_used_and_allowed(self, as_acme, tenants, seed_profiles,

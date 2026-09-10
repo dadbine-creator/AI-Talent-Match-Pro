@@ -289,7 +289,12 @@ def _get_or_create_cost_optimizer(db, company_id, plan):
     month = datetime.utcnow().strftime("%Y-%m")
     cost = db.query(CostOptimizerORM).filter(CostOptimizerORM.company_id==company_id, CostOptimizerORM.month==month).first()
     if not cost:
-        limit = {"free":10,"business":200,"corporate":1000,"enterprise":99999}.get(plan,10)
+        # Read the allowance from PLANS — a hardcoded map here silently enforced
+        # a limit the pricing page never mentioned, and gave every NEW tier the
+        # 10-call fallback (an Agency customer capped at 10 calls a month).
+        # Candidate volume is governed by roles.check_candidate_quota; this is
+        # only a backstop against runaway spend.
+        limit = PLANS.get(plan, PLANS["free"]).get("ai_calls_per_month", UNLIMITED)
         cost = CostOptimizerORM(id=str(uuid.uuid4()),company_id=company_id,month=month,ai_calls_this_month=0,ai_calls_limit=limit,ai_calls_remaining=limit,budget_limit_usd=limit*0.01)
         db.add(cost); db.commit()
     return cost
