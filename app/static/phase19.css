@@ -149,3 +149,7 @@ body { background: var(--p19-bg) !important; color: var(--p19-text) !important; 
 :root[data-theme="light"] .p17-modal-close { color: #475569 !important; }
 :root[data-theme="light"] .p17-modal-close:hover { color: #0f172a !important;
     background: rgba(0,0,0,0.06) !important; }
+/* phase17.css pins modal placeholders to white !important, which disappears
+   on the white light-theme input. Affects every modal, not just this one. */
+:root[data-theme="light"] .modal-input::placeholder,
+:root[data-theme="light"] .modal-textarea::placeholder { color: #94a3b8 !important; }
