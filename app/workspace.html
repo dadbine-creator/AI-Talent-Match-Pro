@@ -554,7 +554,7 @@ body::before {
                     ✨
                 </div>
                 <div class="center-eyebrow">Ready when you are</div>
-                <div class="center-title">Define the role.<br><span class="gradient-text">We'll dissect the market.</span></div>
+                <div class="center-title">Drop in your CVs.<br><span class="gradient-text">We'll tell you who to read.</span></div>
                 <div class="center-subtitle">
                     The AI will surface Gold / Silver / Bronze candidates — scored on adaptability, growth pattern, and role fit — with a personalised outreach message drafted for each.
                 </div>
@@ -613,12 +613,12 @@ body::before {
 
                 <!-- Deep-thinking stream -->
                 <div class="stream-label">Deep-thinking stream</div>
-                <div class="empty-hint" id="emptyAIStream">AI output will appear here once you define a role.</div>
+                <div class="empty-hint" id="emptyAIStream">Scoring appears here once you add CVs to a role.</div>
                 <div class="ai-lines" id="aiLines"></div>
 
                 <!-- Boolean Strategy -->
                 <div class="stream-label">Boolean Strategy</div>
-                <div class="empty-hint" id="emptyBoolean">Boolean strategy will appear once the AI analyzes your role.</div>
+                <div class="empty-hint" id="emptyBoolean">The traits shared by your best people appear here once you add them in Team DNA.</div>
                 <div id="booleanBox" style="display:none;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:10px;font-size:12px;color:rgba(255,255,255,0.5);">
                     <span style="font-size:10px;text-transform:uppercase;color:#4d9fff;display:block;margin-bottom:4px;">Deep boolean strategy</span>
                     <div id="booleanText"></div>
@@ -626,7 +626,7 @@ body::before {
 
                 <!-- Outreach Tracker -->
                 <div class="stream-label">AI Outreach Tracker</div>
-                <div class="empty-hint" id="emptyOutreach">Outreach tracker will appear after your first search.</div>
+                <div class="empty-hint" id="emptyOutreach">Draft messages appear here after you score candidates. You send them yourself.</div>
                 <div class="outreach-tracker" id="outreachTracker" style="display:none;">
                     <div class="outreach-tracker-title">Outreach messages</div>
                     <div id="outreachRows"></div>
@@ -660,7 +660,7 @@ body::before {
 
                 <!-- Matched Candidates -->
                 <div class="stream-label">Matched Candidates</div>
-                <div class="empty-hint" id="emptyResults">Run a search to surface Gold / Silver / Bronze profiles.</div>
+                <div class="empty-hint" id="emptyResults">Add CVs to see them ranked against your team.</div>
                 <div class="results-grid" id="resultsGrid"></div>
                 <div id="tierCardsContainer" class="tier-cards-scroll"></div>
 
@@ -674,12 +674,12 @@ body::before {
     <div class="p17-modal">
         <button class="p17-modal-close" onclick="document.getElementById('createRoleModal').style.display='none'">✕</button>
         <div class="modal-inner">
-            <div class="modal-title">Create New Role</div>
+            <div class="modal-title">New role</div>
             <div class="modal-subtitle">Define the position you want the AI to analyze.</div>
             <label class="modal-label p17-required">Position Title</label>
             <input id="newRoleTitle" class="modal-input" type="text" placeholder="Enter position title">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
-                <label class="modal-label p17-required" style="margin-bottom:0;">Job Description</label>
+                <label class="modal-label p17-required" style="margin-bottom:0;">What the role needs (optional if you use Team DNA)</label>
                 <button type="button" onclick="fillExampleJD()" style="font-size:11px;font-weight:600;color:#4d9fff;background:rgba(77,159,255,0.1);border:1px solid rgba(77,159,255,0.25);border-radius:6px;padding:3px 10px;cursor:pointer;font-family:inherit;">Try an example →</button>
             </div>
             <textarea id="newRoleDescription" class="modal-textarea" placeholder="Paste your job description here..." oninput="updateJDCounter(this)"></textarea>
@@ -687,7 +687,7 @@ body::before {
                 <div style="font-size:11px;color:rgba(255,255,255,0.3);">Minimum 100 chars for best results</div>
                 <div id="jdCounter" style="font-size:11px;color:rgba(255,255,255,0.3);">0 chars</div>
             </div>
-            <label class="modal-label p17-required">Candidates to score</label>
+            <label class="modal-label p17-required">Paste CVs here (one per block)</label>
             <textarea id="newRoleCandidates" class="modal-textarea" placeholder="Paste each candidate's résumé or LinkedIn summary here.&#10;&#10;Separate candidates with a blank line — e.g.&#10;&#10;Jane Doe — 8 yrs product at SaaS startups, led 0-1 launches...&#10;&#10;John Smith — junior analyst, 1 yr, mostly reporting..."></textarea>
             <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:2px;">One block per candidate, separated by a blank line. GPT-4o scores each against your job description.</div>
             <label class="modal-label p17-required">Location</label>
@@ -705,7 +705,7 @@ body::before {
                     <select id="filterYearsExp" class="p17-filter-select"><option value="">Select range...</option><option>0–2 years</option><option>2–5 years</option><option>5–10 years</option><option>10+ years</option></select>
                 </div>
             </div>
-            <button class="p17-search-btn" onclick="p17SearchWithAI()">Search with AI →</button>
+            <button class="p17-search-btn" onclick="p17SearchWithAI()">Score these CVs →</button>
         </div>
     </div>
 </div>
