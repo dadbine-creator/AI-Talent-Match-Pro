@@ -616,11 +616,11 @@ body::before {
                 <div class="empty-hint" id="emptyAIStream">Scoring appears here once you add CVs to a role.</div>
                 <div class="ai-lines" id="aiLines"></div>
 
-                <!-- Boolean Strategy -->
-                <div class="stream-label">Boolean Strategy</div>
+                <!-- What good looks like -->
+                <div class="stream-label">What good looks like</div>
                 <div class="empty-hint" id="emptyBoolean">The traits shared by your best people appear here once you add them in Team DNA.</div>
                 <div id="booleanBox" style="display:none;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:10px;font-size:12px;color:rgba(255,255,255,0.5);">
-                    <span style="font-size:10px;text-transform:uppercase;color:#4d9fff;display:block;margin-bottom:4px;">Deep boolean strategy</span>
+                    <span style="font-size:10px;text-transform:uppercase;color:#4d9fff;display:block;margin-bottom:4px;">The traits your best people share</span>
                     <div id="booleanText"></div>
                 </div>
 
@@ -1032,6 +1032,21 @@ async function p17SearchWithAI() {
     document.getElementById('createRoleModal').style.display = 'none';
     unlockScroll();
     window.currentRole = title;
+
+    /* Create a real role record so this shows up in Team DNA and in the plan's
+       active-role count. Before this, the modal scored candidates without ever
+       creating a role, so a role made here was invisible everywhere else. */
+    try {
+        const rr = await fetch('/api/team-dna-roles', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: title, location: (document.getElementById('newRoleLocation')?.value || '').trim() })
+        });
+        if (rr.ok) { const rj = await rr.json(); window.currentRoleId = rj.id || null; }
+        else if (rr.status === 402) {
+            const e = await rr.json().catch(() => ({}));
+            wsToast(e.detail || 'Plan limit reached', 'error');
+        }
+    } catch (e) { /* scoring still works without a role record */ }
     const container = document.getElementById('p17ResultsContainer');
     container.style.display = 'block';
     const thinkingBox = document.getElementById('p17ThinkingBox');
@@ -1054,7 +1069,8 @@ async function p17SearchWithAI() {
     try {
         const res = await fetch('/api/candidates/score', {
             method:'POST', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({ role_title:title, job_description:jd, resumes })
+            body: JSON.stringify({
+                job_id: window.currentRoleId || null, role_title:title, job_description:jd, resumes })
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok || !data.ok) {

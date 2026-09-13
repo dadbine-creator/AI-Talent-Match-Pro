@@ -819,7 +819,7 @@
         <!-- GRADE ENDPOINT -->
         <div class="section" id="grade">
             <div class="section-title">Search Candidates</div>
-            <p class="section-desc">Source candidates from a job description across 275M+ profiles (requires Apollo). To score candidates you already have — with Gold / Silver / Bronze tiers and reasoning — use <strong>POST /api/candidates/score</strong>.</p>
+            <p class="section-desc">Not implemented. Candidate sourcing would require an Apollo key, which is not configured — this endpoint returns an honest 501. To score candidates you already have — with Gold / Silver / Bronze tiers and reasoning — use <strong>POST /api/candidates/score</strong>.</p>
 
             <div class="latency-banner">
                 <div class="latency-val">&lt;100ms</div>
@@ -847,7 +847,7 @@
                             <td><span class="param-name">job_description</span></td>
                             <td><span class="param-type">string</span></td>
                             <td><span class="param-req">Required</span></td>
-                            <td class="param-desc">The role and its requirements, as free text. Used to source matching candidates.</td>
+                            <td class="param-desc">The role and its requirements, as free text.</td>
                         </tr>
                     </table>
 
@@ -914,7 +914,7 @@ data = response.json()
                         <pre>{
   <span class="tk">"ok"</span>: <span class="tn">true</span>,
   <span class="tk">"configured"</span>: <span class="tn">true</span>,
-  <span class="tk">"message"</span>: <span class="ts">"Apollo is connected — call POST /api/apollo/search to source candidates."</span>
+  <span class="tk">"error"</span>: <span class="ts">"Candidate sourcing isn't connected — add APOLLO_API_KEY to enable it. To score candidates you already have, use POST /api/candidates/score."</span>
 }</pre>
                     </div>
                     <p style="font-size:13px;color:var(--text-muted);margin-top:12px;line-height:1.6;">
@@ -924,8 +924,8 @@ data = response.json()
                         send candidates you already have to <strong>POST /api/candidates/score</strong>.
                     </p>
                 </div>
-            </div>
-        </div>
+            
+        
 
         <!-- TIER SYSTEM -->
         <div class="section" id="tier-system">
@@ -1100,7 +1100,7 @@ data = response.json()
         <a class="doc-nav-link" href="#linkedin">LinkedIn Integration</a>
     </aside>
 
-</div>
+
 
 <script>
 function copyCode(btn) {
