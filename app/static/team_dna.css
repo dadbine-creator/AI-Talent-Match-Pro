@@ -237,3 +237,38 @@
     .tdna-body { padding: 16px; }
     .tdna-head { padding: 16px 16px 13px; }
 }
+
+/* ── outcome stage control on a result card ─────────────── */
+.tdna-stage { display:flex; align-items:center; gap:9px; margin-top:8px; }
+.tdna-stage select {
+    flex:1; padding:7px 10px; border-radius:8px; font-size:11.5px; font-family:inherit;
+    background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.12);
+    color:rgba(255,255,255,0.75); outline:none; cursor:pointer;
+}
+.tdna-stage select:focus { border-color:#4d9fff; }
+.tdna-stage select:disabled { opacity:.5; cursor:default; }
+.tdna-stage option { background:#0b1428; color:#fff; }
+.tdna-stage-state { font-size:11px; color:rgba(255,255,255,0.35); white-space:nowrap; }
+.tdna-stage-state.is-saved { color:#00d68f; }
+.tdna-stage-state.is-err   { color:#ff7a7a; }
+
+/* ── Results: score band → outcome ───────────────────────── */
+.bandlist { display:flex; flex-direction:column; gap:10px; }
+.band {
+    padding:14px 16px; border-radius:12px;
+    background:rgba(255,255,255,0.025); border:1px solid var(--line, rgba(255,255,255,0.09));
+}
+.band--thin { opacity:.55; }
+.band__h { display:flex; align-items:baseline; gap:10px; margin-bottom:10px; }
+.band__h b { font-size:14px; color:#fff; font-weight:700; }
+.band__n { font-size:11px; color:rgba(255,255,255,0.35); margin-right:auto; }
+.band__msg { font-size:12px; color:rgba(255,255,255,0.4); font-style:italic; }
+.band__note { font-size:11.5px; color:rgba(255,255,255,0.32); margin-top:6px; }
+.band__m { display:flex; align-items:center; gap:11px; margin-bottom:7px; }
+.band__ml { font-size:11.5px; color:rgba(200,220,255,0.6); width:170px; flex:0 0 auto; }
+.band__bar { flex:1; height:7px; border-radius:999px; background:rgba(255,255,255,0.06); overflow:hidden; }
+.band__fill { height:100%; border-radius:999px; transition:width .4s ease; }
+.band__mv { font-size:12px; font-weight:700; color:#fff; width:74px; text-align:left; flex:0 0 auto; }
+.band__mv span { display:block; font-size:10px; font-weight:400; color:rgba(255,255,255,0.3); }
+
+@media (max-width:560px){ .band__ml { width:110px; } }

@@ -2,43 +2,138 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Billing | AI Talent Match‑Pro</title>
-
-    <!-- Use product theme -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Billing | AI Talent Match·Pro</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/static/at-hexagon.png" />
     <link rel="stylesheet" href="/static/styles.css" />
+    <style>
+        .bill-wrap { max-width: 640px; margin: 0 auto; padding: 56px 24px 72px; }
+        .bill-title { font-size: 30px; font-weight: 800; color: #fff; margin-bottom: 10px; letter-spacing: -.02em; }
+        .bill-sub { font-size: 15px; color: rgba(200,220,255,.55); line-height: 1.7; margin-bottom: 30px; }
+        .bill-card { background: rgba(10,20,40,.6); border: 1px solid rgba(59,130,246,.16);
+                     border-radius: 14px; padding: 20px 22px; margin-bottom: 14px; }
+        .bill-card h2 { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+        .bill-row { display: flex; align-items: baseline; gap: 10px; font-size: 14px;
+                    color: rgba(200,220,255,.7); padding: 7px 0; }
+        .bill-row b { color: #fff; font-weight: 700; }
+        .bill-row .muted { color: rgba(255,255,255,.35); font-size: 12.5px; margin-inline-start: auto; }
+        .bill-note { font-size: 12.5px; color: rgba(255,255,255,.38); line-height: 1.7; margin-top: 14px; }
+        .bill-btn { display: inline-block; padding: 12px 22px; border-radius: 10px;
+                    background: #1d6ef5; color: #fff; font-weight: 700; font-size: 14px;
+                    text-decoration: none; margin-top: 6px; }
+        .bill-btn:hover { background: #2f9bff; }
+        .bill-btn--ghost { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12);
+                           color: rgba(255,255,255,.7); }
+        .bill-usage { height: 7px; border-radius: 999px; background: rgba(255,255,255,.07);
+                      overflow: hidden; margin: 6px 0 2px; }
+        .bill-usage span { display: block; height: 100%; border-radius: 999px; background: #4d9fff; }
+    </style>
 </head>
-
 <body>
 
-    <!-- TOP NAV -->
-    <header class="top-nav">
-        <a href="/" class="nav-link">Home</a>
-        <a href="/login" class="nav-link">Sign in</a>
-    </header>
+<header class="top-nav">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/workspace" class="nav-link">Workspace</a>
+    <a href="/plans" class="nav-link">Plans</a>
+</header>
 
-    <!-- BILLING SECTION -->
-    <section id="auth-hero">
-        <div class="billing-container fade-up">
+<section id="auth-hero">
+  <div class="bill-wrap">
 
-            <h1 class="billing-title">Activate Your Trial</h1>
-            <p class="auth-subtitle">
-                Start your 7-day free trial. A card is required to start it — you're not
-                charged until the trial ends, and you can cancel anytime before day 7.
-            </p>
+    <h1 class="bill-title">Billing</h1>
+    <p class="bill-sub">
+        Your plan, what you've used this month, and how to change it.
+    </p>
 
-            <!-- Card details are collected securely by our payment processor (Paddle) on their
-                 hosted checkout — never entered or stored on this site (PCI compliance). -->
-            <button class="primary-button billing-btn" onclick="window.location.href='/plans'">
-                <span class="icon">🚀</span> Choose a plan &amp; start trial
-            </button>
-
-            <p class="auth-note" style="text-align:center; margin-top:12px;">
-                You won’t be charged until your trial ends. Payment is handled securely by Paddle.
-            </p>
-
+    <div class="bill-card">
+        <h2>Your plan</h2>
+        <div id="billPlan">
+            <div class="bill-row">Loading…</div>
         </div>
-    </section>
+        <a class="bill-btn" href="/plans">Change plan</a>
+    </div>
+
+    <div class="bill-card">
+        <h2>This month</h2>
+        <div id="billUsage">
+            <div class="bill-row">Loading…</div>
+        </div>
+    </div>
+
+    <div class="bill-card">
+        <h2>Payment</h2>
+        <p class="bill-note" id="billPayment">
+            Card details are handled by our payment processor on their own hosted
+            checkout — they are never entered on this site and never stored here.
+        </p>
+    </div>
+
+    <p class="bill-note">
+        The Free plan needs no card and does not expire. Paid plans can be cancelled
+        at any time — you keep access until the end of the period you've paid for,
+        then the account returns to Free. Your data stays either way.
+        See the <a href="/refund" style="color:#4d9fff;">refund policy</a>.
+    </p>
+
+  </div>
+</section>
+
+<script>
+/* Reads the real plan and usage. Shows what is actually recorded — never a
+   placeholder number, and never a trial countdown (there is no trial). */
+(async function () {
+    function row(label, value, muted) {
+        return '<div class="bill-row">' + label + ' <b>' + value + '</b>' +
+               (muted ? '<span class="muted">' + muted + '</span>' : '') + '</div>';
+    }
+    function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+            return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+        });
+    }
+    try {
+        var res = await fetch('/api/plan/usage');
+        if (res.status === 401) { window.location.href = '/login'; return; }
+        var u = await res.json();
+
+        document.getElementById('billPlan').innerHTML =
+            row('Plan', esc(u.plan_name || u.plan));
+
+        var roles = u.active_roles || {};
+        var cands = u.candidates_this_month || {};
+
+        var html = '';
+        html += row('Active roles', roles.used + (roles.unlimited ? ' of unlimited'
+                                                                 : ' of ' + roles.limit));
+        if (!roles.unlimited && roles.limit) {
+            html += '<div class="bill-usage"><span style="width:' +
+                    Math.min(100, Math.round(roles.used / roles.limit * 100)) + '%"></span></div>';
+        }
+        if (cands.unlimited) {
+            html += row('Candidates scored', 'unlimited');
+        } else {
+            html += row('Candidates scored', cands.used + ' of ' + cands.limit);
+            html += '<div class="bill-usage"><span style="width:' +
+                    Math.min(100, Math.round(cands.used / cands.limit * 100)) + '%"></span></div>';
+            html += '<p class="bill-note">Resets on your signup date each month.</p>';
+        }
+        document.getElementById('billUsage').innerHTML = html;
+
+        if ((u.plan || 'free') === 'free') {
+            document.getElementById('billPayment').innerHTML =
+                'No payment method on file — the Free plan does not need one. ' +
+                'Card details are only collected on a paid plan, by our payment ' +
+                'processor on their own hosted checkout. They are never entered ' +
+                'on this site and never stored here.';
+        }
+    } catch (e) {
+        document.getElementById('billPlan').innerHTML =
+            '<div class="bill-row">Could not load your plan just now — refresh to try again.</div>';
+        document.getElementById('billUsage').innerHTML = '';
+    }
+})();
+</script>
 
 </body>
 </html>
-

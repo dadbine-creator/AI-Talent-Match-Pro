@@ -229,6 +229,10 @@ class CompanyRoleORM(Base):
     skills      = Column(Text)
     boolean     = Column(Text)
     is_active   = Column(Boolean, default=True)
+    # Per-role inbound email address. Random, not derived from the id — it
+    # ends up in job-board settings and forwarded headers, so it must be
+    # revocable on its own and reveal nothing.
+    intake_token = Column(String(32), nullable=True, unique=True, index=True)
     # Archiving frees a plan's active-role slot without deleting any data.
     is_archived = Column(Boolean, default=False, index=True)
     archived_at = Column(DateTime, nullable=True)
@@ -1142,7 +1146,8 @@ def _run_lightweight_migrations():
              # Per-role archiving — company_roles predates this, so create_all()
              # cannot add these and they must be ALTERed in.
              ("company_roles", "is_archived", "BOOLEAN DEFAULT 0"),
-             ("company_roles", "archived_at", "DATETIME")]
+             ("company_roles", "archived_at", "DATETIME"),
+             ("company_roles", "intake_token", "VARCHAR(32)")]
     try:
         with engine.begin() as conn:
             for table, col, coldef in _adds:

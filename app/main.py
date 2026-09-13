@@ -168,6 +168,10 @@ app.include_router(roles_router)
 from app.integrations_routes import router as ats_router
 app.include_router(ats_router)
 
+# ── Candidates arriving by email, one address per role (additive) ──
+from app.intake_routes import router as intake_router
+app.include_router(intake_router)
+
 # ============================================================
 # GLOBAL EXCEPTION HANDLER
 # ============================================================
@@ -491,6 +495,14 @@ def dashboard_page(request: Request, user_email: str = Depends(require_user)):
 
 @app.get("/job", response_class=HTMLResponse)
 def job_page(request: Request, job: str = None): return FileResponse("app/job.html")
+
+@app.get("/billing", response_class=HTMLResponse)
+def billing_page(request: Request):
+    """Plan and usage. The footer linked here but no route existed — /billing
+    404'd on the live site."""
+    if not request.session.get("company_user_id"):
+        return RedirectResponse(url="/login", status_code=302)
+    return FileResponse("app/billing.html")
 
 @app.get("/analytics", response_class=HTMLResponse)
 def analytics_page(request: Request):

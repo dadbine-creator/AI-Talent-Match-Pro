@@ -173,6 +173,10 @@
                 'No exemplars yet. Add 2–5 CVs or profiles of people already on your team who are excellent in this role.' +
                 '</div>';
         }
+        html += '<div class="tdna-row" style="margin-bottom:14px;">' +
+            '<button class="tdna-btn tdna-btn--ghost" onclick="tdnaShowResults()">📊 Results — do the scores predict your hires?</button>' +
+            '</div>';
+
         html += '<div class="tdna-row">' +
             '<span class="tdna-counter' + (ready ? ' ready' : '') + '">' +
                 profiles.length + ' of 5 · ' + (ready ? 'ready to build' : 'need at least 2') +
@@ -474,6 +478,83 @@
                     stageRow(r.id) +
                 '</div>';
         }).join('');
+    }
+
+    /* ── Results: does the score predict the hire? ─────────
+       The whole point of recording outcomes. Suppressed below 5 candidates
+       in a band — a hire rate from 3 people is noise, and once it is on a
+       screen someone will quote it. */
+
+    window.tdnaShowResults = async function () {
+        var host = el('tdnaBody');
+        if (!host || !state.roleId) return;
+        host.innerHTML = '<div class="tdna-empty">Reading your recorded outcomes…</div>';
+        try {
+            var s = await api('/api/outcomes/stats?role_id=' + encodeURIComponent(state.roleId));
+            renderResultsTab(s);
+        } catch (e) {
+            host.innerHTML = '<div class="tdna-alert">' + esc(e.message) + '</div>';
+        }
+    };
+
+    function renderResultsTab(s) {
+        var host = el('tdnaBody');
+        var bands = s.bands || [];
+        var anyData = (s.total_outcomes || 0) > 0;
+
+        var html = '<div class="tdna-row" style="margin-bottom:16px;">' +
+            '<button class="tdna-btn tdna-btn--ghost" onclick="TeamDNA.reload()">&larr; Back to Team DNA</button>' +
+            '<span class="tdna-counter">' + (s.total_outcomes || 0) + ' outcomes recorded</span>' +
+            (s.retention_follow_ups_due
+                ? '<span class="tdna-counter" style="background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.3);color:#f5a623;">' +
+                  s.retention_follow_ups_due + ' due a 12-month check</span>' : '') +
+            '</div>';
+
+        if (!anyData) {
+            html += '<div class="tdna-empty" style="padding:34px 20px;">' +
+                '<div style="font-size:15px;color:rgba(255,255,255,0.6);margin-bottom:8px;">Nothing recorded yet</div>' +
+                'Mark candidates as Interviewed or Hired on their cards.<br />' +
+                'Once five land in a score band, you will see whether the scores predict your hires.' +
+                '</div>';
+            host.innerHTML = html;
+            return;
+        }
+
+        html += '<div class="tdna-section"><div class="tdna-section-title">' +
+                'Does the score predict the hire?</div>';
+
+        html += '<div class="bandlist">' + bands.map(function (b) {
+            if (b.insufficient_data) {
+                return '<div class="band band--thin">' +
+                    '<div class="band__h"><b>' + esc(b.label) + '</b>' +
+                    '<span class="band__n">' + b.candidates + ' of ' + b.min_sample + '</span></div>' +
+                    '<div class="band__msg">Not enough data yet</div></div>';
+            }
+            return '<div class="band">' +
+                '<div class="band__h"><b>' + esc(b.label) + '</b>' +
+                '<span class="band__n">' + b.candidates + ' candidates</span></div>' +
+                metric('Reached interview', b.reached_interview, b.candidates, b.reached_interview_pct, '#4d9fff') +
+                metric('Hired', b.hired, b.candidates, b.hired_pct, '#00d68f') +
+                (b.retention_checked
+                    ? metric('Still employed at 12 months', b.still_employed, b.retention_checked,
+                             b.still_employed_pct, '#f5a623')
+                    : '<div class="band__note">' + esc(b.retention_note || 'No 12-month checks answered yet.') + '</div>') +
+                '</div>';
+        }).join('') + '</div>';
+
+        html += '<div class="tdna-hint" style="margin-top:14px;">' + esc(s.disclaimer || '') + '</div>';
+        html += '</div>';
+        host.innerHTML = html;
+    }
+
+    function metric(label, num, den, pct, colour) {
+        var width = (pct == null ? 0 : Math.max(0, Math.min(100, pct)));
+        return '<div class="band__m">' +
+            '<div class="band__ml">' + esc(label) + '</div>' +
+            '<div class="band__bar"><div class="band__fill" style="width:' + width + '%;background:' + colour + ';"></div></div>' +
+            '<div class="band__mv">' + (pct == null ? '—' : pct + '%') +
+            '<span>' + num + '/' + den + '</span></div>' +
+            '</div>';
     }
 
     /* ── outcomes: what actually happened ──────────────────
