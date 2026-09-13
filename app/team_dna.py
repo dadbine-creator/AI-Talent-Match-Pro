@@ -2,7 +2,7 @@
 # ============================================================
 # AI Talent Match Pro — Team DNA
 #
-# Learns what "good" looks like at ONE specific company by reading 2-5
+# Learns what "good" looks like at ONE specific company by reading 2-10
 # exemplar employees the recruiter already rates highly, then scores new
 # candidates against that instead of against a pasted job description.
 #
@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import logging
 import re
 import time
@@ -31,8 +32,14 @@ from app.ai_engine import get_openai_client
 logger = logging.getLogger(__name__)
 
 MIN_PROFILES = 2
-MAX_PROFILES = 5
-MAX_PROFILE_CHARS = 6000       # per exemplar, so 5 of them still fit comfortably
+MAX_PROFILES = 10
+MAX_PROFILE_CHARS = 6000       # per exemplar; 10 of them is ~15k tokens, well
+                               # inside the context window for one cached call
+
+# Share of the roster a trait must appear in before it counts as SHARED.
+# Held at a 2-profile floor so small rosters behave exactly as they always
+# have: at 2-5 exemplars this still resolves to 2.
+SHARED_TRAIT_RATIO = 0.4
 MAX_FEEDBACK_EXAMPLES = 20
 
 
@@ -107,8 +114,20 @@ short honest list beats a long speculative one.
 # TRAIT EXTRACTION
 # ============================================================
 
+def shared_trait_threshold(n: int) -> int:
+    """How many exemplars must show a trait before it counts as shared.
+
+    Proportional, not absolute. "At least 2" is a real pattern in a roster of
+    5 and noise in a roster of 10 — an absolute bar gets looser every time the
+    recruiter adds someone, which is backwards. Floored at MIN_PROFILES so
+    rosters of 2-5 keep the exact behaviour they had before.
+    """
+    return max(MIN_PROFILES, math.ceil(n * SHARED_TRAIT_RATIO))
+
+
 def build_dna_prompt(profiles: List[dict]) -> str:
     """profiles: [{"name": str, "raw_text": str}]"""
+    min_shared = shared_trait_threshold(len(profiles))
     roster = "\n\n".join(
         f"[Employee {i + 1}] {(p.get('name') or f'Employee {i + 1}')}\n"
         f"{(p.get('raw_text') or '').strip()[:MAX_PROFILE_CHARS]}"
@@ -123,9 +142,10 @@ have in common professionally, so new candidates can be compared against it.
 
 {_GUARDRAIL_BLOCK}
 
-A trait only counts as SHARED if it appears in at least 2 of the {len(profiles)}
-profiles. Weight it 1-10 by how strongly and consistently the evidence supports
-it — not by how impressive it sounds.
+A trait only counts as SHARED if it appears in at least {min_shared} of the
+{len(profiles)} profiles. Weight it 1-10 by how strongly and consistently the
+evidence supports it — not by how impressive it sounds. A trait present in
+nearly all of them is worth more than one present in just {min_shared}.
 
 ANTI-SIGNALS are patterns visibly ABSENT across this whole group (for example
 "no one here came from big-agency consulting"). State them as observations about

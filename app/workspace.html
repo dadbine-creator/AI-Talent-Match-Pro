@@ -885,7 +885,7 @@ body::before {
       <div>
         <h2>Team DNA</h2>
         <p>Score candidates against your own best people — not a job ad.<br />
-           Add 2–5 team members who are great at this role, and the engine learns the pattern.</p>
+           Add 2–10 team members who are great at this role, and the engine learns the pattern.</p>
       </div>
       <button class="tdna-close" onclick="closeTeamDNA()" aria-label="Close">✕</button>
     </div>
@@ -1073,7 +1073,7 @@ function p17PickedExemplars(input) {
     var l = document.getElementById('dnaDropLabel');
     if (l) l.textContent = window.p17Exemplars.length
         ? window.p17Exemplars.length + ' CV(s) selected — the benchmark'
-        : 'Drop 2–5 CVs here, or click to choose';
+        : 'Drop 2–10 CVs here, or click to choose';
 }
 
 function p17PickedCandidates(input) {
@@ -1105,7 +1105,7 @@ async function p17StartRole() {
     }
     // No benchmark and no job description means nothing to score against.
     if (!exemplars.length && !jd) {
-        wsToast('Either upload 2–5 of your good people, or add a job description', 'error');
+        wsToast('Either upload 2–10 of your good people, or add a job description', 'error');
         document.getElementById('jdWrap').style.display = 'block';
         return;
     }

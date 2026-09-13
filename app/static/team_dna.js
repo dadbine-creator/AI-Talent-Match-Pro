@@ -146,7 +146,7 @@
         }
         if (opts.empty) {
             host.innerHTML = '<div class="tdna-empty">' +
-                'Create a role first, then add 2–5 people already on your team who are great at it.' +
+                'Create a role first, then add 2–10 people already on your team who are great at it.' +
                 '</div>';
             return;
         }
@@ -170,7 +170,7 @@
             }).join('') + '</div>';
         } else {
             html += '<div class="tdna-hint" style="margin-bottom:12px;">' +
-                'No exemplars yet. Add 2–5 CVs or profiles of people already on your team who are excellent in this role.' +
+                'No exemplars yet. Add 2–10 CVs or profiles of people already on your team who are excellent in this role.' +
                 '</div>';
         }
         html += '<div class="tdna-row" style="margin-bottom:14px;">' +

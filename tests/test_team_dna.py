@@ -409,6 +409,32 @@ class TestTraitExtractionParsing:
         with pytest.raises(TeamDNAError):
             extract_traits([{"name": "many", "raw_text": "x"}] * (MAX_PROFILES + 1))
 
+    def test_shared_trait_bar_scales_with_the_roster(self):
+        """An absolute "at least 2" bar gets LOOSER as the roster grows: 2 of 5
+        is a pattern, 2 of 10 is noise. The bar has to scale with the group."""
+        from app.team_dna import shared_trait_threshold, MIN_PROFILES, MAX_PROFILES
+
+        # Rosters of 2-5 must behave exactly as they did before the cap moved,
+        # or every existing customer's DNA silently changes meaning.
+        for n in range(MIN_PROFILES, 6):
+            assert shared_trait_threshold(n) == 2, f"{n} exemplars must still need 2"
+
+        # Beyond that it tightens, and never demands more than the roster holds.
+        assert shared_trait_threshold(10) == 4
+        for n in range(MIN_PROFILES, MAX_PROFILES + 1):
+            bar = shared_trait_threshold(n)
+            assert MIN_PROFILES <= bar <= n
+            assert bar >= shared_trait_threshold(n - 1) if n > MIN_PROFILES else True
+
+    def test_the_prompt_states_the_scaled_bar_not_a_fixed_two(self):
+        """The threshold only does anything if it reaches the model."""
+        from app.team_dna import build_dna_prompt
+        profiles = [{"name": f"E{i}", "raw_text": "ships payments infrastructure"}
+                    for i in range(10)]
+        prompt = build_dna_prompt(profiles)
+        assert "at least 4 of" in prompt
+        assert "at least 2 of the 10" not in prompt
+
     def test_ai_backend_failure_is_an_honest_error(self, monkeypatch):
         import app.team_dna as team_dna
         def _boom():
