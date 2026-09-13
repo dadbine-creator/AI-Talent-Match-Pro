@@ -565,9 +565,20 @@ def plans_page(): return FileResponse("app/plans.html")
 @app.get("/api-docs", response_class=HTMLResponse)
 def api_docs_page(): return FileResponse("app/api_docs.html")
 @app.get("/admin", response_class=HTMLResponse)
-def admin_page(): return FileResponse("app/admin.html")
+def admin_page(request: Request):
+    """Admin console. Was served to anyone — the page itself leaked the
+    internal feature set and endpoint names even though its API calls 401.
+    Gated on login here; the APIs it calls still enforce the admin role."""
+    if not request.session.get("company_user_id"):
+        return RedirectResponse(url="/login", status_code=302)
+    return FileResponse("app/admin.html")
+
 @app.get("/developer", response_class=HTMLResponse)
-def developer_page(): return FileResponse("app/developer.html")
+def developer_page(request: Request):
+    """Developer console — same problem, same fix."""
+    if not request.session.get("company_user_id"):
+        return RedirectResponse(url="/login", status_code=302)
+    return FileResponse("app/developer.html")
 
 # ============================================================
 # LEGACY AUTH
