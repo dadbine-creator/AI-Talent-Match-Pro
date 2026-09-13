@@ -213,140 +213,14 @@ def get_model_for_path(path: str, tier: str = "gold") -> str:
 
 
 # ============================================================
-# 41.5 — PARTNER MARKETPLACE
+# 41.5 — PARTNER MARKETPLACE (removed)
+#
+# There was a catalog here offering Indeed, Zapier and Make.com as
+# "available", plus an install_partner() that wrote a row and reported
+# "installed successfully" while connecting to nothing. Nothing implemented
+# any of them. The real integrations live in partner_credentials.py and are
+# served by /api/ats/partners, which offers Greenhouse and Lever only.
 # ============================================================
-
-PARTNER_CATALOG = {
-    "greenhouse": {
-        "name":        "Greenhouse",
-        "category":    "ATS",
-        "description": "Sync candidates and pipeline stages with Greenhouse ATS",
-        "icon":        "🌱",
-        "status":      "available",
-        "webhook":     True,
-        "oauth":       False,
-    },
-    "lever": {
-        "name":        "Lever",
-        "category":    "ATS",
-        "description": "Two-way sync with Lever recruiting platform",
-        "icon":        "⚙️",
-        "status":      "available",
-        "webhook":     True,
-        "oauth":       False,
-    },
-    "workday": {
-        "name":        "Workday",
-        "category":    "HRIS",
-        "description": "Enterprise HRIS integration — coming post-acquisition",
-        "icon":        "🏢",
-        "status":      "coming_soon",
-        "webhook":     False,
-        "oauth":       True,
-    },
-    "indeed": {
-        "name":        "Indeed",
-        "category":    "Job Board",
-        "description": "Pull candidate applications from Indeed",
-        "icon":        "🔍",
-        "status":      "available",
-        "webhook":     True,
-        "oauth":       False,
-    },
-    "zapier": {
-        "name":        "Zapier",
-        "category":    "Automation",
-        "description": "Connect AITMP to 5,000+ apps via Zapier",
-        "icon":        "⚡",
-        "status":      "available",
-        "webhook":     True,
-        "oauth":       False,
-    },
-    "make": {
-        "name":        "Make.com",
-        "category":    "Automation",
-        "description": "Visual automation for recruiting workflows",
-        "icon":        "🔄",
-        "status":      "available",
-        "webhook":     True,
-        "oauth":       False,
-    },
-    "linkedin": {
-        "name":        "LinkedIn Talent Solutions",
-        "category":    "Talent Network",
-        "description": "LinkedIn Talent Graph sync — post-acquisition",
-        "icon":        "🔷",
-        "status":      "partner_pending",
-        "webhook":     True,
-        "oauth":       True,
-    },
-}
-
-
-def get_partner_catalog() -> dict:
-    return {
-        "ok":       True,
-        "partners": list(PARTNER_CATALOG.values()),
-        "total":    len(PARTNER_CATALOG),
-        "available": sum(1 for p in PARTNER_CATALOG.values() if p["status"] == "available"),
-    }
-
-
-def install_partner(db: Session, company_id: str, partner_key: str, config: dict) -> dict:
-    """Install a partner integration."""
-    if partner_key not in PARTNER_CATALOG:
-        return {"ok": False, "error": f"Partner '{partner_key}' not found"}
-
-    partner = PARTNER_CATALOG[partner_key]
-    if partner["status"] not in ("available",):
-        return {"ok": False, "error": f"Partner '{partner_key}' is not available yet: {partner['status']}"}
-
-    # Check if already installed
-    existing = db.query(PartnerInstallORM).filter(
-        PartnerInstallORM.company_id  == company_id,
-        PartnerInstallORM.partner_key == partner_key,
-        PartnerInstallORM.is_active   == True,
-    ).first()
-
-    if existing:
-        return {"ok": False, "error": f"Partner '{partner_key}' is already installed"}
-
-    install = PartnerInstallORM(
-        id=str(uuid.uuid4()),
-        company_id=company_id,
-        partner_key=partner_key,
-        config_json=json.dumps(config),
-    )
-    db.add(install)
-    try:
-        db.commit()
-    except Exception:
-        db.rollback()
-        return {"ok": False, "error": "Installation failed"}
-
-    return {"ok": True, "partner": partner_key, "message": f"{partner['name']} installed successfully"}
-
-
-def uninstall_partner(db: Session, company_id: str, partner_key: str) -> dict:
-    """Uninstall a partner integration."""
-    install = db.query(PartnerInstallORM).filter(
-        PartnerInstallORM.company_id  == company_id,
-        PartnerInstallORM.partner_key == partner_key,
-        PartnerInstallORM.is_active   == True,
-    ).first()
-
-    if not install:
-        return {"ok": False, "error": "Partner not installed"}
-
-    install.is_active      = False
-    install.uninstalled_at = datetime.utcnow()
-    try:
-        db.commit()
-    except Exception:
-        db.rollback()
-
-    return {"ok": True, "message": f"{partner_key} uninstalled"}
-
 
 # ============================================================
 # 41.6 — COMPLIANCE LAYER (SOC2 / GDPR / CCPA)

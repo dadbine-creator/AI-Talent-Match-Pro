@@ -29,6 +29,25 @@ class TestOnlyRealPartnersOffered:
         for gone in ("salesforce", "hubspot", "workday", "bamboo"):
             assert gone not in names, f"{gone} has no implementation and must not be offered"
 
+    def test_the_second_fake_catalog_is_gone(self, as_acme, tenants):
+        """A competing catalog lived at /api/partners/* and contradicted this
+        one: it offered Indeed, Zapier and Make as "available", and its
+        install wrote a row and answered "installed successfully" while
+        connecting to nothing. /api/ats/partners is the only catalog now."""
+        for path in ("/api/partners/catalog", "/api/partners/installed"):
+            assert as_acme.get(path).status_code == 404, f"{path} must not exist"
+        res = as_acme.post("/api/partners/install",
+                           json={"partner_key": "indeed", "config": {}})
+        assert res.status_code == 404, "installing a fictional partner must not be possible"
+
+    def test_readiness_does_not_claim_unbuilt_partners_are_ready(self, as_acme, tenants):
+        """The readiness sheet listed zapier and make as "ready" alongside the
+        two that genuinely are. Inbound Zapier webhooks do work, but nothing
+        made either one a ready *partner integration*."""
+        body = as_acme.get("/api/partners/readiness").json()["partners"]
+        ready = {k for k, v in body.items() if v.get("status") == "ready"}
+        assert ready == {"greenhouse", "lever"}, f"unexpected ready partners: {ready}"
+
     def test_connecting_an_unsupported_partner_is_refused(self, as_acme, tenants):
         res = as_acme.post("/api/ats/salesforce/connect",
                            json={"api_key": "x" * 24, "account_ref": "acme"})

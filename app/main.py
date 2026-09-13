@@ -3399,8 +3399,6 @@ def api_partners_readiness():
         "partners": {
             "greenhouse": {"status": "ready", "webhook": True,  "oauth": False, "docs": "/api-docs#greenhouse"},
             "lever":      {"status": "ready", "webhook": True,  "oauth": False, "docs": "/api-docs#lever"},
-            "zapier":     {"status": "ready", "webhook": True,  "oauth": False, "docs": "/api-docs#zapier"},
-            "make":       {"status": "ready", "webhook": True,  "oauth": False, "docs": "/api-docs#make"},
             # FIX E-4: honest status — LinkedIn is pending Partner Program approval, no OAuth today.
             "linkedin":   {"status": "pending_partner_approval", "webhook": False, "oauth": False, "docs": "/api-docs#linkedin"},
             "workday":    {"status": "planned","webhook": False, "oauth": False, "docs": None},
@@ -3558,12 +3556,11 @@ from app.mobile_engine import (
     create_mobile_token, validate_mobile_token, mobile_candidate,
     generate_webhook_signature, add_to_dlq, get_webhook_failures, replay_webhook,
     get_ai_path, get_model_for_path,
-    get_partner_catalog, install_partner, uninstall_partner,
     log_compliance_event, export_company_data, delete_candidate_data, get_compliance_audit_log,
     get_linkedin_graph_status, SWIFT_SNIPPET, KOTLIN_SNIPPET,
 )
 from app.db import (
-    WebhookDLQORM, ComplianceLogORM, PartnerInstallORM, MobileSessionORM
+    WebhookDLQORM, ComplianceLogORM, MobileSessionORM
 )
 
 # ── Mobile API ─────────────────────────────────────────────
@@ -3650,42 +3647,6 @@ def api_ai_path(action: str = "scoring"):
         "hot_actions":  list(["scoring","signals","forecast","copilot","interview_questions","scorecard"]),
         "cold_actions": list(["narrative","digest","coaching","deep_analytics","batch_outreach"]),
     }
-
-# ── Partner Marketplace ────────────────────────────────────
-
-@app.get("/api/partners/catalog")
-def api_partners_catalog():
-    return get_partner_catalog()
-
-@app.post("/api/partners/install")
-async def api_partners_install(request: Request, db: Session = Depends(get_db)):
-    company, user = get_current_company_user(request, db)
-    body = await request.json()
-    partner_key = body.get("partner_key", "")
-    config = body.get("config", {})
-    result = install_partner(db, company.id, partner_key, config)
-    if result["ok"]:
-        log_compliance_event(db, company.id, "partner_install", "partner", partner_key, user_id=user.id)
-    return result
-
-@app.post("/api/partners/uninstall")
-async def api_partners_uninstall(request: Request, db: Session = Depends(get_db)):
-    company, user = get_current_company_user(request, db)
-    body = await request.json()
-    partner_key = body.get("partner_key", "")
-    result = uninstall_partner(db, company.id, partner_key)
-    if result["ok"]:
-        log_compliance_event(db, company.id, "partner_uninstall", "partner", partner_key, user_id=user.id)
-    return result
-
-@app.get("/api/partners/installed")
-def api_partners_installed(request: Request, db: Session = Depends(get_db)):
-    company, user = get_current_company_user(request, db)
-    installs = db.query(PartnerInstallORM).filter(
-        PartnerInstallORM.company_id == company.id,
-        PartnerInstallORM.is_active  == True,
-    ).all()
-    return {"ok": True, "installed": [{"partner_key": i.partner_key, "installed_at": i.installed_at.isoformat()} for i in installs]}
 
 # ── Compliance Layer ───────────────────────────────────────
 

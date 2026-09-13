@@ -6,67 +6,11 @@
 console.log('[Phase 41] Post-Acquisition Integration loaded ✓');
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('p41PartnerGrid'))    p41LoadPartners();
     if (document.getElementById('p41ComplianceLogs')) p41LoadComplianceLogs();
     if (document.getElementById('p41WebhookDLQ'))     p41LoadWebhookDLQ();
     if (document.getElementById('p41MobileSDK'))      p41LoadMobileSDK();
     if (document.getElementById('p41AIPaths'))        p41LoadAIPaths();
 });
-
-/* ---------------------------------------------------------
-   41.1 — PARTNER MARKETPLACE
---------------------------------------------------------- */
-async function p41LoadPartners() {
-    const el = document.getElementById('p41PartnerGrid');
-    if (!el) return;
-
-    try {
-        const [catalogRes, installedRes] = await Promise.all([
-            fetch('/api/partners/catalog'),
-            fetch('/api/partners/installed'),
-        ]);
-        const catalog   = await catalogRes.json();
-        const installed = await installedRes.json();
-        const installedKeys = new Set((installed.installed || []).map(i => i.partner_key));
-
-        el.innerHTML = (catalog.partners || []).map(p => {
-            const isInstalled = installedKeys.has(p.name?.toLowerCase());
-            const statusColor = p.status === 'available' ? '#00d68f' : p.status === 'partner_pending' ? '#4d9fff' : '#f5a623';
-            return `
-            <div style="padding:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                    <span style="font-size:20px;">${p.icon}</span>
-                    <div>
-                        <div style="font-size:13px;font-weight:700;color:var(--text);">${p.name}</div>
-                        <div style="font-size:10px;color:var(--text-muted);">${p.category}</div>
-                    </div>
-                    <span style="margin-left:auto;font-size:10px;padding:2px 7px;border-radius:999px;background:${statusColor}15;color:${statusColor};border:1px solid ${statusColor}33;">${p.status.replace('_',' ')}</span>
-                </div>
-                <div style="font-size:11px;color:rgba(200,220,255,0.6);margin-bottom:10px;">${p.description}</div>
-                ${p.status === 'available' ? `
-                <button onclick="p41TogglePartner('${p.name.toLowerCase()}', ${isInstalled})" style="width:100%;padding:6px;border-radius:6px;border:1px solid ${isInstalled ? 'rgba(255,77,109,0.3)' : 'rgba(0,214,143,0.3)'};background:${isInstalled ? 'rgba(255,77,109,0.08)' : 'rgba(0,214,143,0.08)'};color:${isInstalled ? '#ff4d6d' : '#00d68f'};font-size:11px;cursor:pointer;">
-                    ${isInstalled ? '✕ Uninstall' : '+ Install'}
-                </button>` : `<div style="font-size:10px;color:var(--text-muted);text-align:center;padding:4px;">Available post-acquisition</div>`}
-            </div>`;
-        }).join('');
-    } catch(e) {
-        if (el) el.innerHTML = '<div style="color:var(--text-muted);font-size:12px;">Partner catalog unavailable</div>';
-    }
-}
-
-async function p41TogglePartner(partnerKey, isInstalled) {
-    try {
-        const endpoint = isInstalled ? '/api/partners/uninstall' : '/api/partners/install';
-        const res  = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ partner_key: partnerKey, config: {} })
-        });
-        const data = await res.json();
-        if (data.ok) p41LoadPartners();
-        else alert(data.error || 'Operation failed');
-    } catch(e) {}
-}
 
 /* ---------------------------------------------------------
    41.2 — COMPLIANCE AUDIT LOG
