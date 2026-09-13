@@ -164,6 +164,10 @@ app.include_router(outcomes_router)
 from app.roles_routes import router as roles_router
 app.include_router(roles_router)
 
+# ── ATS integrations: Greenhouse + Lever, for real (additive) ──
+from app.integrations_routes import router as ats_router
+app.include_router(ats_router)
+
 # ============================================================
 # GLOBAL EXCEPTION HANDLER
 # ============================================================

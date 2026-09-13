@@ -18,3 +18,5 @@ aiofiles
 # Team DNA — CV text extraction (PDF/DOCX)
 pdfplumber
 python-docx
+# ATS credential encryption at rest
+cryptography

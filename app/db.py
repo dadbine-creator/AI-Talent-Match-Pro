@@ -1086,6 +1086,40 @@ class CandidateOutcomeORM(Base):
 
 
 # ============================================================
+# PARTNER (ATS) CREDENTIALS
+#
+# A customer's Greenhouse/Lever API key belongs on the server, not in
+# localStorage and not re-sent from the browser on every push. Stored
+# encrypted at rest; never returned to the client — reads get a masked hint
+# only, so the UI can show "connected as yourcompany" without handing the
+# secret back out.
+# ============================================================
+
+class PartnerCredentialORM(Base):
+    __tablename__ = "partner_credentials"
+
+    id          = Column(String(36), primary_key=True, index=True)
+    company_id  = Column(String(36), nullable=False, index=True)
+    user_id     = Column(String(36), nullable=False)      # audit: who connected it
+    partner     = Column(String(30), nullable=False, index=True)   # greenhouse | lever
+
+    account_ref = Column(String(200), nullable=True)      # subdomain / account id — not secret
+    secret_enc  = Column(Text, nullable=False)            # Fernet-encrypted API key
+    key_hint    = Column(String(20), nullable=True)       # last 4 chars, for display only
+
+    is_active   = Column(Boolean, default=True, index=True)
+    created_at  = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at  = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    __table_args__ = (
+        UniqueConstraint("company_id", "partner", name="uq_company_partner_credential"),
+    )
+
+    def __repr__(self):
+        return f"<PartnerCredential {self.partner} company={self.company_id}>"
+
+
+# ============================================================
 # DATABASE INIT
 # ============================================================
 

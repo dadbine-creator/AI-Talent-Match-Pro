@@ -754,14 +754,11 @@ body::before {
             <button onclick="closeCRMModal()" style="width:32px;height:32px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:rgba(255,255,255,0.5);font-size:16px;cursor:pointer;">✕</button>
         </div>
         <div id="crmStep1">
-            <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:12px;">Select your CRM:</div>
-            <div class="crm-grid">
-                <div class="crm-card" id="crm-salesforce" onclick="selectCRM('salesforce')"><div class="crm-status available" id="status-salesforce">Available</div><div class="crm-logo" style="background:rgba(0,161,224,0.15);color:#00a1e0;">SF</div><div class="crm-name">Salesforce</div><div class="crm-desc">Enterprise CRM — Fortune 500 favorite</div></div>
-                <div class="crm-card" id="crm-hubspot" onclick="selectCRM('hubspot')"><div class="crm-status available" id="status-hubspot">Available</div><div class="crm-logo" style="background:rgba(255,122,0,0.15);color:#ff7a00;">HS</div><div class="crm-name">HubSpot</div><div class="crm-desc">Mid-market CRM with great pipeline</div></div>
-                <div class="crm-card" id="crm-workday" onclick="selectCRM('workday')"><div class="crm-status available" id="status-workday">Available</div><div class="crm-logo" style="background:rgba(249,85,37,0.15);color:#f95525;">WD</div><div class="crm-name">Workday</div><div class="crm-desc">Enterprise HR platform with ATS</div></div>
-                <div class="crm-card" id="crm-greenhouse" onclick="selectCRM('greenhouse')"><div class="crm-status available" id="status-greenhouse">Available</div><div class="crm-logo" style="background:rgba(37,183,93,0.15);color:#25b75d;">GH</div><div class="crm-name">Greenhouse</div><div class="crm-desc">Best ATS for tech companies</div></div>
-                <div class="crm-card" id="crm-lever" onclick="selectCRM('lever')"><div class="crm-status available" id="status-lever">Available</div><div class="crm-logo" style="background:rgba(99,102,241,0.15);color:#6366f1;">LV</div><div class="crm-name">Lever</div><div class="crm-desc">Startup favorite ATS</div></div>
-                <div class="crm-card" id="crm-bamboo" onclick="selectCRM('bamboo')"><div class="crm-status available" id="status-bamboo">Available</div><div class="crm-logo" style="background:rgba(115,199,0,0.15);color:#73c700;">BB</div><div class="crm-name">BambooHR</div><div class="crm-desc">HR platform for SMB teams</div></div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:12px;">Select your ATS:</div>
+            <div class="crm-grid" id="crmGrid"></div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:14px;line-height:1.6;">
+                Only systems we can actually push to are listed. Your API key is stored
+                encrypted on our server and is never sent back to your browser.
             </div>
         </div>
         <div id="crmStep2" style="display:none;">
@@ -1124,112 +1121,172 @@ function sendOnLinkedIn() {
 }
 
 /* ══ CRM ════════════════════════════════════════════ */
-var crmConfig = {
-    salesforce: { name:'Salesforce', field1:'Instance URL', field2:'Access Token', p1:'https://yourcompany.salesforce.com', p2:'Enter Salesforce access token...' },
-    hubspot:    { name:'HubSpot',    field1:'Portal ID',    field2:'Private App Token', p1:'Your HubSpot portal ID', p2:'pat-na1-...' },
-    workday:    { name:'Workday',    field1:'Tenant URL',   field2:'API Token', p1:'https://wd2.myworkday.com/yourcompany', p2:'Enter Workday API token...' },
-    greenhouse: { name:'Greenhouse', field1:'Subdomain',    field2:'API Key', p1:'yourcompany', p2:'Enter Greenhouse API key...' },
-    lever:      { name:'Lever',      field1:'Account ID',   field2:'API Key', p1:'Your Lever account ID', p2:'Enter Lever API key...' },
-    bamboo:     { name:'BambooHR',   field1:'Company Domain', field2:'API Key', p1:'yourcompany', p2:'Enter BambooHR API key...' },
-};
+/* ══ ATS INTEGRATION — Greenhouse + Lever, server-side ══════
+   Replaces a UI that listed six systems and connected to none: the old
+   connect() wrote the CRM's name into localStorage and the old push()
+   showed "added to Greenhouse!" without making a request.
+   Now the key is stored encrypted server-side and the push is a real
+   API call that reports its actual result. */
 
-function openCRMModal() { document.getElementById('crmModal').classList.add('open'); showCRMStep(1); }
-function closeCRMModal() { document.getElementById('crmModal').classList.remove('open'); updateCRMSidebarWidget(); }
-function selectCRM(crm) {
-    window.selectedCRM = crm;
-    var cfg = crmConfig[crm];
-    document.getElementById('crmStep2Title').textContent = `Connect ${cfg.name}`;
-    document.getElementById('crmField1Label').textContent = cfg.field1;
-    document.getElementById('crmField2Label').textContent = cfg.field2;
-    document.getElementById('crmField1').placeholder = cfg.p1;
-    document.getElementById('crmField2').placeholder = cfg.p2;
-    document.getElementById('crmField1').value = '';
-    document.getElementById('crmField2').value = '';
+window.atsPartners = [];
+
+async function atsApi(path, opts) {
+    var res = await fetch(path, opts);
+    var body = null;
+    try { body = await res.json(); } catch (e) {}
+    if (!res.ok) throw new Error((body && (body.detail || body.error)) || ('Failed (' + res.status + ')'));
+    return body;
+}
+
+function openCRMModal() {
+    document.getElementById('crmModal').classList.add('open');
+    showCRMStep(1);
+    loadAtsPartners();
+}
+function closeCRMModal() {
+    document.getElementById('crmModal').classList.remove('open');
+    updateCRMSidebarWidget();
+}
+
+async function loadAtsPartners() {
+    var grid = document.getElementById('crmGrid');
+    if (grid) grid.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.35);">Loading…</div>';
+    try {
+        var data = await atsApi('/api/ats/partners');
+        window.atsPartners = data.partners || [];
+        window.atsLabels = data.labels || {};
+    } catch (e) {
+        if (grid) grid.innerHTML = '<div style="font-size:12px;color:#ff8b8b;">' + wsEsc(e.message) + '</div>';
+        return;
+    }
+    if (!grid) return;
+    grid.innerHTML = window.atsPartners.map(function (p) {
+        var cls = p.connected ? 'crm-status connected' : 'crm-status available';
+        var txt = p.connected ? 'Connected' : 'Available';
+        var sub = p.connected && p.key_hint ? ('key ' + wsEsc(p.key_hint)) : '';
+        return '<div class="crm-card' + (p.connected ? ' connected' : '') + '" ' +
+               'onclick="selectCRM(\'' + wsEsc(p.partner) + '\')">' +
+               '<div class="' + cls + '">' + txt + '</div>' +
+               '<div style="font-weight:700;color:#fff;font-size:14px;margin-top:6px;">' + wsEsc(p.name) + '</div>' +
+               '<div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:3px;">' + sub + '</div>' +
+               '</div>';
+    }).join('');
+    updateCRMSidebarWidget();
+}
+
+function selectCRM(partner) {
+    window.selectedCRM = partner;
+    var meta = (window.atsLabels || {})[partner] || { name: partner };
+    var t = document.getElementById('crmStep2Title');
+    if (t) t.textContent = 'Connect ' + meta.name;
+    var l1 = document.getElementById('crmField1Label'), i1 = document.getElementById('crmField1');
+    var l2 = document.getElementById('crmField2Label'), i2 = document.getElementById('crmField2');
+    if (l1) l1.textContent = meta.account_label || 'Account';
+    if (i1) { i1.value = ''; i1.placeholder = meta.account_hint || ''; }
+    if (l2) l2.textContent = meta.key_label || 'API key';
+    if (i2) { i2.value = ''; i2.placeholder = 'Paste your ' + (meta.key_label || 'API key'); i2.type = 'password'; }
     showCRMStep(2);
 }
+
 function showCRMStep(n) {
-    document.getElementById('crmStep1').style.display = n===1 ? 'block' : 'none';
-    document.getElementById('crmStep2').style.display = n===2 ? 'block' : 'none';
-    document.getElementById('crmStep3').style.display = n===3 ? 'block' : 'none';
+    [1, 2, 3].forEach(function (i) {
+        var el = document.getElementById('crmStep' + i);
+        if (el) el.style.display = (i === n ? 'block' : 'none');
+    });
 }
-function connectCRM() {
+
+async function connectCRM() {
     if (!window.selectedCRM) return;
-    var cfg = crmConfig[window.selectedCRM];
-    /* INTEGRATION POINT — replace with real API call per CRM */
-    if (!window.connectedCRMs.includes(window.selectedCRM)) window.connectedCRMs.push(window.selectedCRM);
-    saveConnectedCRMs();
-    var card = document.getElementById(`crm-${window.selectedCRM}`);
-    var status = document.getElementById(`status-${window.selectedCRM}`);
-    if (card) card.classList.add('connected');
-    if (status) { status.textContent = 'Connected'; status.className = 'crm-status connected'; }
-    document.getElementById('crmSuccessTitle').textContent = `${cfg.name} connected!`;
-    showCRMStep(3);
-    updateCRMSidebarWidget();
-    wsToast('CRM connected successfully!', 'success');
-}
-
-/* Persist the CRM selection (which CRMs are connected) across reloads.
-   API keys are NOT stored client-side — only the selection, per spec. */
-function saveConnectedCRMs() {
-    try { localStorage.setItem('aitmp_connected_crms', JSON.stringify(window.connectedCRMs || [])); } catch(e) {}
-}
-function restoreConnectedCRMs() {
+    var account = (document.getElementById('crmField1') || {}).value || '';
+    var key     = (document.getElementById('crmField2') || {}).value || '';
+    if (!key.trim()) { wsToast('Paste your API key first', 'error'); return; }
     try {
-        var saved = JSON.parse(localStorage.getItem('aitmp_connected_crms') || '[]');
-        if (Array.isArray(saved)) {
-            window.connectedCRMs.length = 0;
-            saved.forEach(function(crm){ if (crmConfig[crm]) window.connectedCRMs.push(crm); });
-            window.connectedCRMs.forEach(function(crm){
-                var card = document.getElementById('crm-' + crm);
-                var status = document.getElementById('status-' + crm);
-                if (card) card.classList.add('connected');
-                if (status) { status.textContent = 'Connected'; status.className = 'crm-status connected'; }
-            });
-        }
-    } catch(e) {}
-    updateCRMSidebarWidget();
+        var out = await atsApi('/api/ats/' + encodeURIComponent(window.selectedCRM) + '/connect', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ api_key: key.trim(), account_ref: account.trim() })
+        });
+        var st = document.getElementById('crmSuccessTitle');
+        if (st) st.textContent = out.name + ' connected';
+        showCRMStep(3);
+        await loadAtsPartners();
+        wsToast(out.message || 'Connected', 'success');
+    } catch (e) {
+        wsToast(e.message, 'error');
+    }
 }
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', restoreConnectedCRMs);
-else restoreConnectedCRMs();
 
+async function disconnectCRM(partner) {
+    if (!confirm('Disconnect and delete the stored key?')) return;
+    try {
+        await atsApi('/api/ats/' + encodeURIComponent(partner), { method: 'DELETE' });
+        await loadAtsPartners();
+        wsToast('Disconnected — the stored key was deleted.', 'success');
+    } catch (e) { wsToast(e.message, 'error'); }
+}
+
+/* Real push. Reports what actually happened, including failure. */
 async function pushCandidateToCRM(candidate, role) {
-    if (!window.connectedCRMs || window.connectedCRMs.length === 0) return;
-    for (var crm of window.connectedCRMs) {
-        /* INTEGRATION POINT — replace with real API call per CRM */
-        addCRMLog(`${candidate.name.split(' ')[0]} → ${crmConfig[crm].name}`);
-        wsToast(`${candidate.name.split(' ')[0]} added to ${crmConfig[crm].name}!`, 'success');
+    var connected = (window.atsPartners || []).filter(function (p) { return p.connected; });
+    if (!connected.length) return;
+    if (!candidate || !candidate.id) {
+        wsToast('This candidate needs to be saved before it can be pushed.', 'error');
+        return;
+    }
+    for (var i = 0; i < connected.length; i++) {
+        var p = connected[i];
+        try {
+            await atsApi('/api/ats/' + encodeURIComponent(p.partner) +
+                         '/push/' + encodeURIComponent(candidate.id), { method: 'POST' });
+            addCRMLog(candidate.name + ' → ' + p.name + ' ✓');
+            wsToast(candidate.name.split(' ')[0] + ' pushed to ' + p.name, 'success');
+        } catch (e) {
+            addCRMLog(candidate.name + ' → ' + p.name + ' failed');
+            wsToast(p.name + ': ' + e.message, 'error');
+        }
     }
 }
 
 function updateCRMSidebarWidget() {
     var list = document.getElementById('crmConnectedList');
     if (!list) return;
-    if (!window.connectedCRMs || window.connectedCRMs.length === 0) {
-        list.innerHTML = '<div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center;padding:8px 0;">No CRM connected yet</div>';
-    } else {
-        list.innerHTML = window.connectedCRMs.map(crm => `
-            <div class="crm-connected-item">
-                <div class="crm-connected-name">✅ ${crmConfig[crm].name} connected!</div>
-                <div class="crm-connected-dot"></div>
-            </div>`).join('');
+    var connected = (window.atsPartners || []).filter(function (p) { return p.connected; });
+    if (!connected.length) {
+        list.innerHTML = '<div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center;padding:8px 0;">No ATS connected</div>';
+        return;
     }
+    list.innerHTML = connected.map(function (p) {
+        return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px;color:rgba(255,255,255,0.65);">' +
+               '<span style="width:6px;height:6px;border-radius:50%;background:#00d68f;"></span>' +
+               wsEsc(p.name) +
+               '<button onclick="disconnectCRM(\'' + wsEsc(p.partner) + '\')" ' +
+               'style="margin-right:auto;background:none;border:none;color:rgba(255,255,255,0.3);cursor:pointer;font-size:11px;">remove</button>' +
+               '</div>';
+    }).join('');
 }
 
 function addCRMLog(text) {
-    var log = document.getElementById('crmActivityLog');
+    var log = document.getElementById('crmLog');
     if (!log) return;
-    var item = document.createElement('div');
-    item.className = 'crm-log-item';
-    item.innerHTML = `<div class="crm-log-dot"></div><span>${text}</span>`;
-    log.insertBefore(item, log.firstChild);
-    if (log.children.length > 5) log.removeChild(log.lastChild);
+    var line = document.createElement('div');
+    line.style.cssText = 'font-size:11px;color:rgba(255,255,255,0.45);padding:3px 0;';
+    line.textContent = text;
+    log.appendChild(line);
 }
 
-function manualPushAll() {
-    if (!window.connectedCRMs || window.connectedCRMs.length === 0) { openCRMModal(); return; }
-    if (!window.currentCandidates || window.currentCandidates.length === 0) { wsToast('Run a search first to get candidates', 'error'); return; }
-    window.currentCandidates.forEach(c => pushCandidateToCRM(c, window.currentRole));
+async function manualPushAll() {
+    await loadAtsPartners();
+    var connected = (window.atsPartners || []).filter(function (p) { return p.connected; });
+    if (!connected.length) { openCRMModal(); return; }
+    if (!window.currentCandidates || !window.currentCandidates.length) {
+        wsToast('Score some candidates first', ''); return;
+    }
+    for (var i = 0; i < window.currentCandidates.length; i++) {
+        await pushCandidateToCRM(window.currentCandidates[i], window.currentRole);
+    }
 }
+
+document.addEventListener('DOMContentLoaded', function () { loadAtsPartners(); });
+
 
 /* ══ SIDEBAR VIEWS — Settings / Team / Admin / Shortlists ══ */
 function wsEsc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }

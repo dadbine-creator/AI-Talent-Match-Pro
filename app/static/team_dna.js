@@ -471,9 +471,77 @@
                         '<button class="good" onclick="tdnaFeedback(this,\'good\')">👍 Good match</button>' +
                         '<button class="bad" onclick="tdnaFeedback(this,\'bad\')">👎 Not a fit</button>' +
                     '</div>' +
+                    stageRow(r.id) +
                 '</div>';
         }).join('');
     }
+
+    /* ── outcomes: what actually happened ──────────────────
+       The score is only half the record. This half is what makes the scoring
+       provable later, and it cannot be backfilled — so it is one click on the
+       card, not a form behind a modal. */
+
+    var STAGES = [
+        { key: 'contacted',   label: 'Contacted' },
+        { key: 'screened',    label: 'Screened' },
+        { key: 'interviewed', label: 'Interviewed' },
+        { key: 'offered',     label: 'Offered' },
+        { key: 'hired',       label: 'Hired' },
+        { key: 'rejected',    label: 'Rejected' }
+    ];
+
+    function stageRow(candidateId) {
+        if (!candidateId) return '';
+        var opts = '<option value="">Record outcome…</option>' + STAGES.map(function (s) {
+            return '<option value="' + s.key + '">' + s.label + '</option>';
+        }).join('');
+        return '<div class="tdna-stage" data-candidate="' + esc(candidateId) + '">' +
+                   '<select onchange="tdnaSetStage(this)" aria-label="Candidate stage">' + opts + '</select>' +
+                   '<span class="tdna-stage-state"></span>' +
+               '</div>';
+    }
+
+    window.tdnaSetStage = async function (sel) {
+        var wrap = sel.closest('.tdna-stage');
+        var candidateId = wrap && wrap.getAttribute('data-candidate');
+        var stage = sel.value;
+        var state_el = wrap.querySelector('.tdna-stage-state');
+        if (!candidateId || !stage) return;
+
+        // A rejection is only useful later if we know why.
+        var reason = null;
+        if (stage === 'rejected') {
+            reason = prompt('Why not? (optional — this calibrates future scoring)') || null;
+        }
+
+        sel.disabled = true;
+        state_el.textContent = 'saving…';
+        state_el.className = 'tdna-stage-state';
+        try {
+            var body = await api('/api/outcomes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    role_id: state.roleId, candidate_id: candidateId,
+                    stage: stage, rejected_reason: reason
+                })
+            });
+            var o = body.outcome || {};
+            state_el.textContent = '✓ ' + stage;
+            state_el.className = 'tdna-stage-state is-saved';
+            if (o.follow_up_date) {
+                state_el.title = '12-month check due ' + o.follow_up_date;
+                state_el.textContent += ' · check ' + o.follow_up_date;
+            }
+            toast('Recorded. This is what makes the scores provable later.', 'success');
+        } catch (e) {
+            state_el.textContent = 'not saved';
+            state_el.className = 'tdna-stage-state is-err';
+            toast(e.message, 'error');
+        } finally {
+            sel.disabled = false;
+        }
+    };
 
     /* ── feedback ────────────────────────────────────────── */
 
