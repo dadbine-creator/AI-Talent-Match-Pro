@@ -127,3 +127,25 @@ body { background: var(--p19-bg) !important; color: var(--p19-text) !important; 
 
 :root[data-theme="light"] ::-webkit-scrollbar-thumb { background: rgba(0,148,212,0.2) !important; }
 :root[data-theme="light"] .orb { display: none !important; }
+/* Light theme for the merged "start a role" modal. The modal card turns white
+   above, so every class inside it needs a dark-on-light counterpart — without
+   these the step copy stays near-white and the modal reads as blank. */
+:root[data-theme="light"] .modal-sub { color: #64748b !important; }
+:root[data-theme="light"] .step-block { border-bottom-color: rgba(0,0,0,0.08) !important; }
+:root[data-theme="light"] .step-head { color: #0f172a !important; }
+:root[data-theme="light"] .step-num { background: rgba(0,119,181,0.12) !important;
+    border-color: rgba(0,119,181,0.35) !important; color: #0077B5 !important; }
+:root[data-theme="light"] .step-opt { color: #64748b !important; }
+:root[data-theme="light"] .step-why { color: #475569 !important; }
+:root[data-theme="light"] .step-alt { color: #64748b !important; }
+:root[data-theme="light"] .step-alt a { color: #0077B5 !important; }
+:root[data-theme="light"] .drop-lite { border-color: rgba(0,119,181,0.35) !important;
+    background: rgba(0,119,181,0.04) !important; color: #475569 !important; }
+:root[data-theme="light"] .drop-lite:hover { border-color: rgba(0,119,181,0.65) !important;
+    background: rgba(0,119,181,0.09) !important; color: #0f172a !important; }
+:root[data-theme="light"] .modal-hint { color: #64748b !important; }
+/* The close glyph is white !important from phase17.css — invisible on the
+   white light-theme card. */
+:root[data-theme="light"] .p17-modal-close { color: #475569 !important; }
+:root[data-theme="light"] .p17-modal-close:hover { color: #0f172a !important;
+    background: rgba(0,0,0,0.06) !important; }

@@ -337,6 +337,28 @@ body::before {
 .modal-input:focus, .modal-textarea:focus { border-color: #4d9fff; }
 .modal-input::placeholder, .modal-textarea::placeholder { color: rgba(255,255,255,0.25); }
 .modal-textarea { height: 90px; resize: vertical; }
+
+/* ── one-flow role modal ─────────────────────────────── */
+.modal-sub { font-size: 12.5px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+.step-block { margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.step-block:last-of-type { border-bottom: none; }
+.step-head { display: flex; align-items: center; gap: 9px; font-size: 14px;
+             font-weight: 700; color: #fff; margin-bottom: 8px; flex-wrap: wrap; }
+.step-num { width: 21px; height: 21px; border-radius: 50%; flex: 0 0 auto;
+            background: rgba(29,110,245,0.18); border: 1px solid rgba(77,159,255,0.4);
+            color: #4d9fff; font-size: 11px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center; }
+.step-opt { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5);
+            margin-inline-start: auto; }
+.step-why { font-size: 12px; color: rgba(200,220,255,0.5); line-height: 1.65; margin-bottom: 10px; }
+.step-alt { font-size: 11.5px; color: rgba(255,255,255,0.5); margin-top: 8px; }
+.step-alt a { color: #4d9fff; text-decoration: none; }
+.drop-lite { border: 1.5px dashed rgba(77,159,255,0.3); border-radius: 11px;
+             padding: 18px; text-align: center; cursor: pointer;
+             font-size: 12.5px; color: rgba(255,255,255,0.5);
+             background: rgba(29,110,245,0.04); transition: all .18s; }
+.drop-lite:hover { border-color: rgba(77,159,255,0.6); background: rgba(29,110,245,0.09); color: #fff; }
+.modal-hint { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 6px; }
 .p17-advanced-toggle {
     display: flex; align-items: center; justify-content: space-between;
     padding: 11px 14px; background: rgba(255,255,255,0.04);
@@ -672,41 +694,61 @@ body::before {
 <!-- CREATE ROLE MODAL -->
 <div class="modal-overlay" id="createRoleModal" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
     <div class="p17-modal">
-        <button class="p17-modal-close" onclick="document.getElementById('createRoleModal').style.display='none'">✕</button>
-        <div class="modal-inner">
+        <button class="p17-modal-close" onclick="document.getElementById('createRoleModal').style.display='none';unlockScroll();">&times;</button>
+        <div class="modal-header">
             <div class="modal-title">New role</div>
-            <div class="modal-subtitle">Define the position you want the AI to analyze.</div>
-            <label class="modal-label p17-required">Position Title</label>
-            <input id="newRoleTitle" class="modal-input" type="text" placeholder="Enter position title">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
-                <label class="modal-label p17-required" style="margin-bottom:0;">What the role needs (optional if you use Team DNA)</label>
-                <button type="button" onclick="fillExampleJD()" style="font-size:11px;font-weight:600;color:#4d9fff;background:rgba(77,159,255,0.1);border:1px solid rgba(77,159,255,0.25);border-radius:6px;padding:3px 10px;cursor:pointer;font-family:inherit;">Try an example →</button>
-            </div>
-            <textarea id="newRoleDescription" class="modal-textarea" placeholder="Paste your job description here..." oninput="updateJDCounter(this)"></textarea>
-            <div style="display:flex;align-items:center;justify-content:space-between;">
-                <div style="font-size:11px;color:rgba(255,255,255,0.3);">Minimum 100 chars for best results</div>
-                <div id="jdCounter" style="font-size:11px;color:rgba(255,255,255,0.3);">0 chars</div>
-            </div>
-            <label class="modal-label p17-required">Paste CVs here (one per block)</label>
-            <textarea id="newRoleCandidates" class="modal-textarea" placeholder="Paste each candidate's résumé or LinkedIn summary here.&#10;&#10;Separate candidates with a blank line — e.g.&#10;&#10;Jane Doe — 8 yrs product at SaaS startups, led 0-1 launches...&#10;&#10;John Smith — junior analyst, 1 yr, mostly reporting..."></textarea>
-            <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:2px;">One block per candidate, separated by a blank line. GPT-4o scores each against your job description.</div>
-            <label class="modal-label p17-required">Location</label>
-            <input id="newRoleLocation" class="modal-input" type="text" placeholder="e.g. New York, Remote, London...">
-            <div class="p17-advanced-toggle" onclick="var f=document.getElementById('advancedFilters');var a=document.getElementById('toggleArrow');if(f.style.display==='none'){f.style.display='block';a.textContent='⌃';}else{f.style.display='none';a.textContent='⌄';}">
-                <span>Advanced filters</span><span id="toggleArrow">⌄</span>
-            </div>
-            <div id="advancedFilters" style="display:none;">
-                <div class="p17-filter-row"><label class="p17-filter-label">Skills</label><input id="filterSkills" class="p17-filter-input" type="text" placeholder="Enter skills..."></div>
-                <div class="p17-filter-row"><label class="p17-filter-label">Seniority</label>
-                    <select id="filterSeniority" class="p17-filter-select"><option value="">Select level...</option><option>Entry Level</option><option>Mid-Senior</option><option>Senior</option><option>Director</option><option>VP</option><option>Executive</option></select>
-                </div>
-                <div class="p17-filter-row"><label class="p17-filter-label">Industry</label><input id="filterIndustry" class="p17-filter-input" type="text" placeholder="Enter industries..."></div>
-                <div class="p17-filter-row"><label class="p17-filter-label">Years Exp</label>
-                    <select id="filterYearsExp" class="p17-filter-select"><option value="">Select range...</option><option>0–2 years</option><option>2–5 years</option><option>5–10 years</option><option>10+ years</option></select>
-                </div>
-            </div>
-            <button class="p17-search-btn" onclick="p17SearchWithAI()">Score these CVs →</button>
+            <div class="modal-sub">Three steps. The second one is what makes the ranking yours.</div>
         </div>
+
+        <!-- 1 ─────────────────────────────────────────────── -->
+        <div class="step-block">
+            <div class="step-head"><span class="step-num">1</span>What are you hiring for?</div>
+            <input id="newRoleTitle" class="modal-input" type="text"
+                   placeholder="e.g. Marketing Manager" autocomplete="off">
+        </div>
+
+        <!-- 2 ─────────────────────────────────────────────── -->
+        <div class="step-block">
+            <div class="step-head">
+                <span class="step-num">2</span>Who is already good at this?
+                <span class="step-opt">optional — but this is the whole point</span>
+            </div>
+            <div class="step-why">
+                Upload 2&ndash;5 CVs of people on your team who do this job well. The engine
+                works out what they share &mdash; things you&rsquo;d never put in a job ad &mdash;
+                and ranks candidates against that instead of against keywords.
+            </div>
+            <div class="drop-lite" id="dnaDrop" onclick="document.getElementById('dnaFiles').click()">
+                <span id="dnaDropLabel">Drop 2&ndash;5 CVs here, or click to choose</span>
+            </div>
+            <input type="file" id="dnaFiles" multiple accept=".pdf,.docx,.txt" style="display:none"
+                   onchange="p17PickedExemplars(this)">
+            <div class="step-alt">
+                No one to point at yet? Leave this empty and describe the role instead:
+                <a href="#" onclick="document.getElementById('jdWrap').style.display='block';this.parentNode.style.display='none';return false;">add a job description</a>
+            </div>
+            <div id="jdWrap" style="display:none;margin-top:10px;">
+                <textarea id="newRoleDescription" class="modal-textarea"
+                          placeholder="What the role needs..." oninput="updateJDCounter(this)"></textarea>
+                <div class="modal-hint"><span id="jdCounter">0 chars</span></div>
+            </div>
+        </div>
+
+        <!-- 3 ─────────────────────────────────────────────── -->
+        <div class="step-block">
+            <div class="step-head"><span class="step-num">3</span>The candidates</div>
+            <div class="drop-lite" id="candDrop" onclick="document.getElementById('candFiles').click()">
+                <span id="candDropLabel">Drop up to 200 CVs here, or click to choose</span>
+            </div>
+            <input type="file" id="candFiles" multiple accept=".pdf,.docx,.txt" style="display:none"
+                   onchange="p17PickedCandidates(this)">
+            <div class="step-alt">or paste them, one per block:</div>
+            <textarea id="newRoleCandidates" class="modal-textarea"
+                      placeholder="Paste each CV here, separated by a blank line."></textarea>
+        </div>
+
+        <button class="p17-search-btn" onclick="p17StartRole()">Score these CVs &rarr;</button>
+        <div class="modal-hint" id="p17Hint" style="text-align:center;margin-top:8px;"></div>
     </div>
 </div>
 
@@ -850,7 +892,6 @@ body::before {
 
     <div class="tdna-rolebar" style="padding:16px 24px 0;">
       <select id="tdnaRole" onchange="tdnaRoleChanged(this.value)" aria-label="Role"></select>
-      <button class="tdna-btn tdna-btn--ghost" onclick="tdnaCreateRole()">+ New role</button>
     </div>
 
     <div class="tdna-body" id="tdnaBody"></div>
@@ -1019,75 +1060,145 @@ function openCandidateChat() {
 }
 
 /* ══ SEARCH WITH AI ═════════════════════════════════ */
-async function p17SearchWithAI() {
-    const title = document.getElementById('newRoleTitle')?.value?.trim();
-    const jd    = document.getElementById('newRoleDescription')?.value?.trim();
-    const rawCandidates = document.getElementById('newRoleCandidates')?.value?.trim();
-    if (!title) { wsToast('Please enter a position title', 'error'); return; }
-    if (!jd)    { wsToast('Please enter a job description', 'error'); return; }
-    // Split pasted candidates on blank lines — one block per candidate.
-    const resumes = (rawCandidates || '').split(/\n\s*\n+/).map(s => s.trim()).filter(Boolean);
-    if (resumes.length === 0) { wsToast('Paste at least one candidate to score', 'error'); return; }
+/* ══ ONE FLOW: name it → (optionally) show it who's good → score ══
+   Replaces two disconnected paths. The workspace modal used to score without
+   ever creating a role, while Team DNA created roles the workspace never saw.
+   A role now exists the moment you name it, and everything attaches to it. */
+
+window.p17Exemplars = [];
+window.p17CandidateFiles = [];
+
+function p17PickedExemplars(input) {
+    window.p17Exemplars = Array.from(input.files || []);
+    var l = document.getElementById('dnaDropLabel');
+    if (l) l.textContent = window.p17Exemplars.length
+        ? window.p17Exemplars.length + ' CV(s) selected — the benchmark'
+        : 'Drop 2–5 CVs here, or click to choose';
+}
+
+function p17PickedCandidates(input) {
+    window.p17CandidateFiles = Array.from(input.files || []);
+    var l = document.getElementById('candDropLabel');
+    if (l) l.textContent = window.p17CandidateFiles.length
+        ? window.p17CandidateFiles.length + ' CV(s) to score'
+        : 'Drop up to 200 CVs here, or click to choose';
+}
+
+function p17Hint(msg, bad) {
+    var h = document.getElementById('p17Hint');
+    if (h) { h.textContent = msg || ''; h.style.color = bad ? '#ff7a7a' : 'rgba(255,255,255,0.4)'; }
+}
+
+async function p17StartRole() {
+    var title = (document.getElementById('newRoleTitle') || {}).value || '';
+    title = title.trim();
+    if (!title) { wsToast('What are you hiring for?', 'error'); return; }
+
+    var jd = ((document.getElementById('newRoleDescription') || {}).value || '').trim();
+    var pasted = ((document.getElementById('newRoleCandidates') || {}).value || '').trim();
+    var resumes = pasted ? pasted.split(/\n\s*\n+/).map(function (x) { return x.trim(); }).filter(Boolean) : [];
+    var files = window.p17CandidateFiles || [];
+    var exemplars = window.p17Exemplars || [];
+
+    if (!resumes.length && !files.length) {
+        wsToast('Add the candidates you want scored', 'error'); return;
+    }
+    // No benchmark and no job description means nothing to score against.
+    if (!exemplars.length && !jd) {
+        wsToast('Either upload 2–5 of your good people, or add a job description', 'error');
+        document.getElementById('jdWrap').style.display = 'block';
+        return;
+    }
+
+    p17Hint('Creating the role…');
+
+    /* 1. The role. Named once, everything hangs off it. */
+    var roleId = null;
+    try {
+        var rr = await fetch('/api/team-dna-roles', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: title })
+        });
+        var rj = await rr.json().catch(function () { return {}; });
+        if (!rr.ok) { p17Hint(rj.detail || 'Could not create the role', true); return; }
+        roleId = rj.id;
+    } catch (e) { p17Hint('Could not create the role', true); return; }
+
+    window.currentRole = title;
+    window.currentRoleId = roleId;
+
+    /* 2. The benchmark, if they gave one. */
+    if (exemplars.length) {
+        p17Hint('Reading your ' + exemplars.length + ' benchmark CV(s)…');
+        var fd = new FormData();
+        fd.append('role_id', roleId);
+        exemplars.forEach(function (f) { fd.append('files', f); });
+        try {
+            var er = await fetch('/api/team-dna/profiles', { method: 'POST', body: fd });
+            if (!er.ok) {
+                var ej = await er.json().catch(function () { return {}; });
+                p17Hint(ej.detail || 'Could not read those CVs', true);
+                return;                       // plan limits surface here, not mid-scoring
+            }
+            p17Hint('Working out what they share…');
+            await fetch('/api/team-dna/' + encodeURIComponent(roleId));
+        } catch (e) { /* fall through to job-description scoring */ }
+    }
 
     document.getElementById('createRoleModal').style.display = 'none';
     unlockScroll();
-    window.currentRole = title;
 
-    /* Create a real role record so this shows up in Team DNA and in the plan's
-       active-role count. Before this, the modal scored candidates without ever
-       creating a role, so a role made here was invisible everywhere else. */
+    /* 3. Score. Bulk endpoint for files, the scoring endpoint for pasted text. */
+    if (files.length && exemplars.length) {
+        await p17BulkScore(roleId, files);
+    } else {
+        if (files.length) {
+            wsToast('File upload needs a benchmark — scoring the pasted CVs instead', '');
+        }
+        await p17ScorePasted(title, jd, resumes, roleId);
+    }
+}
+
+async function p17BulkScore(roleId, files) {
+    var fd = new FormData();
+    fd.append('role_id', roleId);
+    files.forEach(function (f) { fd.append('files', f); });
     try {
-        const rr = await fetch('/api/team-dna-roles', {
+        var res = await fetch('/api/candidates/bulk', { method: 'POST', body: fd });
+        var body = await res.json().catch(function () { return {}; });
+        if (!res.ok) { wsToast(body.detail || 'Upload failed', 'error'); return; }
+        if (body.rejected) wsToast(body.rejected + ' file(s) could not be read', '');
+        wsToast('Scoring ' + body.accepted + ' CVs…', 'success');
+        p17PollBulk(body.job_id);
+    } catch (e) { wsToast('Upload failed', 'error'); }
+}
+
+function p17PollBulk(jobId) {
+    var t = setInterval(async function () {
+        try {
+            var j = await fetch('/api/candidates/bulk/' + jobId).then(function (r) { return r.json(); });
+            if (j.status === 'complete') {
+                clearInterval(t);
+                p17ShowResultsInChat({ results: j.results }, window.currentRole);
+            } else if (j.status === 'failed') {
+                clearInterval(t); wsToast(j.error || 'Scoring failed', 'error');
+            }
+        } catch (e) { clearInterval(t); }
+    }, 1500);
+}
+
+async function p17ScorePasted(title, jd, resumes, roleId) {
+    if (!resumes.length) { wsToast('Nothing to score', 'error'); return; }
+    try {
+        var res = await fetch('/api/candidates/score', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title: title, location: (document.getElementById('newRoleLocation')?.value || '').trim() })
+            body: JSON.stringify({ job_id: roleId, role_title: title,
+                                   job_description: jd || title, resumes: resumes })
         });
-        if (rr.ok) { const rj = await rr.json(); window.currentRoleId = rj.id || null; }
-        else if (rr.status === 402) {
-            const e = await rr.json().catch(() => ({}));
-            wsToast(e.detail || 'Plan limit reached', 'error');
-        }
-    } catch (e) { /* scoring still works without a role record */ }
-    const container = document.getElementById('p17ResultsContainer');
-    container.style.display = 'block';
-    const thinkingBox = document.getElementById('p17ThinkingBox');
-    const thinkingSteps = document.getElementById('p17ThinkingSteps');
-    thinkingBox.style.display = 'block';
-    thinkingSteps.innerHTML = '';
-    const steps = [
-        { icon:'📋', text:`Reading ${resumes.length} candidate${resumes.length>1?'s':''} for "${title}"...` },
-        { icon:'🧠', text:'Scoring each candidate with GPT-4o...' },
-        { icon:'⚡', text:'Assessing adaptability + focus...' },
-        { icon:'🎯', text:'Ranking by tier...' },
-    ];
-    for (let i = 0; i < steps.length; i++) {
-        await new Promise(r => setTimeout(r, 350));
-        const step = document.createElement('div');
-        step.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(29,110,245,0.06);border:1px solid rgba(29,110,245,0.15);border-radius:8px;font-size:13px;color:rgba(200,220,255,0.8);';
-        step.innerHTML = `<span style="font-size:16px;">${steps[i].icon}</span><span>${steps[i].text}</span>`;
-        thinkingSteps.appendChild(step);
-    }
-    try {
-        const res = await fetch('/api/candidates/score', {
-            method:'POST', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({
-                job_id: window.currentRoleId || null, role_title:title, job_description:jd, resumes })
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || !data.ok) {
-            p17ShowScoringError((data && (data.detail || data.error)) || 'Scoring is temporarily unavailable. Please try again.');
-            return;
-        }
-        const results = data.results || [];
-        if (results.length === 0) { p17ShowScoringError('No candidates could be scored from that input.'); return; }
-        const finalStep = document.createElement('div');
-        finalStep.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(0,214,143,0.08);border:1px solid rgba(0,214,143,0.25);border-radius:8px;font-size:13px;font-weight:600;color:#00d68f;';
-        finalStep.innerHTML = `<span>✅</span><span>Scored ${results.length} candidate${results.length>1?'s':''}.</span>`;
-        thinkingSteps.appendChild(finalStep);
-        await new Promise(r => setTimeout(r, 400));
+        var data = await res.json().catch(function () { return {}; });
+        if (!res.ok) { wsToast(data.detail || 'Scoring failed', 'error'); return; }
         p17ShowResultsInChat(data, title);
-    } catch(e) {
-        p17ShowScoringError('Connection error — please try again.');
-    }
+    } catch (e) { wsToast('Scoring failed', 'error'); }
 }
 
 function p17ShowScoringError(msg) {
@@ -1538,7 +1649,6 @@ function fillExampleJD() {
     ta.value = `Senior Machine Learning Engineer\n\nWe're looking for a Senior ML Engineer to join our AI platform team. You'll build production ML systems powering real-time candidate intelligence.\n\nRequirements:\n- 5+ years of Python and ML engineering\n- Strong background in NLP, LLMs, or recommendation systems\n- Experience deploying models to Azure, AWS, or GCP\n- Proficiency with PyTorch or TensorFlow\n\nWe value adaptability and growth mindset over perfect keyword matches.`;
     updateJDCounter(ta); ta.focus();
     if (!document.getElementById('newRoleTitle').value) document.getElementById('newRoleTitle').value = 'Senior ML Engineer';
-    if (!document.getElementById('newRoleLocation').value) document.getElementById('newRoleLocation').value = 'Remote';
 }
 
 function updateJDCounter(el) {
