@@ -3350,66 +3350,23 @@ def api_linkedin_readiness(db: Session = Depends(get_db)):
     }
 
 
-@app.get("/api/narrative/acquisition")
-async def api_acquisition_narrative(request: Request, db: Session = Depends(get_db)):
-    """GPT-4o generated acquisition narrative for buyers."""
-    require_recruiter_or_admin(request, db)  # SECURITY: was unauthenticated — leaked cross-tenant counts + spent GPT $ per hit
-    import httpx as _httpx
-
-    try:
-        total_candidates = db.query(CompanyCandidateORM).filter(CompanyCandidateORM.is_deleted==False).count()
-        ai_calls = db.query(UsageLogORM).filter(UsageLogORM.action=="ai_grade").count()
-    except Exception:
-        total_candidates = 0
-        ai_calls = 0
-
-    prompt = f"""You are a world-class M&A advisor writing an acquisition narrative for AI Talent Match Pro (AITMP).
-
-Platform facts:
-- Stack: FastAPI, Azure OpenAI GPT-4o, SQLite → Cosmos DB post-acquisition
-- Latency: app-layer latency measured via /health telemetry; AI scoring is model-bound at 1-4s, standard for GPT-4o
-- Features: AI scoring, scorecards, narratives, outreach, copilot, forecast engine, real-time signals, recruiter coaching
-- Phase: 40/40 — fully production-ready
-- Domain: aitmp.io
-- Billing: Stripe — Free/Business/Corporate/Enterprise
-- AI calls made: {ai_calls}
-- Candidates scored: {total_candidates}
-
-Write a compelling 5-paragraph acquisition narrative for LinkedIn, Workday, or Indeed.
-Cover: product summary, competitive moat, TAM, integration path, why now.
-Be specific, data-driven, executive-level. No fluff. Use only the facts provided — do not invent metrics."""
-
-    try:
-        async with _httpx.AsyncClient() as client:
-            response = await client.post(
-                f"{AZURE_OPENAI_ENDPOINT}openai/deployments/{AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version=2024-02-01",
-                headers={"api-key": AZURE_OPENAI_KEY, "Content-Type": "application/json"},
-                json={"messages": [{"role": "user", "content": prompt}], "max_tokens": 1000, "temperature": 0.5},
-                timeout=30.0
-            )
-            result    = response.json()
-            narrative = result["choices"][0]["message"]["content"].strip()
-            tokens    = result.get("usage", {}).get("total_tokens", 0)
-    except Exception:
-        narrative = """AI Talent Match Pro represents a rare acquisition opportunity at the intersection of enterprise AI and talent intelligence.
-
-The platform delivers multi-dimensional candidate scoring via Azure OpenAI GPT-4o, backed by a lightweight FastAPI layer. With production phases spanning AI scorecards, real-time candidate signals, recruiter coaching, predictive hiring funnels, and scenario simulation, AITMP is not a prototype — it is a fully-deployed enterprise platform.
-
-The competitive moat is twofold: intelligence depth (scoring + coaching + signals + narrative in one unified API), and enterprise readiness (Stripe billing, webhook infrastructure, API key management, SSO).
-
-The TAM is clear: LinkedIn Talent Solutions generates $3.8B annually. Workday Recruiting $1.2B. Indeed $4.1B. AITMP's API-first architecture means it plugs into any of these ecosystems within 30 days of acquisition.
-
-The window is now. Generative AI in recruiting is consolidating rapidly. AITMP's deep architecture and production-grade codebase make this a high-leverage acquisition in the talent tech space in 2026."""
-        tokens = 0
-
-    return {
-        "ok":       True,
-        "narrative": narrative,
-        "tokens":   tokens,
-        "for":      ["LinkedIn", "Workday", "Indeed"],
-        "generated_at": datetime.utcnow().isoformat(),
-    }
-
+# REMOVED — GET /api/narrative/acquisition
+#
+# Generated an AI "acquisition narrative" aimed at LinkedIn / Workday / Indeed.
+# Its prompt instructed the model "do not invent metrics" and then fed it
+# metrics that were wrong: Stripe billing (retired — it is Paddle, and still on
+# placeholder keys), "Phase 40/40 fully production-ready", and an outreach /
+# copilot / signals feature list whose claims were removed from the site on
+# 2026-09-10 for not being real.
+#
+# Its hardcoded fallback asserted the platform "plugs into any of these
+# ecosystems within 30 days of acquisition". There is no Workday integration,
+# no Indeed integration, and the Greenhouse/Lever push has never run against a
+# live account.
+#
+# Removed because technical diligence reads the repository. One inflated claim
+# found there causes a buyer to re-examine everything else, and that costs far
+# more than this endpoint was ever worth. No UI referenced it.
 
 @app.get("/api/partners/readiness")
 def api_partners_readiness():
