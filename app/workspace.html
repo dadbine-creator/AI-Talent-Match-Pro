@@ -1179,7 +1179,7 @@ function p17PollBulk(jobId) {
             var j = await fetch('/api/candidates/bulk/' + jobId).then(function (r) { return r.json(); });
             if (j.status === 'complete') {
                 clearInterval(t);
-                p17ShowResultsInChat({ results: j.results }, window.currentRole);
+                p17ShowResultsInChat(j, window.currentRole);
             } else if (j.status === 'failed') {
                 clearInterval(t); wsToast(j.error || 'Scoring failed', 'error');
             }
@@ -1481,29 +1481,86 @@ async function openShortlists(){
 }
 
 /* ══ CHAT ENGINE ════════════════════════════════════ */
-function openAIChat(candidates, roleTitle) {
+function openAIChat(candidates, roleTitle, info) {
+    info = info || {};
     window.aiChatCandidates = candidates;
     window.aiChatRole = roleTitle;
     window.currentCandidates = candidates;
     var overlay = document.getElementById('aiChatOverlay');
     var messages = document.getElementById('aiChatMessages');
     messages.innerHTML = ''; overlay.classList.add('open');
-    addChatBubble(`I've analyzed <strong>${roleTitle}</strong> and found your top 3 matches, ranked by our Deep-Thinking Engine:`, 0);
-    candidates.forEach((c, i) => setTimeout(() => addCandidateCard(c, i), 800 + i*600));
-    setTimeout(() => {
-        addChatBubble(`<strong>#1 is your strongest match.</strong> A personalised message is drafted for each one. Copy them from the right panel and send from your own account.`, 800 + candidates.length*600 + 400);
+
+    // Nothing cleared the bar. Say so plainly and stop - no cards, no spin.
+    if (info.empty) {
+        addChatBubble('I read all <strong>' + info.total + '</strong> CVs for <strong>' +
+                      roleTitle + '</strong>. ' + info.headline, 0);
+        setTimeout(function () {
+            addChatBubble('Nothing here is worth an interview. Widening the search will ' +
+                          'serve you better than working this list.', 400);
+            p17AddSeeAllButton();
+        }, 400);
+        return;
+    }
+
+    var headline = info.headline ||
+        (candidates.length + (candidates.length === 1 ? ' match' : ' matches'));
+    var opener = info.total
+        ? 'I read all <strong>' + info.total + '</strong> CVs for <strong>' + roleTitle +
+          '</strong>. ' + headline
+        : 'I\'ve analysed <strong>' + roleTitle + '</strong>. ' + headline;
+    addChatBubble(opener, 0);
+
+    // Staggered reveal, but capped - ten cards at 600ms each is seven seconds
+    // of waiting for a list the recruiter asked to see.
+    var step = candidates.length > 4 ? 160 : 600;
+    var last = 500 + candidates.length * step;
+    candidates.forEach(function (c, i) {
+        setTimeout(function () { addCandidateCard(c, i); }, 500 + i * step);
+    });
+
+    setTimeout(function () {
+        addChatBubble('<strong>' + (candidates[0] && candidates[0].name ? candidates[0].name : '#1') +
+                      '</strong> is the strongest match. Every name here is ranked against ' +
+                      'your own team, and each card carries the reason it scored where it did.', last + 200);
         showOutreachTracker(candidates);
-        // Add Find More + Refine Search buttons
-        setTimeout(() => {
-            var messages = document.getElementById('aiChatMessages');
-            var btns = document.createElement('div');
-            btns.style.cssText = 'display:flex;gap:8px;margin-top:4px;';
-            btns.innerHTML = `
-                <button onclick="refineSearch()" style="flex:1;padding:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">✏️ Refine Search</button>`;
-            messages.appendChild(btns);
-            messages.scrollTop = messages.scrollHeight;
-        }, 800 + candidates.length*600 + 800);
-    }, 800 + candidates.length*600 + 400);
+        setTimeout(p17AddSeeAllButton, last + 500);
+    }, last + 200);
+}
+
+/* The rest of the batch stays one click away - picked, not hidden. */
+function p17AddSeeAllButton() {
+    var all = window.p17AllScored || [];
+    var shown = (window.aiChatCandidates || []).length;
+    if (all.length <= shown) return;
+    var messages = document.getElementById('aiChatMessages');
+    if (!messages || document.getElementById('p17SeeAllBtn')) return;
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;gap:8px;margin-top:8px;';
+    wrap.innerHTML =
+        '<button id="p17SeeAllBtn" onclick="p17ShowAllScored()" style="flex:1;padding:10px;' +
+        'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;' +
+        'color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">' +
+        'See all ' + all.length + ' scored</button>' +
+        '<button onclick="refineSearch()" style="flex:1;padding:10px;background:rgba(255,255,255,0.04);' +
+        'border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:rgba(255,255,255,0.6);' +
+        'font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">\u270f\ufe0f Refine</button>';
+    messages.appendChild(wrap);
+    messages.scrollTop = messages.scrollHeight;
+}
+
+function p17ShowAllScored() {
+    var all = window.p17AllScored || [];
+    if (!all.length) return;
+    var btn = document.getElementById('p17SeeAllBtn');
+    if (btn) btn.parentNode.removeChild(btn);
+    var messages = document.getElementById('aiChatMessages');
+    addChatBubble('Everyone scored, strongest first. Below the shortlist these ' +
+                  'stopped clearing the bar for an interview.', 0);
+    var shown = (window.aiChatCandidates || []).length;
+    all.slice(shown).forEach(function (c, i) {
+        setTimeout(function () { addCandidateCard(c, i); }, 120 * i);
+    });
+    if (messages) setTimeout(function () { messages.scrollTop = messages.scrollHeight; }, 200);
 }
 
 function addChatBubble(text, delay=0) {
@@ -1603,19 +1660,43 @@ function p17ShowResultsInChat(data, roleTitle) {
         silver: { medal:'🥈', color:'#8ba4c0', label:'The Mirror' },
         bronze: { medal:'🥉', color:'#cd7f32', label:'The Adjacent' },
     };
-    var candidates = (data.results || []).map(function(r) {
+    function toCard(r) {
         var m = meta[r.tier] || meta.bronze;
         var ev = r.evidence || {};
-        var reason1 = r.ai_analysis || ev.role_fit || 'Scored against your job description.';
-        var reason2 = r.silent_skill ? ('Silent skill: ' + r.silent_skill + '.') : (ev.adaptability || '');
         return {
             tier: r.tier, medal: m.medal, color: m.color, tier_label: m.label,
             name: r.name, role: roleTitle, score: r.match_score,
-            reason1: reason1, reason2: reason2, linkedin_url: r.linkedin_url || ''
+            reason1: r.ai_analysis || ev.role_fit || 'Scored against your job description.',
+            reason2: r.silent_skill ? ('Silent skill: ' + r.silent_skill + '.') : (ev.adaptability || ''),
+            linkedin_url: r.linkedin_url || ''
         };
-    });
-    if (candidates.length === 0) { p17ShowScoringError('No candidates could be scored.'); return; }
-    setTimeout(() => openAIChat(candidates, roleTitle), 150);
+    }
+
+    var all = data.results || [];
+    if (all.length === 0) { p17ShowScoringError('No candidates could be scored.'); return; }
+
+    // The batch picks. Older callers (/api/candidates/score) send no pick, so
+    // fall back to showing what they sent rather than showing nothing.
+    var picked = data.picked || all;
+    window.p17AllScored = all.map(toCard);
+
+    if (picked.length === 0) {
+        // Never dress up an empty result. Say it, and offer the near misses.
+        var best = Math.max.apply(null, all.map(function (r) { return r.match_score || 0; }));
+        openAIChat([], roleTitle, {
+            headline: data.pick_summary ||
+                ('None of the ' + all.length + ' clear the bar for an interview — the closest scored ' + best + '.'),
+            empty: true, total: all.length
+        });
+        return;
+    }
+
+    setTimeout(function () {
+        openAIChat(picked.map(toCard), roleTitle, {
+            headline: data.pick_summary,
+            total: all.length, shown: picked.length
+        });
+    }, 150);
 }
 
 function findMoreCandidates() {

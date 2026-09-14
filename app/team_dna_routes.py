@@ -53,6 +53,42 @@ MAX_BULK_FILES = 200
 BULK_CONCURRENCY = 5          # semaphore width, per the spec
 MAX_PASTE_CHARS = 30_000
 
+# The batch picks. Reading 200 CVs is the work this product removes, and
+# handing back 200 ranked cards does not remove it.
+SHORTLIST_MAX = 10            # more than this stops being a shortlist
+SHORTLIST_MIN_SCORE = 85      # the silver floor; bronze means "adjacent"
+
+
+def select_shortlist(results: List[dict], limit: int = SHORTLIST_MAX) -> List[dict]:
+    """The few worth an interview, out of everything just scored.
+
+    Only silver and gold qualify. Padding to a round number with people nobody
+    should call would make the pick worthless — the whole value is that the
+    list is short and every name on it earned its place. A batch with nothing
+    good in it picks nobody, and says so.
+
+    Returns the same dict objects the caller passed in, so marking them marks
+    the originals.
+    """
+    qualified = [r for r in results
+                 if (r.get("match_score") or 0) >= SHORTLIST_MIN_SCORE]
+    qualified.sort(key=lambda r: r.get("match_score") or 0, reverse=True)
+    return qualified[:max(0, limit)]
+
+
+def shortlist_summary(results: List[dict], picked: List[dict]) -> str:
+    """One honest line about the pick — never a fabricated silver lining."""
+    total = len(results)
+    if not total:
+        return "Nothing in this batch could be scored."
+    if not picked:
+        best = max((r.get("match_score") or 0) for r in results)
+        return (f"None of the {total} clear the bar for an interview — the "
+                f"closest scored {best}. This batch is worth widening, not working.")
+    if len(picked) == 1:
+        return f"One of the {total} is worth your time."
+    return f"{len(picked)} of the {total} are worth your time."
+
 
 # ============================================================
 # AUTH + SCOPE
@@ -451,7 +487,7 @@ def _persist_candidate(db: Session, company_id: str, user_id: str,
         ai_analysis=result.get("ai_analysis", ""),
         silent_skill=result.get("silent_skill"),
         notes="",
-        shortlisted=False,
+        shortlisted=bool(result.get("shortlisted")),
         job_id=(role_row.id if role_row else None),
         partner_source="team_dna",
     ))
@@ -554,6 +590,7 @@ async def bulk_score_candidates(
         "job_id": job_id, "company_id": company_id, "user_id": user_id, "role_id": role_id,
         "status": "running", "total": len(parsed), "completed": 0,
         "results": [], "failed": list(failed),
+        "picked_count": 0, "pick_summary": "",
         "created_ts": time.time(), "created_at": datetime.utcnow().isoformat(),
     }
 
@@ -611,6 +648,16 @@ async def _run_bulk_job(job_id: str, parsed: List[dict], model: dict,
             return
         live["results"].sort(key=lambda r: r.get("match_score", 0), reverse=True)
 
+        # Pick before persisting, so the chosen rows are written shortlisted
+        # rather than needing a second pass to update them.
+        for result in live["results"]:
+            result["shortlisted"] = False
+        picked = select_shortlist(live["results"])
+        for result in picked:
+            result["shortlisted"] = True
+        live["picked_count"] = len(picked)
+        live["pick_summary"] = shortlist_summary(live["results"], picked)
+
         db = SessionLocal()
         try:
             for result in live["results"]:
@@ -654,6 +701,11 @@ async def bulk_job_status(job_id: str, request: Request, db: Session = Depends(g
         "completed": job["completed"],
         "progress": round(job["completed"] / job["total"] * 100, 1) if job["total"] else 0.0,
         "results": job["results"] if job["status"] == "complete" else [],
+        "picked": ([r for r in job["results"] if r.get("shortlisted")]
+                   if job["status"] == "complete" else []),
+        "picked_count": job.get("picked_count", 0),
+        "pick_summary": job.get("pick_summary", ""),
+        "shortlist_max": SHORTLIST_MAX,
         "failed": job["failed"],
         "error": job.get("error"),
     })

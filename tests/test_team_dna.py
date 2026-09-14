@@ -435,6 +435,44 @@ class TestTraitExtractionParsing:
         assert "at least 4 of" in prompt
         assert "at least 2 of the 10" not in prompt
 
+    def test_the_batch_picks_a_few_out_of_two_hundred(self):
+        """Reading 200 CVs is the work this removes. Handing back 200 ranked
+        cards does not remove it — the batch has to pick."""
+        from app.team_dna_routes import select_shortlist, SHORTLIST_MAX
+        batch = [{"match_score": s, "name": f"c{i}"}
+                 for i, s in enumerate([99, 98, 97, 96, 95, 94, 93, 92, 91, 90,
+                                        89, 88, 87, 86, 85] + [70] * 185)]
+        picked = select_shortlist(batch)
+        assert len(picked) == SHORTLIST_MAX
+        assert [p["match_score"] for p in picked] == [99, 98, 97, 96, 95, 94, 93, 92, 91, 90]
+
+    def test_a_weak_batch_picks_nobody_rather_than_padding(self):
+        """Padding to a round number with people nobody should call would make
+        the shortlist worthless. Better to return nothing and say so."""
+        from app.team_dna_routes import select_shortlist, shortlist_summary
+        weak = [{"match_score": s, "name": f"c{s}"} for s in (84, 80, 75, 70)]
+        assert select_shortlist(weak) == []
+        line = shortlist_summary(weak, [])
+        assert "84" in line, "must name the closest score rather than stay vague"
+        assert "None" in line
+
+    def test_only_silver_and_gold_are_picked(self):
+        """Bronze means 'adjacent' — not an interview."""
+        from app.team_dna_routes import select_shortlist, SHORTLIST_MIN_SCORE
+        assert SHORTLIST_MIN_SCORE == 85
+        edge = [{"match_score": 85, "name": "in"}, {"match_score": 84, "name": "out"}]
+        assert [p["name"] for p in select_shortlist(edge)] == ["in"]
+
+    def test_fewer_than_the_cap_qualify_returns_only_those(self):
+        from app.team_dna_routes import select_shortlist
+        few = [{"match_score": s} for s in (99, 95, 88)] + [{"match_score": 60}] * 40
+        assert len(select_shortlist(few)) == 3
+
+    def test_an_empty_batch_does_not_crash_the_summary(self):
+        from app.team_dna_routes import select_shortlist, shortlist_summary
+        assert select_shortlist([]) == []
+        assert "Nothing" in shortlist_summary([], [])
+
     def test_ai_backend_failure_is_an_honest_error(self, monkeypatch):
         import app.team_dna as team_dna
         def _boom():
