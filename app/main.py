@@ -3330,66 +3330,9 @@ def api_platform_health(db: Session = Depends(get_db)):
     }
 
 
-@app.get("/api/readiness/linkedin")
-def api_linkedin_readiness(db: Session = Depends(get_db)):
-    """LinkedIn Talent Solutions Partner readiness checklist."""
-    try:
-        ai_calls = db.query(UsageLogORM).filter(UsageLogORM.action=="ai_grade").count()
-        has_webhooks = db.query(WebhookORM).filter(WebhookORM.is_active==True, WebhookORM.is_deleted==False).count() > 0
-        has_api_keys = db.query(APIKeyORM).filter(APIKeyORM.is_active==True, APIKeyORM.is_deleted==False).count() > 0
-    except Exception:
-        ai_calls = 0
-        has_webhooks = False
-        has_api_keys = False
-
-    checklist = [
-        {"item": "Real-time scoring API",          "ready": True,         "detail": "POST /api/candidates/score and /api/candidates/bulk — GPT-4o scoring against Team DNA"},
-        {"item": "Fast API layer",                  "ready": True,         "detail": "App-layer latency measured via /health telemetry (p50/p95/p99)"},
-        {"item": "Partner webhooks",                "ready": has_webhooks, "detail": "Full webhook system — candidate.created, scored, shortlisted"},
-        {"item": "Enterprise API keys",             "ready": has_api_keys, "detail": "Scoped API keys with rate limiting"},
-        {"item": "Recruiter analytics",             "ready": True,         "detail": "Full recruiter performance + efficiency scoring"},
-        {"item": "AI coaching engine",              "ready": True,         "detail": "Phase 39 — real-time recruiter coaching"},
-        {"item": "Forecast engine",                 "ready": True,         "detail": "Phase 37 — hiring funnel + scenario simulation"},
-        {"item": "Candidate signals",               "ready": True,         "detail": "Phase 38 — real-time candidate activity signals"},
-        {"item": "Narrative intelligence",          "ready": True,         "detail": "Phase 36 — AI executive candidate narratives"},
-        {"item": "AI scorecards",                   "ready": True,         "detail": "Phase 35 — collaborative human+AI scorecards"},
-        {"item": "Outreach engine",                 "ready": True,         "detail": "Phase 33 — personalized AI outreach"},
-        {"item": "ATS integrations",                "ready": True,         "detail": "Greenhouse + Lever webhooks + Zapier + Make"},
-        {"item": "LinkedIn Talent Solutions",       "ready": False,        "detail": "Pending LinkedIn Partner Program approval — no LinkedIn data access today"},
-        {"item": "Multi-tenant architecture",       "ready": True,         "detail": "Company-scoped data isolation"},
-        {"item": "Stripe billing",                  "ready": True,         "detail": "Free/Business/Corporate/Enterprise plans"},
-        {"item": "SSO ready",                       "ready": True,         "detail": "Phase 39 — Azure AD + Okta + Google"},
-    ]
-
-    ready_count = sum(1 for c in checklist if c["ready"])
-    return {
-        "ok":           True,
-        "ready":        ready_count == len(checklist),
-        "score":        round(ready_count / len(checklist) * 100, 1),
-        "ready_count":  ready_count,
-        "total":        len(checklist),
-        "checklist":    checklist,
-        "verdict":      "Enterprise-ready; LinkedIn partnership pending approval",
-    }
-
-
-# REMOVED — GET /api/narrative/acquisition
-#
-# Generated an AI "acquisition narrative" aimed at LinkedIn / Workday / Indeed.
-# Its prompt instructed the model "do not invent metrics" and then fed it
-# metrics that were wrong: Stripe billing (retired — it is Paddle, and still on
-# placeholder keys), "Phase 40/40 fully production-ready", and an outreach /
-# copilot / signals feature list whose claims were removed from the site on
-# 2026-09-10 for not being real.
-#
-# Its hardcoded fallback asserted the platform "plugs into any of these
-# ecosystems within 30 days of acquisition". There is no Workday integration,
-# no Indeed integration, and the Greenhouse/Lever push has never run against a
-# live account.
-#
-# Removed because technical diligence reads the repository. One inflated claim
-# found there causes a buyer to re-examine everything else, and that costs far
-# more than this endpoint was ever worth. No UI referenced it.
+# LinkedIn sign-in and its readiness/status endpoints were removed — see
+# linkedin_engine.py for why. Accounts have always had passwords, so no
+# login path was lost.
 
 @app.get("/api/partners/readiness")
 def api_partners_readiness():
@@ -3557,7 +3500,7 @@ from app.mobile_engine import (
     generate_webhook_signature, add_to_dlq, get_webhook_failures, replay_webhook,
     get_ai_path, get_model_for_path,
     log_compliance_event, export_company_data, delete_candidate_data, get_compliance_audit_log,
-    get_linkedin_graph_status, SWIFT_SNIPPET, KOTLIN_SNIPPET,
+    SWIFT_SNIPPET, KOTLIN_SNIPPET,
 )
 from app.db import (
     WebhookDLQORM, ComplianceLogORM, MobileSessionORM
@@ -3677,10 +3620,6 @@ def api_compliance_audit(request: Request, db: Session = Depends(get_db)):
 
 # ── LinkedIn Graph Stub ────────────────────────────────────
 
-@app.get("/api/linkedin/status")
-def api_linkedin_status():
-    return get_linkedin_graph_status()
-
 # ── Mobile SDK Snippets ────────────────────────────────────
 
 @app.get("/api/mobile/sdk/swift")
@@ -3709,7 +3648,6 @@ def api_sso_metadata():
 from app.linkedin_engine import (
     seed_feature_flags, is_flag_enabled, get_all_flags, update_flag,
     route_ai_model, get_tenant_config,
-    get_linkedin_auth_url, get_linkedin_profile_stub, save_linkedin_oauth,
     api_v2_candidates,
     get_status_page,
     get_data_residency_options,
@@ -3767,114 +3705,6 @@ def api_tenant_config(request: Request, db: Session = Depends(get_db)):
 
 # ── LinkedIn OAuth ─────────────────────────────────────────
 
-@app.get("/auth/linkedin")
-def auth_linkedin(request: Request):
-    # Not wired up yet (missing client id/secret) → friendly notice instead of a broken flow.
-    from app.linkedin_engine import linkedin_is_configured, get_linkedin_auth_url
-    if not linkedin_is_configured():
-        return RedirectResponse(url="/login?notice=linkedin_soon", status_code=302)
-    return RedirectResponse(url=get_linkedin_auth_url(secrets.token_urlsafe(16)))
-
-
-
-# ============================================================
-# HR VERIFICATION — LinkedIn Role Check
-# ============================================================
-
-HR_KEYWORDS = [
-    "hr", "human resource", "human resources", "recruiter", "recruiting",
-    "recruitment", "talent", "talent acquisition", "people", "people ops",
-    "people operations", "hiring", "workforce", "staffing", "sourcing",
-    "sourcer", "compensation", "benefits", "learning", "development",
-    "organizational", "onboarding", "employee experience", "employer branding",
-    "headhunter", "headhunting", "executive search", "hrbp", "hr business partner",
-    "chief people", "vp people", "head of people", "director of people",
-    "director of talent", "director of recruiting", "vp talent", "vp hr",
-    "head of hr", "head of talent", "head of recruiting",
-]
-
-def is_hr_professional(job_title: str, department: str = "") -> bool:
-    """Check if a LinkedIn user is an HR professional."""
-    text = f"{job_title} {department}".lower()
-    return any(kw in text for kw in HR_KEYWORDS)
-
-@app.get("/auth/linkedin/register")
-def linkedin_register_redirect():
-    """Start LinkedIn OAuth for registration. Not wired up yet → friendly notice."""
-    from app.linkedin_engine import linkedin_is_configured, get_linkedin_auth_url
-    if not linkedin_is_configured():
-        return RedirectResponse(url="/register?notice=linkedin_soon", status_code=302)
-    return RedirectResponse(url=get_linkedin_auth_url(state="register"))
-
-@app.get("/auth/linkedin/callback")
-async def auth_linkedin_callback(
-    request: Request,
-    code: str = None,
-    state: str = None,
-    error: str = None,
-    db: Session = Depends(get_db)
-):
-    """Complete the LinkedIn (OpenID Connect) sign-in flow.
-
-    - Exchange the code for a token, read the member's email + name via userinfo.
-    - If an account already exists for that email → log them in and go to /workspace.
-    - Otherwise → send them to /register with email + name prefilled to finish signup
-      (company + HR job title + LinkedIn URL are collected there).
-    Works for both the "Sign in" and "Register" buttons; `state == "register"` only
-    decides which page to bounce back to on failure.
-    """
-    from app.linkedin_engine import (
-        linkedin_is_configured, exchange_code_for_token, fetch_userinfo,
-    )
-    from urllib.parse import urlencode
-
-    is_register = (state == "register")
-    fail_page   = "/register" if is_register else "/login"
-
-    # User denied consent, or LinkedIn returned an error / no code
-    if error or not code:
-        return RedirectResponse(url=f"{fail_page}?error=linkedin_cancelled")
-    # Not wired up yet (missing client id/secret) — show the friendly notice
-    if not linkedin_is_configured():
-        return RedirectResponse(url=f"{fail_page}?notice=linkedin_soon")
-
-    try:
-        token  = exchange_code_for_token(code)
-        access = (token or {}).get("access_token")
-        if not access:
-            return RedirectResponse(url=f"{fail_page}?error=linkedin_failed")
-        info  = fetch_userinfo(access)
-        email = normalize_email(info.get("email", "") or "")
-        name  = (info.get("name")
-                 or f"{info.get('given_name','')} {info.get('family_name','')}".strip()
-                 or (email.split("@")[0].replace(".", " ").title() if email else ""))
-        if not email:
-            return RedirectResponse(url=f"{fail_page}?error=linkedin_failed")
-    except Exception:
-        return RedirectResponse(url=f"{fail_page}?error=linkedin_failed")
-
-    # Existing account for this email → log in
-    user = db.query(CompanyUserORM).filter(
-        CompanyUserORM.email == email, CompanyUserORM.is_deleted == False
-    ).first()
-    if user:
-        company = db.query(CompanyORM).filter(
-            CompanyORM.id == user.company_id, CompanyORM.is_deleted == False
-        ).first()
-        if not company or not user.is_active:
-            # Inactive (e.g. email-verification gate) — can't drop them straight in
-            return RedirectResponse(url="/login?error=linkedin_failed")
-        user.last_login = datetime.utcnow(); db.commit()
-        request.session["company_user_id"] = user.id
-        request.session["company_id"]      = user.company_id
-        request.session["user_role"]       = user.role
-        return RedirectResponse(url="/workspace")
-
-    # No account yet → finish registration with name + email prefilled
-    return RedirectResponse(
-        url="/register?" + urlencode({"linkedin": "connected", "email": email, "name": name})
-    )
-
 @app.post("/api/auth/verify-hr")
 async def api_verify_hr(request: Request):
     """Verify if a user is an HR professional before registration."""
@@ -3888,11 +3718,6 @@ async def api_verify_hr(request: Request):
         "message":  "Access granted — HR professional verified" if is_hr else "Access denied — this platform is for HR professionals only",
     }
 
-
-@app.get("/api/linkedin/profile/{candidate_id}")
-def api_linkedin_profile(candidate_id: str, request: Request, db: Session = Depends(get_db)):
-    company, user = get_current_company_user(request, db)
-    return get_linkedin_profile_stub(candidate_id)
 
 # ── API v2 ─────────────────────────────────────────────────
 

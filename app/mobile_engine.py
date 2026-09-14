@@ -329,33 +329,6 @@ def get_compliance_audit_log(db: Session, company_id: str, limit: int = 100) -> 
 # 41.7 — LINKEDIN TALENT GRAPH STUB
 # ============================================================
 
-def get_linkedin_graph_status() -> dict:
-    """What LinkedIn actually does here: sign-in, and nothing else.
-
-    This previously reported "Talent Graph integration ready for activation
-    post-acquisition" and listed four endpoints as ready. All four return
-    404 — they were never written. There is no candidate sync, no skills
-    feed and no signals feed, and none is being built.
-    """
-    import os
-    configured = bool(os.getenv("LINKEDIN_CLIENT_ID") and os.getenv("LINKEDIN_CLIENT_SECRET"))
-    return {
-        "ok": True,
-        "status": "sign_in_only",
-        "sign_in_configured": configured,
-        "message": ("LinkedIn is used for one thing: an optional "
-                    "\"Sign in with LinkedIn\" button on the login page. It does "
-                    "not search LinkedIn, import candidates, or read anyone's "
-                    "profile data."),
-        "scopes_used": ["openid", "profile", "email"],
-        "not_supported": [
-            "candidate search or sourcing",
-            "profile or connection import",
-            "Talent Solutions / Recruiter data",
-        ],
-    }
-
-
 # ============================================================
 # MOBILE SDK CODE SNIPPETS
 # ============================================================
