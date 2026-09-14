@@ -3330,6 +3330,41 @@ def api_platform_health(db: Session = Depends(get_db)):
     }
 
 
+# ── Multi-Tenant Config ────────────────────────────────────
+
+@app.get("/api/tenant/config")
+def api_tenant_config(request: Request, db: Session = Depends(get_db)):
+    company, user = get_current_company_user(request, db)
+    return get_tenant_config(db, company.id)
+
+
+# ============================================================
+# HR VERIFICATION — job-title check at registration
+# ============================================================
+#
+# Nothing to do with LinkedIn despite where this used to sit: registration
+# calls it to check the person signing up works in HR. Removing LinkedIn
+# took this with it by accident and broke /api/company/register outright.
+
+HR_KEYWORDS = [
+    "hr", "human resource", "human resources", "recruiter", "recruiting",
+    "recruitment", "talent", "talent acquisition", "people", "people ops",
+    "people operations", "hiring", "workforce", "staffing", "sourcing",
+    "sourcer", "compensation", "benefits", "learning", "development",
+    "organizational", "onboarding", "employee experience", "employer branding",
+    "headhunter", "headhunting", "executive search", "hrbp", "hr business partner",
+    "chief people", "vp people", "head of people", "director of people",
+    "director of talent", "director of recruiting", "vp talent", "vp hr",
+    "head of hr", "head of talent", "head of recruiting",
+]
+
+
+def is_hr_professional(job_title: str, department: str = "") -> bool:
+    """True when the stated job title looks like an HR/recruiting role."""
+    text = f"{job_title} {department}".lower()
+    return any(kw in text for kw in HR_KEYWORDS)
+
+
 # LinkedIn sign-in and its readiness/status endpoints were removed — see
 # linkedin_engine.py for why. Accounts have always had passwords, so no
 # login path was lost.
