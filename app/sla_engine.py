@@ -101,9 +101,13 @@ def _compute_sla_metrics(logs: list) -> dict:
     p95_latency = _percentile(latencies, 95)
     p99_latency = _percentile(latencies, 99)
 
-    # AI model latency (narrative + grade endpoints)
-    ai_logs     = [l for l in logs if "/api/narrative" in (l.endpoint or "") or
-                   "/api/grade" in (l.endpoint or "")]
+    # AI model latency. This filtered on "/api/grade", a route that does not
+    # exist and never has, so the scoring calls — the slowest thing the app
+    # does — were missing from the number entirely.
+    _AI_PATHS = ("/api/candidates/score", "/api/candidates/bulk",
+                 "/api/team-dna", "/api/narrative")
+    ai_logs     = [l for l in logs
+                   if any(p in (l.endpoint or "") for p in _AI_PATHS)]
     ai_latency  = round(
         sum(l.latency_ms for l in ai_logs) / len(ai_logs), 2
     ) if ai_logs else 0.0

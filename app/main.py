@@ -3343,7 +3343,7 @@ def api_linkedin_readiness(db: Session = Depends(get_db)):
         has_api_keys = False
 
     checklist = [
-        {"item": "Real-time scoring API",          "ready": True,         "detail": "POST /api/grade — multi-dimensional GPT-4o scoring"},
+        {"item": "Real-time scoring API",          "ready": True,         "detail": "POST /api/candidates/score and /api/candidates/bulk — GPT-4o scoring against Team DNA"},
         {"item": "Fast API layer",                  "ready": True,         "detail": "App-layer latency measured via /health telemetry (p50/p95/p99)"},
         {"item": "Partner webhooks",                "ready": has_webhooks, "detail": "Full webhook system — candidate.created, scored, shortlisted"},
         {"item": "Enterprise API keys",             "ready": has_api_keys, "detail": "Scoped API keys with rate limiting"},
