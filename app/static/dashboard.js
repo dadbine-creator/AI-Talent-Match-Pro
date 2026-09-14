@@ -615,160 +615,19 @@ function renderTrends(list = []) {
 /* ---------------------------------------------------------
    MAIN SEARCH
 --------------------------------------------------------- */
-async function runSearch() {
-    const role = positionTitleInput.value.trim();
-    const jd = jobDescriptionInput.value.trim();
-    const loc = locationInput.value.trim();
-    const skills = skillsInput.value.trim();
-
-    if (!role && !jd) { pushAILine("Define at least a title or description to begin.", true); return; }
-
-    setBooleanProcessing(true);
-    pushAILine("Analyzing role definition and synthesizing LinkedIn trajectories...", false, 0, true);
-
-    const booleanQuery = buildBooleanQuery(role, skills, loc);
-
-    const fakeKpis = [
-        { label: "Top-tier matches", value: "24", sub: "100-tier profiles" },
-        { label: "Strong fits", value: "61", sub: "90-tier profiles" },
-        { label: "Promising bets", value: "132", sub: "80-tier profiles" }
-    ];
-    const fakeInsights = "Market density is strongest in NYC and London. Profiles skew toward growth and lifecycle ownership.";
-    const fakeMarketDensity = [{ city: "New York", score: 92 }, { city: "London", score: 84 }, { city: "Berlin", score: 76 }];
-    const fakeSalaryCurve = [{ range: "$80–100k", score: 22 }, { range: "$100–120k", score: 48 }, { range: "$120–140k", score: 72 }, { range: "$140–160k", score: 54 }];
-    const fakeSeniority = [{ level: "Junior", score: 18 }, { level: "Mid", score: 44 }, { level: "Senior", score: 63 }, { level: "Lead", score: 39 }];
-    const fakePersonas = [{ name: "The Strategist", description: "Long-term planners with strong cross-functional leadership." }, { name: "The Builder", description: "Hands-on executors who thrive in fast-paced environments." }];
-    const fakeTrajectory = ["Coordinator → Specialist", "Specialist → Manager", "Manager → Senior Manager", "Senior Manager → Director"];
-    const fakeCompetitiveness = 78;
-    const fakeTrends = [{ label: "AI adoption", strength: "Strong" }, { label: "Remote roles", strength: "Moderate" }, { label: "Salary inflation", strength: "Weakening" }];
-
-    await new Promise(res => setTimeout(res, 600));
-
-    booleanText.textContent = booleanQuery;
-    booleanBox.style.display = "block";
-    setBooleanProcessing(false);
-
-    pushAILine("Boolean strategy generated. Surfacing 100 / 90 / 80 tier candidates.", false, 200, false);
-
-    // ⭐ PHASE 21 — Real Azure AI Scoring API
-    let candidates = [];
-
-    // API configuration
-    const AZURE_API_URL  = "https://ai-talent-grade-engine.azurewebsites.net/api/grade";
-    const AZURE_API_KEY  = "REDACTED_DEAD_AZURE_FUNCTION_KEY";
-
-    try {
-        pushAILine("Calling AIGradeEngine — scoring candidates in real time...", false, 0, false);
-
-        const response = await fetch(`${AZURE_API_URL}?code=${AZURE_API_KEY}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                job: {
-                    title: role,
-                    description: jd,
-                    required_skills: skills ? skills.split(",").map(s => s.trim()) : [],
-                    seniority: "Senior",
-                    location: loc
-                },
-                candidates: [],
-                membership_tier: "corporate"
-            })
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            if (data.success && data.results && data.results.length > 0) {
-                candidates = data.results.map((c, i) => ({
-                    name:      c.name,
-                    role:      c.tier === "gold" ? "Gold Match" : c.tier === "silver" ? "Silver Match" : "Bronze Match",
-                    location:  loc || "Remote",
-                    years:     "",
-                    score:     c.match_score,
-                    tier:      c.tier === "gold" ? "100" : c.tier === "silver" ? "90" : "80",
-                    tierLabel: c.tier === "gold" ? "Gold Tier" : c.tier === "silver" ? "Silver Tier" : "Bronze Tier",
-                    adaptability:  c.adaptability,
-                    focus_penalty: c.focus_penalty,
-                    why:           c.ai_analysis,
-                    silent_skill:  c.silent_skill,
-                    linkedin_url:  c.linkedin_url,
-                    latency_ms:    c.latency_ms
-                }));
-
-                pushAILine(`AI scored ${candidates.length} candidates in ${data.latency_ms}ms`, false, 0, false);
-            }
-        }
-    } catch (err) {
-        console.warn("Azure API call failed, using fallback candidates:", err);
-    }
-
-    // Fallback if API fails
-    if (!candidates || candidates.length === 0) {
-        pushAILine("Using cached candidate profiles...", false, 0, false);
-        candidates = [
-            { name: "Alex Rivera", role: "Senior Growth Marketing Manager", location: "New York, NY", years: "8 yrs exp", score: 94, tier: "100", tierLabel: "Gold Tier" },
-            { name: "Jordan Lee",  role: "Demand Generation Lead",          location: "Remote · US",  years: "7 yrs exp", score: 89, tier: "90",  tierLabel: "Silver Tier" },
-            { name: "Taylor Chen", role: "Lifecycle Marketing Manager",      location: "London, UK",   years: "6 yrs exp", score: 83, tier: "80",  tierLabel: "Bronze Tier" }
-        ];
-    }
-
-    renderProDashboard({
-        kpis: fakeKpis, score: 87, insights: fakeInsights,
-        proCandidates: candidates, marketDensity: fakeMarketDensity,
-        salaryCurve: fakeSalaryCurve, seniority: fakeSeniority,
-        personas: fakePersonas, trajectory: fakeTrajectory,
-        competitiveness: fakeCompetitiveness, trends: fakeTrends
-    });
-
-    // ⭐ PHASE 14 — Top-3 ranking
-    if (typeof runPhase14 === "function") runPhase14(candidates);
-
-    // ⭐ PHASE 15 — Persona matching
-    if (typeof runPhase15 === "function") runPhase15(candidates);
-
-    // ⭐ PHASE 17 — Premium tier cards + adaptive scoring
-    if (typeof runPhase17 === "function") runPhase17(candidates);
-
-    // ⭐ PHASE 18 — Motion system + candidate popup
-    if (typeof runPhase18 === "function") runPhase18(candidates);
-
-    // ⭐ PHASE 19 — Shortlist buttons on cards
-    if (typeof runPhase19 === "function") runPhase19(candidates);
-}
-
-async function runSearchWithMemory() {
-    await runSearch();
-    const activeId = getActiveRoleId();
-    if (!activeId) return;
-    const updated = {
-        title: positionTitleInput.value.trim(),
-        description: jobDescriptionInput.value.trim(),
-        location: locationInput.value.trim(),
-        skills: skillsInput.value.trim(),
-        boolean: booleanText.textContent.trim(),
-        aiStream: Array.from(aiLines.children).map(el => el.textContent.replace("› ", "")),
-        candidates: Array.from(resultsGrid.children).map(card => ({
-            name: card.querySelector(".result-name")?.textContent || "",
-            tier: card.querySelector(".result-tier")?.textContent || "",
-            match_score: card.querySelector(".candidate-score")?.textContent || "",
-            photo: card.querySelector(".result-photo")?.src || "",
-            linkedin: card.querySelector(".result-link")?.href || ""
-        }))
-    };
-    updateRole(activeId, updated);
-    renderSidebarFromStorage();
-}
-
-// Search button with debounce — prevents double-click spam
-let searchDebounceTimer;
-if (searchBtn) {
-    searchBtn.addEventListener("click", () => {
-        clearTimeout(searchDebounceTimer);
-        searchDebounceTimer = setTimeout(() => {
-            runSearchWithMemory();
-        }, 300);
-    });
-}
+/* PHASE 21 search flow — removed.
+ *
+ * This called an Azure Function at ai-talent-grade-engine.azurewebsites.net
+ * with the access key hardcoded here in client-side JavaScript. That Function
+ * App no longer exists (the hostname does not resolve), so the call could only
+ * ever fail — and on failure the code fell through to three invented people
+ * (Alex Rivera, Jordan Lee, Taylor Chen) rendered as if they were candidates,
+ * alongside hardcoded KPIs, market density and salary curves.
+ *
+ * None of it was reachable: the chain hung off a #searchBtn listener, and no
+ * page contains that element, so the listener never bound. Nothing rendered
+ * to a user. The real scoring flow is Team DNA, in workspace.html.
+ */
 
 if (newSessionBtn) {
     newSessionBtn.addEventListener("click", () => {
