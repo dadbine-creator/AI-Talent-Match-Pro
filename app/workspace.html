@@ -220,18 +220,6 @@ body::before {
 .ai-stream { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 14px; }
 .stream-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.3); }
 
-.linkedin-status-bar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 10px; background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.07); border-radius: 8px;
-}
-.linkedin-status-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.25); }
-.linkedin-status-text { font-size: 11px; color: rgba(255,255,255,0.4); margin-left: 6px; }
-.linkedin-connect-btn {
-    font-size: 11px; padding: 4px 10px;
-    background: rgba(29,110,245,0.15); border: 1px solid rgba(29,110,245,0.4);
-    border-radius: 6px; color: #4d9fff; cursor: pointer;
-}
 
 .empty-hint {
     font-size: 11px; color: rgba(255,255,255,0.25); line-height: 1.6;
@@ -624,15 +612,6 @@ body::before {
 
             <div class="ai-stream">
 
-                <!-- LinkedIn Status -->
-                <div class="linkedin-status-bar" id="linkedinStatusBar">
-                    <div style="display:flex;align-items:center;">
-                        <div class="linkedin-status-dot" id="linkedinDot"></div>
-                        <div class="linkedin-status-text" id="linkedinText" style="margin-left:6px;">Not connected to LinkedIn</div>
-                    </div>
-                    <button class="linkedin-connect-btn">Connect LinkedIn</button>
-                </div>
-
                 <!-- Deep-thinking stream -->
                 <div class="stream-label">Deep-thinking stream</div>
                 <div class="empty-hint" id="emptyAIStream">Scoring appears here once you add CVs to a role.</div>
@@ -654,7 +633,7 @@ body::before {
                     <div id="outreachRows"></div>
                     <button onclick="sendAllViaLinkedIn()" style="width:100%;margin-top:10px;padding:10px;background:linear-gradient(135deg,#0a66c2,#0077b5);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(10,102,194,0.4);" id="autoSendBtn">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                        Copy messages for all 3
+                        <span id="outreachAllCount">Copy messages for all</span>
                     </button>
                     <div style="font-size:10px;color:rgba(255,255,255,0.25);text-align:center;margin-top:5px;">Copy each message, then open the profile to send</div>
                 </div>
@@ -987,6 +966,14 @@ function showOutreachTracker(candidates) {
             <div class="outreach-status-badge status-pending" id="status-${c.name.replace(/\s/g,'_')}">Pending</div>
         </div>`;
     }).join('');
+    // The button used to read "Copy messages for all 3" whatever the real
+    // number was. Say how many there actually are.
+    var allBtn = document.getElementById('outreachAllCount');
+    if (allBtn) {
+        allBtn.textContent = candidates.length === 1
+            ? 'Copy the message'
+            : 'Copy messages for all ' + candidates.length;
+    }
 }
 
 /* ══ AUTO SEND ══════════════════════════════════════ */
