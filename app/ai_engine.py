@@ -6,7 +6,7 @@
 #   + focus_penalty score
 #   + Azure OpenAI support (falls back to OpenAI)
 #   + CosmosDB storage
-#   + Sub-100ms latency optimizations
+#   + Batch scoring against Team DNA
 # ============================================================
 
 import json

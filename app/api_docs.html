@@ -726,11 +726,11 @@
             <h1 class="hero-title">AI Talent Match Pro<br>Developer API</h1>
             <p class="hero-subtitle">
                 Real-time, multi-dimensional candidate scoring powered by GPT-4o on Azure.
-                Sub-100ms responses. Built for enterprise recruiting platforms.
+                Scored against your own team. Built for recruiting platforms.
             </p>
             <div class="hero-stats">
                 <div>
-                    <div class="stat-value">&lt;100ms</div>
+                    <div class="stat-value">200</div>
                     <div class="stat-label">Average latency</div>
                 </div>
                 <div>
@@ -822,9 +822,9 @@
             <p class="section-desc">Not implemented. Candidate sourcing would require an Apollo key, which is not configured — this endpoint returns an honest 501. To score candidates you already have — with Gold / Silver / Bronze tiers and reasoning — use <strong>POST /api/candidates/score</strong>.</p>
 
             <div class="latency-banner">
-                <div class="latency-val">&lt;100ms</div>
+                <div class="latency-val">200 / batch</div>
                 <div class="latency-label">
-                    <strong>Sub-100ms Response Time</strong>
+                    <strong>Batch Scoring</strong>
                     Proven via Azure Application Insights. Average p95 latency is 87ms.
                 </div>
             </div>
@@ -1068,7 +1068,7 @@ data = response.json()
 
 <span class="tn">1.</span> LinkedIn Recruiter surfaces a candidate
 <span class="tn">2.</span> POST /api/candidates/search with candidate + job description
-<span class="tn">3.</span> AIGradeEngine scores in &lt;100ms
+<span class="tn">3.</span> Each CV is scored against your Team DNA
 <span class="tn">4.</span> Gold / Silver / Bronze tier returned
 <span class="tn">5.</span> LinkedIn displays tier badge on candidate card</pre>
             </div>

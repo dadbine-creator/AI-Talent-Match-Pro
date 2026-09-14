@@ -206,7 +206,7 @@ def get_ai_path(action: str) -> str:
 def get_model_for_path(path: str, tier: str = "gold") -> str:
     """Select model based on hot/cold path and candidate tier."""
     if path == "hot":
-        return "gpt-4o"  # sub-100ms — always gpt-4o on hot path
+        return "gpt-4o"  # interactive path — full model, not the mini
     else:
         # Cold path — use mini for cost, full for quality
         return "gpt-4o" if tier == "gold" else "gpt-4o-mini"
