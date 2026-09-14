@@ -120,6 +120,29 @@ class TestCredentialSafety:
         assert n == 0
 
 
+class TestUploadedCvsCannotBePushed:
+    """The push attaches a note to a record that already exists in the ATS.
+    A CV uploaded here has no such record, and the recruiter needs to be told
+    that in words rather than shown "Missing external_id"."""
+
+    def test_the_reason_is_explained_not_jargon(self):
+        import asyncio
+        from app.integrations_engine import _push_to_greenhouse, _push_to_lever
+        for fn in (_push_to_greenhouse, _push_to_lever):
+            out = asyncio.run(fn(None, {"aitmp_match_score": 90}, "a-real-looking-key"))
+            assert out["ok"] is False
+            assert "external_id" not in out["error"], "developer jargon reached the user"
+            assert "ATS" in out["error"]
+            assert out.get("http_status") == 409
+
+    def test_a_missing_key_is_reported_separately(self):
+        import asyncio
+        from app.integrations_engine import _push_to_greenhouse
+        out = asyncio.run(_push_to_greenhouse("cand-1", {"aitmp_match_score": 90}, ""))
+        assert out["ok"] is False
+        assert "API key" in out["error"]
+
+
 class TestTenantIsolation:
 
     def test_another_tenant_cannot_see_your_connection(self, as_acme, as_globex, tenants):

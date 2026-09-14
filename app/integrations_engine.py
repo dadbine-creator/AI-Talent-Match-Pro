@@ -404,8 +404,15 @@ async def _push_to_greenhouse(
     api_key: str
 ) -> dict:
     """Push enrichment data to Greenhouse Harvest API."""
-    if not external_id or not api_key:
-        return {"ok": False, "error": "Missing external_id or api_key"}
+    if not api_key:
+        return {"ok": False, "error": "No API key stored for this connection."}
+    if not external_id:
+        # An uploaded CV has no record in the ATS, so there is nothing to
+        # attach a note to. Say that, rather than "Missing external_id".
+        return {"ok": False, "http_status": 409, "error":
+                "This candidate came from a CV uploaded here, so there is no "
+                "record in your ATS to attach the score to. Scores can only be "
+                "pushed for candidates that arrived from your ATS."}
 
     try:
         async with httpx.AsyncClient() as client:
@@ -438,8 +445,15 @@ async def _push_to_lever(
     api_key: str
 ) -> dict:
     """Push enrichment data to Lever API."""
-    if not external_id or not api_key:
-        return {"ok": False, "error": "Missing external_id or api_key"}
+    if not api_key:
+        return {"ok": False, "error": "No API key stored for this connection."}
+    if not external_id:
+        # An uploaded CV has no record in the ATS, so there is nothing to
+        # attach a note to. Say that, rather than "Missing external_id".
+        return {"ok": False, "http_status": 409, "error":
+                "This candidate came from a CV uploaded here, so there is no "
+                "record in your ATS to attach the score to. Scores can only be "
+                "pushed for candidates that arrived from your ATS."}
 
     try:
         async with httpx.AsyncClient() as client:

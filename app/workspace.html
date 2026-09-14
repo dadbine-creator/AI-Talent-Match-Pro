@@ -651,16 +651,16 @@ body::before {
                 </div>
 
                 <!-- CRM Integration -->
-                <div class="stream-label">CRM Integration</div>
+                <div class="stream-label">Connected systems</div>
                 <div class="crm-sidebar-widget" id="crmSidebarWidget">
                     <div class="crm-sidebar-title">
                         Connected ATS
                         <button onclick="openCRMModal()" class="crm-connect-small">+ Connect</button>
                     </div>
                     <div class="crm-connected-list" id="crmConnectedList">
-                        <div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center;padding:8px 0;">No ATS connected yet</div>
+                        <div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center;padding:8px 0;">Nothing connected yet</div>
                     </div>
-                    <button class="crm-push-all-btn" onclick="manualPushAll()">Push the shortlist to your ATS</button>
+                    <button class="crm-push-all-btn" onclick="manualPushAll()">Add scores to your ATS</button>
                     <div class="crm-log" id="crmActivityLog"></div>
                 </div>
 
@@ -773,36 +773,38 @@ body::before {
     <div class="crm-modal">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
             <div>
-                <div style="font-size:11px;font-weight:700;color:#4d9fff;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">CRM Integration</div>
-                <div style="font-size:20px;font-weight:700;color:#fff;">Connect your CRM</div>
-                <div style="font-size:13px;color:rgba(255,255,255,0.45);margin-top:2px;">Candidates who say YES are added automatically</div>
+                <div style="font-size:11px;font-weight:700;color:#4d9fff;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Connected systems</div>
+                <div style="font-size:20px;font-weight:700;color:#fff;">Connect your ATS or CRM</div>
+                <div style="font-size:13px;color:rgba(255,255,255,0.45);margin-top:2px;">Send each candidate's score back to the system your team already works in</div>
             </div>
             <button onclick="closeCRMModal()" style="width:32px;height:32px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:rgba(255,255,255,0.5);font-size:16px;cursor:pointer;">✕</button>
         </div>
         <div id="crmStep1">
-            <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:12px;">Select your ATS:</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:12px;">Select your system — applicant tracking or recruitment CRM:</div>
             <div class="crm-grid" id="crmGrid"></div>
             <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:14px;line-height:1.6;">
-                Only systems we can actually push to are listed. Your API key is stored
-                encrypted on our server and is never sent back to your browser.
+                Only systems we can actually push to are listed — Greenhouse and Lever
+                today. Using something else, an ATS or a recruitment CRM? Tell us and we
+                will add it. Your API key is stored encrypted on our server and is never
+                sent back to your browser.
             </div>
         </div>
         <div id="crmStep2" style="display:none;">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
                 <button onclick="showCRMStep(1)" style="width:28px;height:28px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;">←</button>
-                <div style="font-size:16px;font-weight:700;color:#fff;" id="crmStep2Title">Connect Salesforce</div>
+                <div style="font-size:16px;font-weight:700;color:#fff;" id="crmStep2Title">Connect</div>
             </div>
             <div class="crm-field-row"><label class="crm-field-label" id="crmField1Label">Instance URL</label><input class="crm-field-input" id="crmField1" placeholder="https://yourcompany.salesforce.com"></div>
             <div class="crm-field-row"><label class="crm-field-label" id="crmField2Label">API Key / Access Token</label><input class="crm-field-input" id="crmField2" type="password" placeholder="Enter your API key..."></div>
             <div style="padding:10px 14px;background:rgba(29,110,245,0.06);border:1px solid rgba(29,110,245,0.18);border-radius:10px;font-size:12px;color:rgba(200,220,255,0.7);line-height:1.5;margin-bottom:20px;">
-                When connected: candidate records created automatically, outreach history logged, pipeline assigned, follow-up set — zero manual entry.
+                What this does: adds the match score, tier and the reasoning as a note on that person's existing record. It does not create records, move anyone through a pipeline, or send anything. It works for candidates that came from your system — a CV you uploaded here has no record there to attach a note to.
             </div>
             <button class="crm-connect-btn" onclick="connectCRM()">Save connection →</button>
         </div>
         <div id="crmStep3" style="display:none;text-align:center;padding:20px 0;">
             <div style="font-size:48px;margin-bottom:16px;">✅</div>
             <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;" id="crmSuccessTitle">Setup saved</div>
-            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:24px;">Once the CRM integration is live, YES candidates will sync to your pipeline automatically — coming soon.</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:24px;">Your key is stored encrypted. Use "Add scores to your ATS" after a batch to push the shortlist's scores across — coming soon.</div>
             <button class="crm-connect-btn" onclick="closeCRMModal()">Done →</button>
         </div>
     </div>
