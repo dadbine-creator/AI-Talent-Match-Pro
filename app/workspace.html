@@ -214,6 +214,11 @@ body::before {
 .welcome-bar {
     padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
 }
+/* dashboard.css sets .welcome-bar to flex + space-between with !important,
+   which lays these two lines side by side and collides them. This bar holds
+   a greeting above a sentence, so it has to stack. */
+.right-panel .welcome-bar { display: flex !important; flex-direction: column !important;
+                            align-items: stretch !important; gap: 4px !important; }
 .welcome-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 5px; }
 .welcome-sub { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.5; }
 
@@ -649,13 +654,13 @@ body::before {
                 <div class="stream-label">CRM Integration</div>
                 <div class="crm-sidebar-widget" id="crmSidebarWidget">
                     <div class="crm-sidebar-title">
-                        Connected CRMs
+                        Connected ATS
                         <button onclick="openCRMModal()" class="crm-connect-small">+ Connect</button>
                     </div>
                     <div class="crm-connected-list" id="crmConnectedList">
-                        <div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center;padding:8px 0;">No CRM connected yet</div>
+                        <div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center;padding:8px 0;">No ATS connected yet</div>
                     </div>
-                    <button class="crm-push-all-btn" onclick="manualPushAll()">Push all YES candidates to CRM</button>
+                    <button class="crm-push-all-btn" onclick="manualPushAll()">Push the shortlist to your ATS</button>
                     <div class="crm-log" id="crmActivityLog"></div>
                 </div>
 
