@@ -145,12 +145,17 @@
     .strength-text { font-size: 11px; margin-top: 5px; color: rgba(255,255,255,0.35); transition: color 0.3s; min-height: 14px; }
     .pass-no-match { font-size: 11px; color: #f87171; margin-top: 5px; display: none; }
 
-    .auth-button { width: 100%; padding: 15px; background: var(--brand);
+    /* blue -> cyan -> blue at 200% width: each half shows the full colour
+       range, so the gradient is visible at rest AND slides on hover. A plain
+       A->B gradient at 200% only ever shows half of itself. */
+    .auth-button { width: 100%; padding: 15px;
+      background: linear-gradient(110deg,#145bb8,#4ddbe8,#145bb8);
+      background-size: 200% 100%; background-position: left center;
       border: none; border-radius: 12px; color: #fff; font-size: 15px; font-weight: 700;
-      cursor: pointer; transition: transform 0.15s, box-shadow 0.2s, background-position 0.4s;
+      cursor: pointer; transition: background-position 0.6s ease;
       box-shadow: 0 8px 26px rgba(99,102,241,0.35); font-family: inherit; margin-top: 6px;
       display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .auth-button:hover:not(:disabled) { background: #1a61da; }
+    .auth-button:hover:not(:disabled) { background-position: right center; }
     .auth-button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
     .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
