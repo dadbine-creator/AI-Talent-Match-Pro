@@ -3393,27 +3393,6 @@ def auth_linkedin(request: Request):
 
 
 
-# ============================================================
-# HR VERIFICATION — LinkedIn Role Check
-# ============================================================
-
-HR_KEYWORDS = [
-    "hr", "human resource", "human resources", "recruiter", "recruiting",
-    "recruitment", "talent", "talent acquisition", "people", "people ops",
-    "people operations", "hiring", "workforce", "staffing", "sourcing",
-    "sourcer", "compensation", "benefits", "learning", "development",
-    "organizational", "onboarding", "employee experience", "employer branding",
-    "headhunter", "headhunting", "executive search", "hrbp", "hr business partner",
-    "chief people", "vp people", "head of people", "director of people",
-    "director of talent", "director of recruiting", "vp talent", "vp hr",
-    "head of hr", "head of talent", "head of recruiting",
-]
-
-def is_hr_professional(job_title: str, department: str = "") -> bool:
-    """Check if a LinkedIn user is an HR professional."""
-    text = f"{job_title} {department}".lower()
-    return any(kw in text for kw in HR_KEYWORDS)
-
 @app.get("/auth/linkedin/register")
 def linkedin_register_redirect():
     """Start LinkedIn OAuth for registration. Not wired up yet → friendly notice."""
