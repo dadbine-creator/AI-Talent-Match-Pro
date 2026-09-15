@@ -23,7 +23,8 @@
     .apply-btn { padding: 10px 20px; background: #2563eb; border: none; border-radius: 8px; color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; text-decoration: none; }
     .perks-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-top: 40px; }
     .perk-card { background: rgba(10,20,50,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(37,99,235,0.15); border-radius: 14px; padding: 24px; text-align: center; }
-    .perk-icon { font-size: 28px; margin-bottom: 10px; }
+    .perk-title::before { content: ""; display: block; width: 26px; height: 2px;
+      background: #3f9aab; margin-bottom: 10px; }
     .perk-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
     .perk-text { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; }
     @media (max-width: 768px) { .job-card { flex-direction: column; align-items: flex-start; gap: 16px; } .perks-grid { grid-template-columns: 1fr; } }
@@ -116,7 +117,7 @@
     <div>
       <div class="job-title">Senior AI Engineer</div>
       <div class="job-meta">
-        <span aria-label="Remote position">🌍 Remote</span>
+        <span aria-label="Remote position">Remote</span>
         <span aria-label="Full time position">Full-time</span>
         <span class="job-tag" aria-label="Engineering department">Engineering</span>
       </div>
@@ -128,7 +129,7 @@
     <div>
       <div class="job-title">Product Designer</div>
       <div class="job-meta">
-        <span aria-label="Remote position">🌍 Remote</span>
+        <span aria-label="Remote position">Remote</span>
         <span aria-label="Full time position">Full-time</span>
         <span class="job-tag" aria-label="Design department">Design</span>
       </div>
@@ -140,7 +141,7 @@
     <div>
       <div class="job-title">Enterprise Sales Lead</div>
       <div class="job-meta">
-        <span aria-label="Remote position">🌍 Remote</span>
+        <span aria-label="Remote position">Remote</span>
         <span aria-label="Full time position">Full-time</span>
         <span class="job-tag" aria-label="Sales department">Sales</span>
       </div>
@@ -152,7 +153,7 @@
     <div>
       <div class="job-title">HR Success Manager</div>
       <div class="job-meta">
-        <span aria-label="Remote position">🌍 Remote</span>
+        <span aria-label="Remote position">Remote</span>
         <span aria-label="Full time position">Full-time</span>
         <span class="job-tag" aria-label="Customer Success department">Customer Success</span>
       </div>
@@ -168,12 +169,12 @@
   <h2 style="font-size:24px;font-weight:800;color:#fff;margin:60px 0 8px;">Why join us</h2>
   <p style="color:rgba(255,255,255,0.45);font-size:14px;margin-bottom:32px;">Honestly? Because this is a rare kind of opportunity.</p>
   <div class="perks-grid fade-in-up">
-    <div class="perk-card"><div class="perk-icon" aria-label="Pre-acquisition stage">🚀</div><div class="perk-title">Pre-acquisition stage</div><div class="perk-text">Most companies hire after the big moment. You'd be joining right before it. That matters — personally and financially.</div></div>
-    <div class="perk-card"><div class="perk-icon" aria-label="Fully Remote">🌍</div><div class="perk-title">Fully Remote</div><div class="perk-text">Your output matters. Where you work from doesn't. We trust adults to manage their own time.</div></div>
-    <div class="perk-card"><div class="perk-icon" aria-label="Cutting-edge AI">🧠</div><div class="perk-title">Cutting-edge AI</div><div class="perk-text">You won't be maintaining legacy code. You'll be building things that didn't exist six months ago.</div></div>
-    <div class="perk-card"><div class="perk-icon" aria-label="Competitive equity">💰</div><div class="perk-title">Competitive equity</div><div class="perk-text">We don't do symbolic equity. If you help build this, you share in what it becomes.</div></div>
-    <div class="perk-card"><div class="perk-icon" aria-label="Real impact">📈</div><div class="perk-title">Real impact</div><div class="perk-text">There's no middle layer between you and the people using what you build. That's rare. We protect it.</div></div>
-    <div class="perk-card"><div class="perk-icon" aria-label="Small focused team">🎯</div><div class="perk-title">Small, focused team</div><div class="perk-text">We don't do roadmap theater. If you have a good idea on Monday, it can be live by Friday.</div></div>
+    <div class="perk-card"><div class="perk-title">Pre-acquisition stage</div><div class="perk-text">Most companies hire after the big moment. You'd be joining right before it. That matters — personally and financially.</div></div>
+    <div class="perk-card"><div class="perk-title">Fully Remote</div><div class="perk-text">Your output matters. Where you work from doesn't. We trust adults to manage their own time.</div></div>
+    <div class="perk-card"><div class="perk-title">Cutting-edge AI</div><div class="perk-text">You won't be maintaining legacy code. You'll be building things that didn't exist six months ago.</div></div>
+    <div class="perk-card"><div class="perk-title">Competitive equity</div><div class="perk-text">We don't do symbolic equity. If you help build this, you share in what it becomes.</div></div>
+    <div class="perk-card"><div class="perk-title">Real impact</div><div class="perk-text">There's no middle layer between you and the people using what you build. That's rare. We protect it.</div></div>
+    <div class="perk-card"><div class="perk-title">Small, focused team</div><div class="perk-text">We don't do roadmap theater. If you have a good idea on Monday, it can be live by Friday.</div></div>
   </div>
 </div>
 

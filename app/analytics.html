@@ -21,13 +21,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .topbar-right{display:flex;align-items:center;gap:12px;}
 .back-btn{background:rgba(29,110,245,0.08);color:var(--text-soft);border:1px solid var(--border);border-radius:var(--radius);padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-body);}
 .back-btn:hover{color:var(--text);border-color:var(--blue);}
-.topbar-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1d6ef5,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;border:2px solid rgba(77,159,255,0.3);}
+.topbar-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1d6ef5,#1d6ef5);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;border:2px solid rgba(77,159,255,0.3);}
 
 /* LAYOUT */
 .layout{display:flex;margin-top:60px;height:calc(100vh - 60px);position:relative;z-index:1;}
 .sidebar{width:var(--sidebar-w);background:rgba(7,13,26,0.95);backdrop-filter:blur(20px);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:60px;left:0;bottom:0;overflow-y:auto;}
 .sidebar-profile{display:flex;flex-direction:column;align-items:center;gap:10px;padding:24px 16px 20px;border-bottom:1px solid var(--border);}
-.profile-photo{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#1d6ef5,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;border:2px solid rgba(77,159,255,0.25);box-shadow:0 0 24px rgba(29,110,245,0.3);}
+.profile-photo{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#1d6ef5,#1d6ef5);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;border:2px solid rgba(77,159,255,0.25);box-shadow:0 0 24px rgba(29,110,245,0.3);}
 .profile-name{font-size:14px;font-weight:600;font-family:var(--font-display);color:var(--text);}
 .profile-workspace{font-size:11px;color:var(--text-muted);}
 .nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;font-size:13px;font-weight:500;color:var(--text-soft);cursor:pointer;transition:all 0.15s;border-left:2px solid transparent;text-decoration:none;}
@@ -343,9 +343,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Avg Latency</div>
             <div style="font-size:24px;font-weight:800;font-family:var(--font-display);color:#f5a623;" id="p36Latency">—</div>
           </div>
-          <div style="text-align:center;padding:14px;background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.1);border-radius:10px;">
+          <div style="text-align:center;padding:14px;background:rgba(29,110,245,0.05);border:1px solid rgba(29,110,245,0.1);border-radius:10px;">
             <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Total Cost</div>
-            <div style="font-size:24px;font-weight:800;font-family:var(--font-display);color:#a78bfa;" id="p36Cost">—</div>
+            <div style="font-size:24px;font-weight:800;font-family:var(--font-display);color:#1d6ef5;" id="p36Cost">—</div>
           </div>
         </div>
       </div>
@@ -835,7 +835,7 @@ async function loadKPIs() {
 async function loadPipelineHealth() {
   const metrics = [
     {label:'Sourcing', value:85, color:'#378ADD'},
-    {label:'Outreach', value:72, color:'#7c3aed'},
+    {label:'Outreach', value:72, color:'#1d6ef5'},
     {label:'Overall',  value:78, color:'#00d68f'},
   ];
 
@@ -862,10 +862,10 @@ async function loadPipelineHealth() {
 }
 
 const CHANNEL_COLORS = {
-  linkedin_connection:'#4d9fff', linkedin_inmail:'#7c3aed',
+  linkedin_connection:'#4d9fff', linkedin_inmail:'#1d6ef5',
   email:'#00d68f', email_outreach:'#00d68f', follow_up:'#f5a623', followup:'#f5a623'
 };
-const CHANNEL_PALETTE = ['#4d9fff','#7c3aed','#00d68f','#f5a623','#ff4d6d','#8ba4c0'];
+const CHANNEL_PALETTE = ['#4d9fff','#1d6ef5','#00d68f','#f5a623','#ff4d6d','#8ba4c0'];
 
 async function loadResponseRates() {
   // Real per-channel response rates, computed from this company's own outreach.
@@ -1111,7 +1111,7 @@ async function loadForecastPanels() {
       { label:'Est. Time to Hire',     value: `${role.est_time_to_hire_days||'—'}d`,  sub:'Based on current velocity',         color:'#4d9fff' },
       { label:'Response Probability',  value: `${role.response_probability||'—'}%`,   sub:'Per outreach message sent',         color:'#00d68f' },
       { label:'Fit Success Prob.',     value: `${role.fit_success_probability||'—'}%`, sub:'Candidate → hire conversion',      color:'#f5a623' },
-      { label:'Outreach Needed',       value: outreach.outreach_volume_needed||'—',   sub:'To hit hire target',                color:'#7c3aed' },
+      { label:'Outreach Needed',       value: outreach.outreach_volume_needed||'—',   sub:'To hit hire target',                color:'#1d6ef5' },
       { label:'Stall Risk',            value: risk.stall_risk||'—',                   sub:`In ${risk.stall_in_days||'?'} days`, color: risk.stall_risk==='HIGH'?'#ff4d6d':risk.stall_risk==='MEDIUM'?'#f5a623':'#00d68f' },
       { label:'Score Volatility',      value: `${risk.score_volatility||0}pts`,       sub:'Match score swing range',           color:'#8ba4c0' },
     ].map(f=>`

@@ -161,7 +161,7 @@ body {
 .api-code-dot  { width:10px; height:10px; border-radius:50%; }
 .dot-red { background:#ff5f57; } .dot-yellow { background:#febc2e; } .dot-green { background:#28c840; }
 .api-code-body { padding:16px; font-family:'SF Mono','Fira Code',monospace; font-size:12px; line-height:1.7; }
-.c-muted { color:rgba(255,255,255,0.3); } .c-key { color:#4d9fff; } .c-str { color:#00d68f; } .c-num { color:#f5a623; } .c-bool { color:#a78bfa; }
+.c-muted { color:rgba(255,255,255,0.3); } .c-key { color:#4d9fff; } .c-str { color:#00d68f; } .c-num { color:#f5a623; } .c-bool { color:#5fe3ef; }
 
 /* DEMO */
 .demo-section, #demo { background:#050914; padding:100px 40px; text-align:center; }

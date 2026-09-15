@@ -39,11 +39,14 @@
     .content-section p { font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.8; margin-bottom: 24px; }
     .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin: 60px 0; }
     .stat-card { background: rgba(10,20,50,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(37,99,235,0.2); border-radius: 16px; padding: 32px; text-align: center; }
-    .stat-number { font-size: 48px; font-weight: 800; color: #4d9fff; line-height: 1; margin-bottom: 8px; }
+    .stat-number { font-size: 48px; font-weight: 800; color: #4d9fff; line-height: 1;
+      margin-bottom: 8px; white-space: nowrap; }
     .stat-label { font-size: 14px; color: rgba(255,255,255,0.5); }
     .values-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; margin-top: 40px; }
     .value-card { background: rgba(10,20,50,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(37,99,235,0.15); border-radius: 16px; padding: 28px; }
-    .value-icon { font-size: 32px; margin-bottom: 12px; }
+    /* emoji icons removed; the title carries its own accent rule instead */
+    .value-title::before { content: ""; display: block; width: 26px; height: 2px;
+      background: #3f9aab; margin-bottom: 12px; }
     .value-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
     .value-text { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.6; }
     .team-section { background: rgba(5,9,20,0.8); border-top: 1px solid rgba(255,255,255,0.07); padding: 80px 40px; }
@@ -134,8 +137,8 @@
 <div class="content-section">
   <div class="stats-grid fade-in-up">
     <div class="stat-card">
-      <div class="stat-number" aria-label="43 AI phases completed">43</div>
-      <div class="stat-label">AI Phases Completed</div>
+      <div class="stat-number" aria-label="2 to 10 example employees">2&ndash;10</div>
+      <div class="stat-label">People you learn from</div>
     </div>
     <div class="stat-card">
       <div class="stat-number" aria-label="200 CVs per batch">200</div>
@@ -165,22 +168,18 @@
   <h2>What we believe in</h2>
   <div class="values-grid fade-in-up">
     <div class="value-card">
-      <div class="value-icon" aria-label="Deep Thinking">🧠</div>
       <div class="value-title">Deep Thinking</div>
       <div class="value-text">A résumé is a document. A person is a story. We read the story.</div>
     </div>
     <div class="value-card">
-      <div class="value-icon" aria-label="Speed">⚡</div>
       <div class="value-title">Speed Without Compromise</div>
       <div class="value-text">Recruiters are busy. We respect their time. Every result is instant — not because we rushed, but because we planned it that way.</div>
     </div>
     <div class="value-card">
-      <div class="value-icon" aria-label="HR Professionals Only">🔒</div>
       <div class="value-title">HR Professionals Only</div>
       <div class="value-text">We only let HR professionals in. Not because we're exclusive — because this tool works best when it's used by people who genuinely care about the humans behind the profiles.</div>
     </div>
     <div class="value-card">
-      <div class="value-icon" aria-label="Enterprise Ready">🚀</div>
       <div class="value-title">Enterprise Ready</div>
       <div class="value-text">We're not a startup experiment. We're production-grade, enterprise-ready, and built to handle the volume that real companies need.</div>
     </div>
