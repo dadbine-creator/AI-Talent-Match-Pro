@@ -3365,6 +3365,133 @@ def is_hr_professional(job_title: str, department: str = "") -> bool:
     return any(kw in text for kw in HR_KEYWORDS)
 
 
+# ── LinkedIn sign-in ───────────────────────────────────────
+#
+# An alternative to email and password. The callback never creates an
+# account on its own: it matches an existing one by email, or sends the
+# person to /register to finish signing up normally.
+
+@app.get("/api/auth/linkedin/config")
+def api_linkedin_signin_config():
+    """Whether the sign-in button should be shown at all.
+
+    login.html and register.html keep the button hidden until this says yes,
+    so a missing client id/secret means no button rather than a button that
+    goes nowhere.
+    """
+    from app.linkedin_engine import linkedin_is_configured
+    return {"ok": True, "configured": linkedin_is_configured()}
+
+
+@app.get("/auth/linkedin")
+def auth_linkedin(request: Request):
+    # Not wired up yet (missing client id/secret) → friendly notice instead of a broken flow.
+    from app.linkedin_engine import linkedin_is_configured, get_linkedin_auth_url
+    if not linkedin_is_configured():
+        return RedirectResponse(url="/login?notice=linkedin_soon", status_code=302)
+    return RedirectResponse(url=get_linkedin_auth_url(secrets.token_urlsafe(16)))
+
+
+
+# ============================================================
+# HR VERIFICATION — LinkedIn Role Check
+# ============================================================
+
+HR_KEYWORDS = [
+    "hr", "human resource", "human resources", "recruiter", "recruiting",
+    "recruitment", "talent", "talent acquisition", "people", "people ops",
+    "people operations", "hiring", "workforce", "staffing", "sourcing",
+    "sourcer", "compensation", "benefits", "learning", "development",
+    "organizational", "onboarding", "employee experience", "employer branding",
+    "headhunter", "headhunting", "executive search", "hrbp", "hr business partner",
+    "chief people", "vp people", "head of people", "director of people",
+    "director of talent", "director of recruiting", "vp talent", "vp hr",
+    "head of hr", "head of talent", "head of recruiting",
+]
+
+def is_hr_professional(job_title: str, department: str = "") -> bool:
+    """Check if a LinkedIn user is an HR professional."""
+    text = f"{job_title} {department}".lower()
+    return any(kw in text for kw in HR_KEYWORDS)
+
+@app.get("/auth/linkedin/register")
+def linkedin_register_redirect():
+    """Start LinkedIn OAuth for registration. Not wired up yet → friendly notice."""
+    from app.linkedin_engine import linkedin_is_configured, get_linkedin_auth_url
+    if not linkedin_is_configured():
+        return RedirectResponse(url="/register?notice=linkedin_soon", status_code=302)
+    return RedirectResponse(url=get_linkedin_auth_url(state="register"))
+
+@app.get("/auth/linkedin/callback")
+async def auth_linkedin_callback(
+    request: Request,
+    code: str = None,
+    state: str = None,
+    error: str = None,
+    db: Session = Depends(get_db)
+):
+    """Complete the LinkedIn (OpenID Connect) sign-in flow.
+
+    - Exchange the code for a token, read the member's email + name via userinfo.
+    - If an account already exists for that email → log them in and go to /workspace.
+    - Otherwise → send them to /register with email + name prefilled to finish signup
+      (company + HR job title + LinkedIn URL are collected there).
+    Works for both the "Sign in" and "Register" buttons; `state == "register"` only
+    decides which page to bounce back to on failure.
+    """
+    from app.linkedin_engine import (
+        linkedin_is_configured, exchange_code_for_token, fetch_userinfo,
+    )
+    from urllib.parse import urlencode
+
+    is_register = (state == "register")
+    fail_page   = "/register" if is_register else "/login"
+
+    # User denied consent, or LinkedIn returned an error / no code
+    if error or not code:
+        return RedirectResponse(url=f"{fail_page}?error=linkedin_cancelled")
+    # Not wired up yet (missing client id/secret) — show the friendly notice
+    if not linkedin_is_configured():
+        return RedirectResponse(url=f"{fail_page}?notice=linkedin_soon")
+
+    try:
+        token  = exchange_code_for_token(code)
+        access = (token or {}).get("access_token")
+        if not access:
+            return RedirectResponse(url=f"{fail_page}?error=linkedin_failed")
+        info  = fetch_userinfo(access)
+        email = normalize_email(info.get("email", "") or "")
+        name  = (info.get("name")
+                 or f"{info.get('given_name','')} {info.get('family_name','')}".strip()
+                 or (email.split("@")[0].replace(".", " ").title() if email else ""))
+        if not email:
+            return RedirectResponse(url=f"{fail_page}?error=linkedin_failed")
+    except Exception:
+        return RedirectResponse(url=f"{fail_page}?error=linkedin_failed")
+
+    # Existing account for this email → log in
+    user = db.query(CompanyUserORM).filter(
+        CompanyUserORM.email == email, CompanyUserORM.is_deleted == False
+    ).first()
+    if user:
+        company = db.query(CompanyORM).filter(
+            CompanyORM.id == user.company_id, CompanyORM.is_deleted == False
+        ).first()
+        if not company or not user.is_active:
+            # Inactive (e.g. email-verification gate) — can't drop them straight in
+            return RedirectResponse(url="/login?error=linkedin_failed")
+        user.last_login = datetime.utcnow(); db.commit()
+        request.session["company_user_id"] = user.id
+        request.session["company_id"]      = user.company_id
+        request.session["user_role"]       = user.role
+        return RedirectResponse(url="/workspace")
+
+    # No account yet → finish registration with name + email prefilled
+    return RedirectResponse(
+        url="/register?" + urlencode({"linkedin": "connected", "email": email, "name": name})
+    )
+
+
 # LinkedIn sign-in and its readiness/status endpoints were removed — see
 # linkedin_engine.py for why. Accounts have always had passwords, so no
 # login path was lost.

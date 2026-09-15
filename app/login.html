@@ -89,6 +89,21 @@
     }
     .brand-feature .dot svg { width: 15px; height: 15px; stroke: #7db6ff; }
     .brand-feature span { font-size: 14.5px; color: rgba(255,255,255,0.8); line-height: 1.5; padding-top: 3px; }
+    /* LinkedIn sign-in. Hidden until /api/auth/linkedin/config says the
+       credentials exist, so there is never a button that goes nowhere. */
+    .li-btn { display: none; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; padding: 13px; margin-bottom: 18px;
+      background: transparent; color: rgba(255,255,255,0.88);
+      border: 1px solid rgba(255,255,255,0.18); border-radius: 4px;
+      font-size: 14px; font-weight: 600; font-family: inherit;
+      text-decoration: none; cursor: pointer; transition: background .15s, border-color .15s; }
+    .li-btn[data-on="1"] { display: flex; }
+    .li-btn:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.3); }
+    .li-sep { display: none; align-items: center; gap: 12px; margin-bottom: 18px;
+      font-size: 12px; color: rgba(255,255,255,0.35); }
+    .li-sep[data-on="1"] { display: flex; }
+    .li-sep::before, .li-sep::after { content: ""; flex: 1; height: 1px;
+      background: rgba(255,255,255,0.12); }
     .brand-point { font-size: 15px; color: rgba(255,255,255,0.78); line-height: 1.55;
       padding-inline-start: 14px; border-inline-start: 2px solid rgba(29,110,245,0.85); }
     .brand-trust a { color: rgba(255,255,255,0.62); text-decoration: underline;
@@ -226,6 +241,9 @@
       <div class="auth-error" id="authError" role="alert"></div>
       <div class="auth-success" id="authSuccess" role="status"></div>
 
+      <a href="/auth/linkedin" class="li-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="18" height="18"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13Zm1.78 13.02H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg>Sign in with LinkedIn</a>
+      <div class="li-sep">or sign in with email</div>
+
       <form method="post" class="auth-form" id="loginForm">
 
         <div class="form-group">
@@ -350,6 +368,18 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     reset();
   }
 });
+
+/* Show the LinkedIn button only when the server has credentials for it. */
+(async function () {
+  try {
+    const r = await fetch('/api/auth/linkedin/config');
+    const j = await r.json();
+    if (!j.configured) return;
+    document.querySelectorAll('.li-btn, .li-sep').forEach(function (el) {
+      el.setAttribute('data-on', '1');
+    });
+  } catch (e) { /* no button, which is the safe default */ }
+})();
 </script>
 </body>
 </html>

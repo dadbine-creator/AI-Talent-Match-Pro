@@ -225,15 +225,86 @@ def get_tenant_config(db: Session, company_id: str) -> dict:
 
 
 # ============================================================
-# 42.4 — LinkedIn OAuth (removed)
+# 42.4 — LinkedIn OAuth (sign-in only)
 #
-# "Sign in with LinkedIn" was an optional alternative to email and password.
-# It never created accounts on its own — it matched an existing account by
-# email or sent the person to /register — so removing it locks nobody out.
-# It was dropped rather than kept, because it meant holding a LinkedIn client
-# secret forever for a convenience button on a product that signs everyone in
-# with a password anyway.
+# "Sign in with LinkedIn" as an alternative to email and password.
+# Scopes are openid/profile/email only: it reads the signing-in
+# person's own name and email and nothing else. It does not search
+# LinkedIn, import candidates, or read anyone else's profile.
+#
+# The credentials come from the environment and are never written
+# here. A previous copy of this integration hardcoded a client secret
+# as an os.environ.get() default, which leaked it into git history.
+#
+# get_linkedin_profile_stub() is deliberately NOT restored: it
+# returned invented profile data ("Available Post-Acquisition") for a
+# partnership that does not exist.
 # ============================================================
+
+LINKEDIN_CLIENT_ID     = os.getenv("LINKEDIN_CLIENT_ID", "")
+LINKEDIN_CLIENT_SECRET = os.getenv("LINKEDIN_CLIENT_SECRET", "")
+LINKEDIN_REDIRECT_URI  = os.getenv("LINKEDIN_REDIRECT_URI",
+                                   "https://aitmp.io/auth/linkedin/callback")
+
+
+def linkedin_is_configured() -> bool:
+    """True once a real LinkedIn Developer app is wired up (client id + secret)."""
+    return bool(LINKEDIN_CLIENT_ID and LINKEDIN_CLIENT_SECRET)
+
+def get_linkedin_auth_url(state: str = None) -> str:
+    """Build the LinkedIn 'Sign In with LinkedIn using OpenID Connect' authorization URL.
+
+    Uses the modern OIDC scopes (openid/profile/email). The old r_liteprofile /
+    r_emailaddress scopes were deprecated by LinkedIn. OIDC sign-in does NOT require
+    Talent Solutions Partner approval — just a Developer app with the
+    'Sign In with LinkedIn using OpenID Connect' product added.
+    """
+    from urllib.parse import urlencode
+    if not state:
+        state = secrets.token_urlsafe(16)
+    params = {
+        "response_type": "code",
+        "client_id":     LINKEDIN_CLIENT_ID,
+        "redirect_uri":  LINKEDIN_REDIRECT_URI,
+        "scope":         "openid profile email",
+        "state":         state,
+    }
+    return "https://www.linkedin.com/oauth/v2/authorization?" + urlencode(params)
+
+def exchange_code_for_token(code: str) -> dict:
+    """Exchange an OAuth authorization code for an access token. Raises on failure."""
+    import httpx
+    resp = httpx.post(
+        "https://www.linkedin.com/oauth/v2/accessToken",
+        data={
+            "grant_type":    "authorization_code",
+            "code":          code,
+            "redirect_uri":  LINKEDIN_REDIRECT_URI,
+            "client_id":     LINKEDIN_CLIENT_ID,
+            "client_secret": LINKEDIN_CLIENT_SECRET,
+        },
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+        timeout=15,
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+def fetch_userinfo(access_token: str) -> dict:
+    """Fetch the signed-in member's profile via the OIDC userinfo endpoint.
+
+    Returns keys like: sub, email, email_verified, name, given_name, family_name,
+    picture, locale. (Job title / headline are NOT part of OIDC userinfo — those
+    still need the form's job-title field or Partner-level profile access.)
+    """
+    import httpx
+    resp = httpx.get(
+        "https://api.linkedin.com/v2/userinfo",
+        headers={"Authorization": f"Bearer {access_token}"},
+        timeout=15,
+    )
+    resp.raise_for_status()
+    return resp.json()
+
 
 # ============================================================
 # 42.5 — API v2 (pagination + filtering + sorting)
